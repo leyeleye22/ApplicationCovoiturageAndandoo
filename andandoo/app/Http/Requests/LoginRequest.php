@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateZonesRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class UpdateZonesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => 'required|min:3|max:18',
+            'email' => 'required|email|exists:utilisateurs',
+            'password' => 'required|min:8'
         ];
     }
     public function failedValidation(validator $validator)
@@ -40,9 +41,9 @@ class UpdateZonesRequest extends FormRequest
     public function messages()
     {
         return [
-            'nom.required' => 'Le champs nom est requis',
-            'nom.min' => 'le nom doit être superieur egal à 3 caractere',
-            'nom.max' => 'le nom doit pas dépasser 18 caractere',
+            'email.required' => 'Le champ email est obligatoire.',
+            'email.email' => 'Le champ doit être un email.',
+            'email.exists' => 'L\'email existe pas.',
         ];
     }
 }

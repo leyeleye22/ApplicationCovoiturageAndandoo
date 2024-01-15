@@ -5,62 +5,71 @@ namespace App\Http\Controllers;
 use App\Models\Zones;
 use App\Http\Requests\StoreZonesRequest;
 use App\Http\Requests\UpdateZonesRequest;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class ZonesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth:api');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(StoreZonesRequest $request)
     {
-        //
+        try {
+            $validatedData = $request->validated();
+            $zones = new Zones();
+            $user = auth()->user()->id;
+            $zones->NomZ = $validatedData['nom'];
+            $zones->user_id = $user;
+            $zones->save();
+
+            return response()->json(['message' => 'Zone created successfully'], Response::HTTP_CREATED);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Failed to create zone. Database error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreZonesRequest $request)
+    public function show()
     {
-        //
+        try {
+            // Fetch and return the list of zones
+            $zones = Zones::all();
+            return response()->json(['data' => $zones], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve zones. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Zones $zones)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Zones $zones)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateZonesRequest $request, Zones $zones)
     {
-        //
+        try {
+            $validatedData = $request->validated();
+            $zones->NomZ = $validatedData['nom'];
+            $zones->save();
+
+            return response()->json(['message' => 'Zone updated successfully'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Zones $zones)
+    public function delete(Zones $zones)
     {
-        //
+        try {
+            $zones->delete();
+            return response()->json(['message' => 'Zone deleted successfully'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

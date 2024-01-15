@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreZonesRequest extends FormRequest
@@ -11,7 +13,7 @@ class StoreZonesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,25 @@ class StoreZonesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nom' => 'required|min:3|max:18',
+        ];
+    }
+    public function failedValidation(validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'status_code' => 422,
+            'error' => true,
+            'message' => 'erreur de validation',
+            'errorList' => $validator->errors()
+        ]));
+    }
+    public function messages()
+    {
+        return [
+            'nom.required' => 'Le champs nom est requis',
+            'nom.min' => 'le nom doit être superieur egal à 3 caractere',
+            'nom.max' => 'le nom doit pas dépasser 18 caractere',
         ];
     }
 }
