@@ -19,7 +19,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'loginuser']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'loginuser', 'RegisterAdmin']]);
     }
     public function register(RegisterRequest $request)
     {
@@ -44,9 +44,6 @@ class AuthController extends Controller
     {
         $credentials = $request->only(['email', 'password']);
         if (!$token = Auth::guard('apiut')->attempt($credentials)) {
-            // $utilisateur = Auth::guard('apiut')->user();
-            // $token = $utilisateur->createToken('token-name')->plainTextToken;
-            // return $this->respondWithToken($utilisateur, $token);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $utilisateur = auth()->guard('apiut')->user();
@@ -121,7 +118,11 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(auth()->refresh(),Auth::user());
+    }
+    public function Torefresh()
+    {
+        return $this->respondWithTokens(auth()->refresh(),Auth::user());
     }
 
     /**
@@ -149,5 +150,4 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
-    
 }

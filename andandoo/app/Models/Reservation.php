@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Reservation extends Model
 {
     use HasFactory;
-
+    protected $fillable=[
+        'NombrePlaces'
+    ];
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);

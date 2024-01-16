@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Trajet extends Model
 {
     use HasFactory;
+    protected $fillable=[
+        'LieuDepart',
+        'LieuArrivee',
+        'DateDepart',
+        'HeureD',
+        'Prix',
+        'utilisateur_id'
+    ];
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);

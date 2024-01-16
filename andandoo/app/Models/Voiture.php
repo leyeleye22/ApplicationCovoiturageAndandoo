@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Voiture extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'ImageVoitures',
+        'Descriptions',
+        'NbrPlaces'
+    ];
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);

@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateReservationRequest extends FormRequest
 {
     /**
@@ -11,7 +12,7 @@ class UpdateReservationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,28 @@ class UpdateReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'NombrePlaces' => 'required|integer',
+            'voiture_id' => 'required|integer|exists:voitures,id',
+        ];
+    }
+    public function failedValidation(validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'status_code' => 422,
+            'error' => true,
+            'message' => 'erreur de validation',
+            'errorList' => $validator->errors()
+        ]));
+    }
+    public function messages()
+    {
+        return [
+            'NombrePlaces.required' => 'Veuillez donnez une nombre de place à reserver',
+            'NombrePlaces.integer' => 'Veuillez donnez une nombre de place valide',
+            'voiture_id.required' => 'Veuillez choisir une vehicule',
+            'voiture_id.integer' => 'Choississez une vehicule valide',
+            'voiture_id.exists' => 'Cette vehicule n\'existe pas',
         ];
     }
 }

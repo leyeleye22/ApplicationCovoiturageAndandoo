@@ -27,12 +27,7 @@ class MessageController extends Controller
     }
     public function responsemessages(Request $request, Message $message)
     {
-        // try {
-        //     $messages= new Message();
-        //     return response()->json(['data' => $messages], Response::HTTP_OK);
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => 'Failed to retrieve message. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
+ 
     }
 
    

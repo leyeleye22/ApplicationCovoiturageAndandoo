@@ -44,6 +44,8 @@ class LoginRequest extends FormRequest
             'email.required' => 'Le champ email est obligatoire.',
             'email.email' => 'Le champ doit être un email.',
             'email.exists' => 'L\'email existe pas.',
+            'password.required'=>'Le mot de passe est obliagatoire.',
+            'password.min'=>'Le mot de passe doit être superieur ou egal à 8.'
         ];
     }
 }

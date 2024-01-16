@@ -57,6 +57,6 @@ class Utilisateur extends Authenticatable implements JWTSubject
     }
     public function voiture()
     {
-        return $this->belongsTo(Voiture::class);
+        return $this->hasOne(Voiture::class);
     }
 }
