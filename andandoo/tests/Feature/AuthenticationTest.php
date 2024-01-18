@@ -35,8 +35,7 @@ class AuthenticationTest extends TestCase
     }
     public function testLoginAdmin(): void
     {
-        $user = User::factory()->create();
-        $credentials = ['email' => $user->email, 'password' => $user->password];
+        $credentials = ['email' => 'leye@gmail.com', 'password' => 'leye22@22'];
         $response = $this->post('api/loginadmin', $credentials);
         $response->assertStatus(200);
     }

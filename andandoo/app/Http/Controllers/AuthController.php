@@ -103,7 +103,7 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
-        return $this->respondWithToken($token, $user); 
+        return $this->respondWithToken($token, $user);
     }
     /**
      * Get the authenticated User.
