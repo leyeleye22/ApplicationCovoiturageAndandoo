@@ -29,11 +29,14 @@ class ZonesController extends Controller
 
             return response()->json(['message' => 'Zone created successfully'], Response::HTTP_CREATED);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Failed to create zone. Database error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $errorMessage = 'Failed to create zone. Database error.';
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $errorMessage = 'Failed to create zone. Unexpected error.';
         }
+
+        return response()->json(['error' => $errorMessage ?? 'Unknown error'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+
 
     public function show()
     {
@@ -42,7 +45,8 @@ class ZonesController extends Controller
             $zones = Zones::all();
             return response()->json(['data' => $zones], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve zones. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Failed to retrieve zones. Unexpected error.'],
+            Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -57,7 +61,8 @@ class ZonesController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Failed to update zone. Unexpected error.'],
+            Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -69,7 +74,8 @@ class ZonesController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete zone. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Failed to delete zone. Unexpected error.'],
+            Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

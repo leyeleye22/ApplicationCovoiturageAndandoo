@@ -18,9 +18,7 @@ class UtilisateurController extends Controller
         try {
             $user = Auth::guard('apiut')->user();
             $voiture_id = $user->voiture->id;
-            // dd($voiture_id);
             $reservation = Reservation::where('voiture_id', $voiture_id)->get();
-            // dd($reservation);
             if ($reservation) {
                 return response()->json([
                     'success' => true,
@@ -140,7 +138,7 @@ class UtilisateurController extends Controller
     public function update(Reservation $reservation)
     {
         try {
-            if ($reservation->Accepted == false) {
+            if (!$reservation->Accepted) {
                 $reservation->Accepted = true;
                 $reservation->update();
                 return response()->json([

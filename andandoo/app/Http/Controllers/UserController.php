@@ -20,7 +20,8 @@ class UserController extends Controller
             $user = Utilisateur::all();
             return response()->json(['data' => $user], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve message. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Failed to retrieve message. Unexpected error.'],
+            Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

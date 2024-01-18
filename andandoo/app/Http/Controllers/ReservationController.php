@@ -53,84 +53,104 @@ class ReservationController extends Controller
      */
     public function store(StoreReservationRequest $request)
     {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => null,
+            'statusCode' => 500,
+        ];
+
         try {
             $validatedData = $request->validated();
             $voiture = Voiture::where('id', $validatedData["voiture_id"])->first();
-            if ($voiture->disponible) {
 
+            if ($voiture->disponible) {
                 $reservation = new  Reservation();
                 $reservation->fill($validatedData);
                 $reservation->voiture_id = $validatedData["voiture_id"];
                 $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
 
                 if ($reservation->save()) {
-                    return response()->json([
+                    $response = [
                         'success' => true,
-                        'message' => 'Votre treservation est en cours de validation',
-                        'date' => $reservation
-                    ]);
+                        'message' => 'Votre réservation est en cours de validation',
+                        'date' => $reservation,
+                        'statusCode' => 200,
+                    ];
                 } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Échec du reservation',
-                    ], 500);
+                    $response['message'] = 'Échec de la réservation';
                 }
             } else {
-                return response()->json([
+                $response = [
                     'success' => false,
-                    'message' => 'Reservation indisponible'
-
-                ], 400);
+                    'message' => 'Réservation indisponible',
+                    'statusCode' => 400,
+                ];
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur s\'est produite lors de l\'enregistrement de votre reservation.',
-                'error' => $e->getMessage(),
-            ], 500);
+            $response['message'] = 'Une erreur s\'est produite lors de l\'enregistrement de votre réservation.';
+            $response['error'] = $e->getMessage();
         }
+
+        return response()->json($response, $response['statusCode']);
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Reservation $reservation)
     {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => null,
+            'statusCode' => 500,
+        ];
+
         try {
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 if ($reservation) {
-                    return response()->json([
+                    $response = [
                         'success' => true,
-                        'message' => 'Votre reservation ',
-                        'date'=>$reservation
-                    ]);
+                        'message' => 'Votre réservation',
+                        'data' => $reservation,
+                        'statusCode' => 200,
+                    ];
                 } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Échec du recupperation',
-                    ], 500);
+                    $response['message'] = 'Échec de la récupération';
                 }
             } else {
-                return response()->json([
+                $response = [
                     'success' => false,
-                    'message' => 'Impossible de recuperatuion cette reservation'
-
-                ], 403);
+                    'message' => 'Impossible de récupérer cette réservation',
+                    'statusCode' => 403,
+                ];
             }
         } catch (\Exception $e) {
-            return response()->json([
+            $response = [
                 'success' => false,
-                'message' => 'Une erreur s\'est produite lors de la recuperation de votre reservation.',
+                'message' => 'Une erreur s\'est produite lors de la récupération de votre réservation.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ];
         }
+
+        return response()->json($response, $response['statusCode']);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => null,
+            'statusCode' => 500,
+        ];
+
         try {
             $validatedData = $request->validated();
 
@@ -138,32 +158,33 @@ class ReservationController extends Controller
                 $reservation->fill($validatedData);
                 $reservation->voiture_id = $validatedData["voiture_id"];
                 $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
+
                 if ($reservation->update()) {
-                    return response()->json([
+                    $response = [
                         'success' => true,
-                        'message' => 'Votre reservation a été modifié',
-                        'date' => $reservation
-                    ]);
+                        'message' => 'Votre réservation a été modifiée',
+                        'data' => $reservation,
+                        'statusCode' => 200,
+                    ];
                 } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Échec du modification',
-                    ], 500);
+                    $response['message'] = 'Échec de la modification';
                 }
             } else {
-                return response()->json([
+                $response = [
                     'success' => false,
-                    'message' => 'Vous n\'êtes pas authoriser à modifier cette reservation'
-
-                ], 403);
+                    'message' => 'Vous n\'êtes pas autorisé à modifier cette réservation',
+                    'statusCode' => 403,
+                ];
             }
         } catch (\Exception $e) {
-            return response()->json([
+            $response = [
                 'success' => false,
-                'message' => 'Une erreur s\'est produite lors de l\'enregistrement de votre reservation.',
+                'message' => 'Une erreur s\'est produite lors de la modification de votre réservation.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ];
         }
+
+        return response()->json($response, $response['statusCode']);
     }
 
     /**
@@ -171,32 +192,38 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'statusCode' => 500,
+        ];
+
         try {
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 if ($reservation->delete()) {
-                    return response()->json([
+                    $response = [
                         'success' => true,
-                        'message' => 'Votre reservation a été supprimé avec succés',
-                    ]);
+                        'message' => 'Votre réservation a été supprimée avec succès',
+                        'statusCode' => 200,
+                    ];
                 } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Échec du suppression',
-                    ], 500);
+                    $response['message'] = 'Échec de la suppression';
                 }
             } else {
-                return response()->json([
+                $response = [
                     'success' => false,
-                    'message' => 'Impossible de supprimer cette reservation'
-
-                ], 403);
+                    'message' => 'Impossible de supprimer cette réservation',
+                    'statusCode' => 403,
+                ];
             }
         } catch (\Exception $e) {
-            return response()->json([
+            $response = [
                 'success' => false,
-                'message' => 'Une erreur s\'est produite lors de la suppression de votre reservation.',
+                'message' => 'Une erreur s\'est produite lors de la suppression de votre réservation.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ];
         }
+
+        return response()->json($response, $response['statusCode']);
     }
 }

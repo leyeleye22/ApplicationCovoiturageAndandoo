@@ -24,9 +24,9 @@ class StoreVoitureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ImageVoitures' => 'required|image|max:2048', // Doit être une image et ne pas dépasser 2MB
-            'Descriptions' => 'required|string|max:255', // Doit être une chaîne de caractères et ne pas dépasser 255 caractères
-            'NbrPlaces' => 'required|integer|min:1', // Doit être un nombre entier et au moins 1
+            'ImageVoitures' => 'required|image|max:2048',
+            'Descriptions' => 'required|string|max:255',
+            'NbrPlaces' => 'required|integer|min:1',
         ];
     }
     public function failedValidation(validator $validator)

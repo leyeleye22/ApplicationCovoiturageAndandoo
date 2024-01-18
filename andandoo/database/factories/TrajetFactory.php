@@ -16,8 +16,14 @@ class TrajetFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create();
         return [
-            //
+            'LieuDepart' => $faker->city,
+            'LieuArrivee' => $faker->city,
+            'DateDepart' => $faker->dateTimeThisYear->format('Y-m-d'),
+            'HeureD' => $faker->time('H:i:s'),
+            'Prix' => $faker->randomFloat(2, 10, 100),
+            'utilisateur_id' =>1
         ];
     }
 }

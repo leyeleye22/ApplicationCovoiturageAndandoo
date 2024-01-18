@@ -22,7 +22,7 @@ class TrajetController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Trajet reccupéré avec succès.',
-                    'date'=>$trajet
+                    'date' => $trajet
                 ]);
             } else {
                 // La sauvegarde a échoué
@@ -108,55 +108,56 @@ class TrajetController extends Controller
      */
     public function update(UpdateTrajetRequest $request, Trajet $trajet)
     {
+       
+        $success = false;
+        $message = '';
+        $data = null;
+        $statusCode = 500;
+
         try {
             $validatedData = $request->validated();
             $trajet->fill($validatedData);
+
             if ($trajet->update()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Trajet modifié avec succès.',
-                    'data' => $trajet,
-                ]);
+                $success = true;
+                $message = 'Trajet modifié avec succès.';
+                $data = $trajet;
+                $statusCode = 200;
             } else {
                 // La sauvegarde a échoué
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Échec du modification du trajet',
-                ], 500);
+                $message = 'Échec du modification du trajet';
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur s\'est produite lors du modification du trajet.',
-                'error' => $e->getMessage(),
-            ], 500);
+            $message = 'Une erreur s\'est produite lors du modification du trajet.';
+        
+            $statusCode = 200;
         }
+
+        return response()->json(['success' => $success, 'message' => $message, 'data' => $data], $statusCode);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Trajet $trajet)
     {
+        $success = false;
+        $message = '';
+        $statusCode = 500;
         try {
             if ($trajet->delete()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Trajet suprrimé avec succès.'
-                ]);
+                $success = true;
+                $message = 'Trajet supprimé avec succès.';
+                $statusCode = 200;
             } else {
-                // La sauvegarde a échoué
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Échec du supression du trajet',
-                ], 500);
+                $message = 'Échec du suppression du trajet';
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur s\'est produite lors du supression du trajet.',
-                'error' => $e->getMessage(),
-            ], 500);
+            $message = 'Une erreur s\'est produite lors de la suppression du trajet.';
+            $statusCode = 500;
         }
+
+        return response()->json(['success' => $success, 'message' => $message], $statusCode);
     }
 }

@@ -14,21 +14,20 @@ class MessageController extends Controller
     {
         $this->middleware('auth:api');
     }
-  
+
     public function show()
     {
         try {
-            // Fetch and return the list of message
-            $messages= new Message();
-            return response()->json(['data' => $messages], Response::HTTP_OK);
+            $messages = new Message();
+            return response()->json(
+                ['data' => $messages],
+                Response::HTTP_OK
+            );
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve message. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                ['error' => 'Failed to retrieve message. Unexpected error.'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
-    public function responsemessages(Request $request, Message $message)
-    {
- 
-    }
-
-   
 }

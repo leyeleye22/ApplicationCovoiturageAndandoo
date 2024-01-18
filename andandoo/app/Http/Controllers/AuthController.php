@@ -21,25 +21,40 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'loginuser', 'RegisterAdmin']]);
     }
+   
     public function register(RegisterRequest $request)
     {
+        $response = [
+            'message' => '',
+            'user' => null,
+            'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+        ];
+
         try {
             $validatedData = $request->validated();
             $utilisateur = new Utilisateur();
             $utilisateur->fill($validatedData);
             $user = Hash::make($utilisateur->password);
             $utilisateur->password = $user;
+
             if ($utilisateur->save()) {
-                return response()->json(['message' => 'User registered successfully', 'user' => $utilisateur], Response::HTTP_CREATED);
+                $response['message'] = 'User registered successfully';
+                $response['user'] = $utilisateur;
+                $response['statusCode'] = Response::HTTP_CREATED;
             }
         } catch (ValidationException $e) {
-            return response()->json(['error' => $e->validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            $response['error'] = $e->validator->errors();
+            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Failed to register user. Database error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response['error'] = 'Failed to register user. Database error.';
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to register user. Unexpected error.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response['error'] = 'Failed to register user. Unexpected error.';
         }
+
+        return response()->json($response, $response['statusCode']);
     }
+
+
     public function loginuser(LoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
@@ -47,7 +62,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $utilisateur = auth()->guard('apiut')->user();
-        return $this->respondWithTokens($utilisateur, $token);
+        return $this->respondWithTokens($token, $utilisateur);
     }
 
     public function RegisterAdmin(RegisterAdminRequest $request)
@@ -60,7 +75,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Utilisateur administrateur enregistré avec succès.',
-                    'data' => $user, // Vous pouvez inclure des données supplémentaires ici si nécessaire
+                    'data' => $user,
                 ]);
             } else {
                 // La sauvegarde a échoué
@@ -85,9 +100,10 @@ class AuthController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
         $user = auth()->user();
 
-        return $this->respondWithToken($user, $token);
+        return $this->respondWithToken($token, $user); 
     }
     /**
      * Get the authenticated User.
@@ -118,13 +134,12 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh(),Auth::user());
+        return $this->respondWithToken(auth()->refreshToken(), Auth::user());
     }
     public function Torefresh()
     {
-        return $this->respondWithTokens(auth()->refresh(),Auth::user());
+        return $this->respondWithTokens(auth('apiut')->refreshToken(), Auth::guard('apiut')->user());
     }
-
     /**
      * Get the token array structure.
      *
@@ -147,7 +162,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'utilisateur' => $utilisateur,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth('apiut')->manager()->getTTL() * 60
         ]);
     }
 }
