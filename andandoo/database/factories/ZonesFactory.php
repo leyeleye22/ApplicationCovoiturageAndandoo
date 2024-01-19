@@ -16,8 +16,10 @@ class ZonesFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create();
         return [
-            //
+            'NomZ' => $faker->city,
+            'user_id'=>auth()->user()->id
         ];
     }
 }

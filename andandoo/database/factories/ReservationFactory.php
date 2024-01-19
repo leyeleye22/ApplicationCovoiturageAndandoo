@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Voiture;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,12 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create();
+    
         return [
-            //
+            'NombrePlaces' => $faker->numberBetween(1, 10),
+            'voiture_id' => Voiture::factory()->create()->id,
         ];
     }
+    
 }

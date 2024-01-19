@@ -16,8 +16,13 @@ class VoitureFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create();
+
         return [
-            //
+            'nom' => $faker->unique()->vehicleBrand,
+            'ImageVoitures' => $faker->imageUrl(640, 480),
+            'Descriptions' => $faker->sentence,
+            'NbrPlaces' => $faker->numberBetween(1, 10),
         ];
     }
 }
