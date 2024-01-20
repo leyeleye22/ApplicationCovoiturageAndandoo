@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,10 +20,10 @@ class VoitureFactory extends Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'nom' => $faker->unique()->vehicleBrand,
             'ImageVoitures' => $faker->imageUrl(640, 480),
             'Descriptions' => $faker->sentence,
             'NbrPlaces' => $faker->numberBetween(1, 10),
+            'utilisateur_id' => Auth::guard('apiut')->user()->id
         ];
     }
 }

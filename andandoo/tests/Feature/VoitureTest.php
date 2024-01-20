@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Voiture;
+use App\Models\Utilisateur;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VoitureTest extends TestCase
 {
@@ -13,51 +16,41 @@ class VoitureTest extends TestCase
      */
     public function testInsererVoiture(): void
     {
-        $user = User::factory()->create([
-            'email' => 'leye@gmail.com',
-            'password' => bcrypt('leye22@22'),
-        ]);
-        $this->actingAs($user, 'api');
-        $zone = Zones::factory()->create();
-        $zoneinsere = $zone->toArray();
-        $this->assertDatabaseHas('Zones', $zoneinsere);
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'apiut');
+        $voiture = Voiture::factory()->create();
+        $voitureinsere = $voiture->toArray();
+        $this->assertDatabaseHas('Voitures', $voitureinsere);
     }
 
-    // public function testModifierVoiture(): void
-    // {
-    //     $user = User::factory()->create([
-    //         'email' => 'leyeadmin@gmail.com',
-    //         'password' => bcrypt('leye22@22'),
-    //     ]);
-    //     $this->actingAs($user, 'api');
+    public function testModifierVoiture(): void
+    {
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'apiut');
 
-    //     $zone = [
-    //         'NomZ' => 'Pikine Thies',
-    //         'user_id' => auth()->user()->id
-    //     ];
-    //     $zoneTr = Zones::FindOrFail(1);
-    //     $response = $this->post('api/updatezone/' . $zoneTr->id, $zone);
-    //     $response->assertStatus(200);
-    // }
-    // public function testListerVoiture(): void
-    // {
-    //     $user = User::factory()->create([
-    //         'email' => 'leyeadmin2@gmail.com',
-    //         'password' => bcrypt('leye22@22'),
-    //     ]);
-    //     $this->actingAs($user, 'api');
-    //     $response = $this->get('api/listzone');
-    //     $response->assertStatus(200);
-    // }
-    // public function testSupprimerVoiture(): void
-    // {
-    //     $user = User::factory()->create([
-    //         'email' => 'leyeadmin23@gmail.com',
-    //         'password' => bcrypt('leye22@22'),
-    //     ]);
-    //     $this->actingAs($user, 'api');
-    //     $zoneTr = Zones::FindOrFail(1);
-    //     $response = $this->delete('api/deletezone/'.$zoneTr->id);
-    //     $response->assertStatus(200);
-    // }
+        $voiture = [
+            'ImageVoitures' => 'image faker',
+            'Descriptions' => 'ma belle voiture',
+            'NbrPlaces' => 4,
+            'utilisateur_id' => Auth::guard('apiut')->user()->id
+        ];
+        $voituretr = Voiture::FindOrFail(1);
+        $response = $this->post('api/ModifierVoiture/' . $voituretr->id, $voiture);
+        $response->assertStatus(200);
+    }
+    public function testListerVoiture(): void
+    {
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'apiut');
+        $response = $this->get('api/listvoiture');
+        $response->assertStatus(200);
+    }
+    public function testSupprimerVoiture(): void
+    {
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'apiut');
+        $voituretr = Voiture::FindOrFail(1);
+        $response = $this->delete('api/deletezone/'.$voituretr->id);
+        $response->assertStatus(200);
+    }
 }

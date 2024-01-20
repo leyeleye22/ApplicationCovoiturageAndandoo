@@ -16,7 +16,7 @@ class ZoneTest extends TestCase
     public function testInsererZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leye@gmail.com',
+            'email' => 'leyezone@gmail.com',
             'password' => bcrypt('leye22@22'),
         ]);
         $this->actingAs($user, 'api');
@@ -28,7 +28,7 @@ class ZoneTest extends TestCase
     public function testModifierZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leyeadmin@gmail.com',
+            'email' => 'leyeadminzonee@gmail.com',
             'password' => bcrypt('leye22@22'),
         ]);
         $this->actingAs($user, 'api');
@@ -37,7 +37,7 @@ class ZoneTest extends TestCase
             'NomZ' => 'Pikine Thies',
             'user_id' => auth()->user()->id
         ];
-        $zoneTr = Zones::FindOrFail(1);
+        $zoneTr = Zones::FindOrFail(2);
         $response = $this->post('api/updatezone/' . $zoneTr->id, $zone);
         $response->assertStatus(200);
     }

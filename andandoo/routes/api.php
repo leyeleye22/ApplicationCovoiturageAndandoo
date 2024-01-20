@@ -21,6 +21,8 @@ use App\Http\Controllers\VoitureController;
 |
 */
 
+Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
+Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'loginuser']);
 Route::post('/registeredadmin', [AuthController::class, 'RegisterAdmin']);
@@ -62,7 +64,6 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 
     //Activer/desactiver Reservation
-    Route::get('/ActiverReservation', [UtilisateurController::class, 'active']);
-    Route::get('/DesactiverReservation', [UtilisateurController::class, 'inactive']); //verbe put marche pas
-
+    Route::post('/ActiverReservation', [UtilisateurController::class, 'active']);
+    Route::post('/DesactiverReservation', [UtilisateurController::class, 'inactive']); //verbe put marche pas
 });

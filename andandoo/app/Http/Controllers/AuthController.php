@@ -57,12 +57,34 @@ class AuthController extends Controller
 
     public function loginuser(LoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
-        if (!$token = Auth::guard('apiut')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        try {
+            $credentials = $request->only(['email', 'password']);
+            $user = User::where('email', $credentials['email'])->first();
+    
+            if ($user && $user->TemporaryBlock) {
+                $response = ['error' => 'Account temporarily blocked'];
+                $statusCode = 403;
+            } elseif ($user && $user->PermanentBlock) {
+                $response = ['error' => 'Account permanently blocked'];
+                $statusCode = 403;
+            } elseif (!$token = Auth::guard('apiut')->attempt($credentials)) {
+                throw new \Exception('Unauthorized');
+            } else {
+                $utilisateur = auth()->guard('apiut')->user();
+                $response = $this->respondWithTokens($token, $utilisateur);
+                $statusCode = 200;
+            }
+        } catch (\Exception $e) {
+            if ($e instanceof ValidationException) {
+                $response = ['error' => $e->errors()];
+                $statusCode = 422;
+            } else {
+                $response = ['error' => $e->getMessage()];
+                $statusCode = 401;
+            }
         }
-        $utilisateur = auth()->guard('apiut')->user();
-        return $this->respondWithTokens($token, $utilisateur);
+    
+        return response()->json($response, $statusCode);
     }
 
     public function RegisterAdmin(RegisterAdminRequest $request)
@@ -164,5 +186,32 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('apiut')->manager()->getTTL() * 60
         ]);
+    }
+    public function blockTemporarilyUser(Utilisateur $user)
+    {
+        try {
+            if ($user->PermanentBlock) {
+                return response()->json(['error' => 'User is already permanently blocked'], 400);
+            }
+            $user->TemporaryBlock = true;
+            $user->save();
+
+            return response()->json(['message' => 'User blocked temporarily successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function blockPermanentlyUser(Utilisateur $user)
+    {
+        try {
+            $user->PermanentBlock = true;
+            $user->TemporaryBlock = false;
+            $user->save();
+
+            return response()->json(['message' => 'User blocked permanently successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
