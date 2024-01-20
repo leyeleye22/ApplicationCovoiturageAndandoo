@@ -21,7 +21,7 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'loginuser', 'RegisterAdmin']]);
     }
-   
+
     public function register(RegisterRequest $request)
     {
         $response = [
@@ -60,7 +60,7 @@ class AuthController extends Controller
         try {
             $credentials = $request->only(['email', 'password']);
             $user = User::where('email', $credentials['email'])->first();
-    
+
             if ($user && $user->TemporaryBlock) {
                 $response = ['error' => 'Account temporarily blocked'];
                 $statusCode = 403;
@@ -83,7 +83,7 @@ class AuthController extends Controller
                 $statusCode = 401;
             }
         }
-    
+
         return response()->json($response, $statusCode);
     }
 
@@ -213,5 +213,27 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+    public function unblockUser(Utilisateur $user)
+    {
+        $response = [];
+
+        try {
+            if ($user->TemporaryBlock) {
+                if ($user->PermanentBlock) {
+                    $response = ['error' => 'User cannot be unblocked permanently'];
+                } else {
+                    $user->TemporaryBlock = false;
+                    $user->save();
+                    $response = ['message' => 'User unblocked successfully'];
+                }
+            } else {
+                $response = ['error' => 'User cannot be unblocked'];
+            }
+        } catch (\Exception $e) {
+            $response = ['error' => $e->getMessage()];
+        }
+
+        return response()->json($response, $response['error'] ? 500 : 200);
     }
 }

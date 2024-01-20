@@ -39,4 +39,13 @@ class AuthenticationTest extends TestCase
         $response = $this->post('api/loginadmin', $credentials);
         $response->assertStatus(200);
     }
+    public function testBloquerTemporairementUtilisateur(): void
+    {
+    }
+    public function testBloquerDefinitivementUtilisateur(): void
+    {
+    }
+    public function testDebloquerUtilisateur(): void
+    {
+    }
 }
