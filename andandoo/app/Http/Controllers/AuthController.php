@@ -264,12 +264,9 @@ class AuthController extends Controller
             $response = ['error' => $e->getMessage()];
         }
 
-        return response()->json($response, $response['error'] ? 200 : 200);
+        return response()->json($response, $response['error'] ? 500 : 200);
     }
-    public function generateVerificationCode()
-    {
-        return mt_rand(100000, 999999);
-    }
+ 
     public function VerifMail(Request $req)
     {
         try {

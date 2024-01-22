@@ -16,9 +16,8 @@ class UtilisateurController extends Controller
     public function index()
     {
         try {
-            $user = Auth::guard('apiut')->user();
-            $voiture_id = $user->voiture->id;
-            $reservation = Reservation::where('voiture_id', $voiture_id)->get();
+            $user = Auth::guard('apiut')->user()->id;
+            $reservation = Reservation::where('utilisateur_id', $user)->get();
             if ($reservation) {
                 return response()->json([
                     'success' => true,

@@ -63,6 +63,7 @@ class RegisterRequest extends FormRequest
             'Telephone.required' => 'Le champ téléphone est obligatoire.',
             'Telephone.string' => 'Le téléphone doit être une chaîne de caractères.',
             'Telephone.min' => 'Le téléphone doit comporter au moins 10 caractères.',
+            'Telephone.regex' => 'Le téléphone doit commencer 70/77/78/76 suivis de 7 caractere',
             'Telephone.max' => 'Le téléphone ne peut pas dépasser 15 caractères.',
             'ImageProfile.required' => 'Le champ image de profil est obligatoire.',
             'ImageProfile.image' => 'L\'image de profil doit être une image.',
