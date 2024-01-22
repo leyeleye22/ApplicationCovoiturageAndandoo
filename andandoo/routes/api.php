@@ -23,6 +23,8 @@ use App\Http\Controllers\VoitureController;
 
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
+Route::post('/VerifMail', [AuthController::class, 'VerifMail']);
+Route::get('/test', [AuthController::class, 'test']);
 Route::post('/Debloquert/{user}', [AuthController::class, 'unblockUser']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'loginuser']);

@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\User;
+use App\Mail\ResetPassword;
 use App\Models\Utilisateur;
+use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Session;
 use App\Http\Requests\LoginAdminRequest;
+use Illuminate\Support\Facades\Password;
+use App\Exceptions\RegistrationException;
 use App\Http\Requests\RegisterAdminRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +26,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'loginuser', 'RegisterAdmin']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register',
+        'loginuser', 'RegisterAdmin', 'VerifMail', 'test']]);
     }
 
     public function register(RegisterRequest $request)
@@ -156,11 +164,33 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refreshToken(), Auth::user());
+        try {
+            return response()->json([
+                'status' => 'refresh',
+                'user' => Auth::user(),
+                'Authorization' => [
+                    'token' => Auth::token(),
+                    'type' => 'bearer'
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(["Error" => "Invalid authorization Token"]);
+        }
     }
     public function Torefresh()
     {
-        return $this->respondWithTokens(auth('apiut')->refreshToken(), Auth::guard('apiut')->user());
+        try {
+            return response()->json([
+                'status' => 'refresh',
+                'user' => Auth::guard('apiut')->user(),
+                'Authorization' => [
+                    'token' => Auth::guard('apiut'),
+                    'type' => 'bearer'
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(["Error" => "Invalid authorization Token"]);
+        }
     }
     /**
      * Get the token array structure.
@@ -175,7 +205,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'utilisateur' => $user,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => 3600
         ]);
     }
     protected function respondWithTokens($token, $utilisateur)
@@ -184,7 +214,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'utilisateur' => $utilisateur,
             'token_type' => 'bearer',
-            'expires_in' => auth('apiut')->manager()->getTTL() * 60
+            'expires_in' => 3600
         ]);
     }
     public function blockTemporarilyUser(Utilisateur $user)
@@ -234,6 +264,44 @@ class AuthController extends Controller
             $response = ['error' => $e->getMessage()];
         }
 
-        return response()->json($response, $response['error'] ? 500 : 200);
+        return response()->json($response, $response['error'] ? 200 : 200);
+    }
+    public function generateVerificationCode()
+    {
+        return mt_rand(100000, 999999);
+    }
+    public function VerifMail(Request $req)
+    {
+        try {
+            $email = $req->only('email');
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $codeverif = mt_rand(100000, 999999);
+                Mail::to($email)->send(new ResetPassword($codeverif));
+                Session::put('codeverif', $codeverif);
+                return response()->json([
+                    'Status' => 'Succés',
+                    'Message' => 'Mail envoyé avec succés'
+                ]);
+            } else {
+                return response()->json([
+                    'Status code' => 'error',
+                    'Message' => 'Utilisateur non trouvé'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'Status code' => 'error',
+                'Message' => $e->getMessage()
+            ]);
+        }
+    }
+    public function test()
+    {
+        dd(Session::all());
+        return response()->json([
+            'Status' => 'Succés',
+            'Message' => Session::get('codeverif')
+        ]);
     }
 }

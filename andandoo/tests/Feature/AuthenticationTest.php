@@ -41,11 +41,26 @@ class AuthenticationTest extends TestCase
     }
     public function testBloquerTemporairementUtilisateur(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+        $user_id=5;
+        $response = $this->post('api/BlockerTemporairement/'.$user_id);
+        $response->assertStatus(200);
     }
     public function testBloquerDefinitivementUtilisateur(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+        $user_id=6;
+        $response = $this->post('api/BlockerDefinitivement/'.$user_id);
+        $response->assertStatus(200);
     }
     public function testDebloquerUtilisateur(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+        $user_id=5;
+        $response = $this->post('api/Debloquert/'.$user_id);
+        $response->assertStatus(200);
     }
 }
