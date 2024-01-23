@@ -18,6 +18,7 @@ use App\Http\Requests\LoginAdminRequest;
 use Illuminate\Support\Facades\Password;
 use App\Exceptions\RegistrationException;
 use App\Http\Requests\RegisterAdminRequest;
+use App\Notifications\SmsValidationAuthentification;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,26 +39,27 @@ class AuthController extends Controller
             'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
         ];
 
-        try {
+        // try {
             $validatedData = $request->validated();
             $utilisateur = new Utilisateur();
             $utilisateur->fill($validatedData);
             $user = Hash::make($utilisateur->password);
             $utilisateur->password = $user;
-
+            $utilisateur->notify(new SmsValidationAuthentification());
             if ($utilisateur->save()) {
+                
                 $response['message'] = 'User registered successfully';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_CREATED;
             }
-        } catch (ValidationException $e) {
-            $response['error'] = $e->validator->errors();
-            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        } catch (QueryException $e) {
-            $response['error'] = 'Failed to register user. Database error.';
-        } catch (\Exception $e) {
-            $response['error'] = 'Failed to register user. Unexpected error.';
-        }
+        // } catch (ValidationException $e) {
+        //     $response['error'] = $e->validator->errors();
+        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        // } catch (QueryException $e) {
+        //     $response['error'] = 'Failed to register user. Database error.';
+        // } catch (\Exception $e) {
+        //     $response['error'] = 'Failed to register user. Unexpected error.';
+        // }
 
         return response()->json($response, $response['statusCode']);
     }
@@ -269,36 +271,38 @@ class AuthController extends Controller
  
     public function VerifMail(Request $req)
     {
+        session_start(); // Ajoutez cette ligne
         try {
             $email = $req->only('email');
-            $user = User::where('email', $email)->first();
-            if ($user) {
+            $utilisateur = User::where('email', $email)->first();
+            if ($utilisateur) {
                 $codeverif = mt_rand(100000, 999999);
                 Mail::to($email)->send(new ResetPassword($codeverif));
-                Session::put('codeverif', $codeverif);
+                $_SESSION['codeverif']=$codeverif;
                 return response()->json([
-                    'Status' => 'Succés',
-                    'Message' => 'Mail envoyé avec succés'
+                    'Statut' => 'Succès',
+                    'Message' => 'Mail envoyé avec succès'
                 ]);
             } else {
                 return response()->json([
-                    'Status code' => 'error',
+                    'Code de statut' => 'erreur',
                     'Message' => 'Utilisateur non trouvé'
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'Status code' => 'error',
+                'Code de statut' => 'erreur',
                 'Message' => $e->getMessage()
             ]);
         }
     }
     public function test()
     {
-        dd(Session::all());
+        session_start();
         return response()->json([
-            'Status' => 'Succés',
-            'Message' => Session::get('codeverif')
+            'Statut' => 'Succès',
+            'Message' => $_SESSION['codeverif']
         ]);
     }
+    
 }

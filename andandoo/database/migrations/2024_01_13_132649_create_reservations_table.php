@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('NombrePlaces');
             $table->boolean('Accepted')->default(false);
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('voiture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('trajet_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

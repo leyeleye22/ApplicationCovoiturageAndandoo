@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Voiture;
+use App\Models\Trajet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +22,7 @@ class ReservationFactory extends Factory
     
         return [
             'NombrePlaces' => $faker->numberBetween(1, 10),
-            'voiture_id' => Voiture::factory()->create()->id,
+            'trajet' => Trajet::factory()->create()->id,
             'utilisateur_id' => Auth::guard('apiut')->user()->id
         ];
     }
