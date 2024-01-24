@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AvisController;
 use App\Http\Controllers\ZonesController;
 use App\Http\Controllers\TrajetController;
 use App\Http\Controllers\MessageController;
@@ -21,16 +22,15 @@ use App\Http\Controllers\ForgetPasswordController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::post('forget-password', [ForgetPasswordController::class, 'submitForgetPasswordForm'])
-->name('forget.password.post');
+    ->name('forget.password.post');
 Route::get('reset-password/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])
-->name('reset.password.get');
+    ->name('reset.password.get');
 Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
-->name('reset.password.post');
+    ->name('reset.password.post');
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
-Route::post('/VerifMail', [AuthController::class, 'VerifMail']);
-Route::post('/test', [AuthController::class, 'test']);
 Route::post('/Debloquert/{user}', [AuthController::class, 'unblockUser']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'loginuser']);
@@ -50,6 +50,8 @@ Route::middleware('auth:apiut,client:client')->group(function () {
     Route::post('/CreateReservation', [ReservationController::class, 'store']);
     Route::post('/UpdateReservation/{reservation}', [ReservationController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteReservation/{reservation}', [ReservationController::class, 'destroy']);
+    Route::post('Donner/avis', [AvisController::class, 'create']);
+    Route::post('Modifier/avis/{avis}', [AvisController::class, 'update']);
 });
 
 //Trajet

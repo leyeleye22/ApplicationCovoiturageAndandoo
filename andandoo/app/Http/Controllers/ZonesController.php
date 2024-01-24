@@ -22,9 +22,9 @@ class ZonesController extends Controller
         try {
             $validatedData = $request->validated();
             $zones = new Zones();
-            $user = auth()->user()->id;
+       
             $zones->NomZ = $validatedData['nom'];
-            $zones->user_id = $user;
+            $zones->user_id = auth()->user()->id;
             $zones->save();
 
             return response()->json(['message' => 'Zone created successfully'], Response::HTTP_CREATED);

@@ -266,41 +266,5 @@ class AuthController extends Controller
 
         return response()->json($response, $response['error'] ? 500 : 200);
     }
- 
-    public function VerifMail(Request $req)
-    {
-        session_start(); // Ajoutez cette ligne
-        try {
-            $email = $req->only('email');
-            $utilisateur = User::where('email', $email)->first();
-            if ($utilisateur) {
-                $codeverif = mt_rand(100000, 999999);
-                Mail::to($email)->send(new ResetPassword($codeverif));
-                $_SESSION['codeverif']=$codeverif;
-                return response()->json([
-                    'Statut' => 'Succès',
-                    'Message' => 'Mail envoyé avec succès'
-                ]);
-            } else {
-                return response()->json([
-                    'Code de statut' => 'erreur',
-                    'Message' => 'Utilisateur non trouvé'
-                ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'Code de statut' => 'erreur',
-                'Message' => $e->getMessage()
-            ]);
-        }
-    }
-    public function test()
-    {
-        session_start();
-        return response()->json([
-            'Statut' => 'Succès',
-            'Message' => $_SESSION['codeverif']
-        ]);
-    }
     
 }
