@@ -27,8 +27,10 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register',
-        'loginuser', 'RegisterAdmin', 'VerifMail', 'test']]);
+        $this->middleware('auth:api', ['except' => [
+            'login', 'register',
+            'loginuser', 'RegisterAdmin', 'VerifMail', 'test'
+        ]]);
     }
 
     public function register(RegisterRequest $request)
@@ -39,25 +41,26 @@ class AuthController extends Controller
             'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
         ];
 
-        try {
-            $validatedData = $request->validated();
-            $utilisateur = new Utilisateur();
-            $utilisateur->fill($validatedData);
-            $user = Hash::make($utilisateur->password);
-            $utilisateur->password = $user;
-            if ($utilisateur->save()) {
-                $response['message'] = 'User registered successfully';
-                $response['user'] = $utilisateur;
-                $response['statusCode'] = Response::HTTP_CREATED;
-            }
-        } catch (ValidationException $e) {
-            $response['error'] = $e->validator->errors();
-            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        } catch (QueryException $e) {
-            $response['error'] = 'Failed to register user. Database error.';
-        } catch (\Exception $e) {
-            $response['error'] = 'Failed to register user. Unexpected error.';
+        // try {
+        $validatedData = $request->validated();
+        $utilisateur = new Utilisateur();
+        $utilisateur->fill($validatedData);
+        $user = Hash::make($utilisateur->password);
+        $utilisateur->password = $user;
+        $utilisateur->Licence = $request->Licence;
+        if ($utilisateur->save()) {
+            $response['message'] = 'User registered successfully';
+            $response['user'] = $utilisateur;
+            $response['statusCode'] = Response::HTTP_CREATED;
         }
+        // } catch (ValidationException $e) {
+        //     $response['error'] = $e->validator->errors();
+        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        // } catch (QueryException $e) {
+        //     $response['error'] = 'Failed to register user. Database error.';
+        // } catch (\Exception $e) {
+        //     $response['error'] = 'Failed to register user. Unexpected error.';
+        // }
 
         return response()->json($response, $response['statusCode']);
     }
@@ -266,5 +269,4 @@ class AuthController extends Controller
 
         return response()->json($response, $response['error'] ? 500 : 200);
     }
-    
 }
