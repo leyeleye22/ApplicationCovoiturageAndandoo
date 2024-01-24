@@ -146,7 +146,11 @@ class TrajetController extends Controller
         $message = '';
         $statusCode = 500;
         try {
-            if ($trajet->delete()) {
+            if($trajet->voiture_id!=Auth::guard('apiut')->user()->voiture->id){
+                $success = false;
+                $message = 'UnAuthorized';
+                $statusCode = 403;
+            }elseif ($trajet->delete()) {
                 $success = true;
                 $message = 'Trajet supprimé avec succès.';
                 $statusCode = 200;
