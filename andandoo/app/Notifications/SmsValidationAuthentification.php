@@ -33,7 +33,7 @@ class SmsValidationAuthentification extends Notification
     {
         return (new VonageMessage)
                     ->content('Code de VAlidation')
-                    ->from('+221781132618');
+                    ->from('221781132618');
                     
     }
   

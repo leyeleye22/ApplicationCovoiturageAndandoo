@@ -4,11 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ZonesController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TrajetController;
-use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VoitureController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\ForgetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,12 @@ use App\Http\Controllers\VoitureController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+Route::post('forget-password', [ForgetPasswordController::class, 'submitForgetPasswordForm'])
+->name('forget.password.post');
+Route::get('reset-password/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])
+->name('reset.password.get');
+Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
+->name('reset.password.post');
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
 Route::post('/VerifMail', [AuthController::class, 'VerifMail']);

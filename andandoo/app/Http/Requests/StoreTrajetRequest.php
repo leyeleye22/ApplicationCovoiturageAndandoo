@@ -24,13 +24,15 @@ class StoreTrajetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'LieuDepart' => 'required|string',
-            'LieuArrivee' => 'required|string',
-            'DateDepart' => 'required|date',
-            'HeureD' => 'required',
-            'Prix' => 'required',
+            'LieuDepart' => 'required|string|max:255',
+            'LieuArrivee' => 'required|string|max:255',
+            'DateDepart' => 'required|date|after_or_equal:today',
+            'HeureD' => 'required|date_format:H:i',
+            'Prix' => 'required|numeric|min:0',
+            'DescriptionTrajet' => 'nullable|string',
         ];
     }
+
     public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -41,16 +43,25 @@ class StoreTrajetRequest extends FormRequest
             'errorList' => $validator->errors()
         ]));
     }
-    public function messages(){
+    public function messages()
+    {
         return [
-            'LieuDepart.required'=>'le lieu de depart est obligatoire',
-            'LieuDepart.string'=>'le lieu de depart est doit être une chaîne de caractére',
-            'LieuArrivee.required'=>'le lieu d\'arrivee est obligatoire',
-            'LieuArrivee.string'=>'le lieu d\' est doit être une chaîne de caractére',
-            'DateDepart.required'=>'la date de depart est obligatoire',
-            'DateDepart.date'=>'la date de depart doit être une date valide',
-            'HeureD.required'=>'L\'heure de depart est obligatoire',
-            'Prix.required'=>'le prix du trajet est obligatoire',
+            'LieuDepart.required' => 'Le lieu de départ est obligatoire.',
+            'LieuDepart.string' => 'Le lieu de départ doit être une chaîne de caractères.',
+            'LieuDepart.max' => 'Le lieu de départ ne doit pas dépasser 255 caractères.',
+            'LieuArrivee.required' => 'Le lieu d\'arrivée est obligatoire.',
+            'LieuArrivee.string' => 'Le lieu d\'arrivée doit être une chaîne de caractères.',
+            'LieuArrivee.max' => 'Le lieu d\'arrivée ne doit pas dépasser 255 caractères.',
+            'DateDepart.required' => 'La date de départ est obligatoire.',
+            'DateDepart.date' => 'La date de départ doit être une date valide.',
+            'DateDepart.after_or_equal' => 'La date de départ doit être aujourd\'hui ou dans le futur.',
+            'HeureD.required' => 'L\'heure de départ est obligatoire.',
+            'HeureD.date_format' => 'L\'heure de départ doit être au format H:i(12:30).',
+            'Prix.required' => 'Le prix du trajet est obligatoire.',
+            'Prix.numeric' => 'Le prix du trajet doit être un nombre.',
+            'Prix.min' => 'Le prix du trajet ne peut pas être négatif.',
+            'DescriptionTrajet.string' => 'La description du trajet doit être une chaîne de caractères.',
+
         ];
     }
 }

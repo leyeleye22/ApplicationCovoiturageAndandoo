@@ -39,27 +39,25 @@ class AuthController extends Controller
             'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
         ];
 
-        // try {
+        try {
             $validatedData = $request->validated();
             $utilisateur = new Utilisateur();
             $utilisateur->fill($validatedData);
             $user = Hash::make($utilisateur->password);
             $utilisateur->password = $user;
-            $utilisateur->notify(new SmsValidationAuthentification());
             if ($utilisateur->save()) {
-                
                 $response['message'] = 'User registered successfully';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_CREATED;
             }
-        // } catch (ValidationException $e) {
-        //     $response['error'] = $e->validator->errors();
-        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        // } catch (QueryException $e) {
-        //     $response['error'] = 'Failed to register user. Database error.';
-        // } catch (\Exception $e) {
-        //     $response['error'] = 'Failed to register user. Unexpected error.';
-        // }
+        } catch (ValidationException $e) {
+            $response['error'] = $e->validator->errors();
+            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        } catch (QueryException $e) {
+            $response['error'] = 'Failed to register user. Database error.';
+        } catch (\Exception $e) {
+            $response['error'] = 'Failed to register user. Unexpected error.';
+        }
 
         return response()->json($response, $response['statusCode']);
     }

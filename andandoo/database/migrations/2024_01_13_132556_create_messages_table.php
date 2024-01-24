@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->string('NomComplet');
-            $table->string('Cmail');
+            $table->string('Email');
             $table->string('Contenue');
             $table->timestamps();
         });

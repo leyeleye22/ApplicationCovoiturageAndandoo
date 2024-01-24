@@ -18,7 +18,8 @@ return new class extends Migration
             $table->date('DateDepart');
             $table->time('HeureD');
             $table->float('Prix');
-            $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('DescriptionTrajet');
+            $table->foreignId('voiture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

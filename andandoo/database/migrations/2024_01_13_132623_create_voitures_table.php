@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('ImageVoitures');
             $table->text('Descriptions');
-            $table->integer('NbrPlaces');
+            $table->unsignedBigInteger('NbrPlaces');
             $table->boolean('disponible')->default(true);
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

@@ -23,19 +23,22 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
-
+        $var = ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'];
+        
         return [
             'Nom' => 'required|string|min:2|max:255',
             'Prenom' => 'required|string|max:255',
             'Email' => 'required|string|email|max:255|unique:utilisateurs',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
-            'ImageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'PermisConduire' => 'required|string|max:255',
+            'ImageProfile' => $var,
+            'PermisConduire' => $var,
+            'Licence' => $var,
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',
             'password' => 'required|string|min:8',
         ];
     }
+    
     public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -69,9 +72,15 @@ class RegisterRequest extends FormRequest
             'ImageProfile.image' => 'L\'image de profil doit être une image.',
             'ImageProfile.mimes' => 'L\'image de profil doit être au format: jpeg, png, jpg, gif, svg.',
             'ImageProfile.max' => 'La taille de l\'image de profil ne peut pas dépasser 2048 kilo-octets.',
-            'PermisConduire.required' => 'Le champ permis de conduire est obligatoire.',
-            'PermisConduire.string' => 'Le permis de conduire doit être une chaîne de caractères.',
-            'PermisConduire.max' => 'Le permis de conduire ne peut pas dépasser 255 caractères.',
+            'PermisConduire.required' => 'Le champ permis de conduire de profil est obligatoire.',
+            'PermisConduire.image' => 'Le permis de conduire doit être uploader sous forme image ',
+            'PermisConduire.mimes' => 'L\'image du permis de conduire doit être au format: jpeg, png, jpg, gif, svg.',
+            'PermisConduire.max' => 'La taille de l\'image du permis de conduire ne
+             peut pas dépasser 2048 kilo-octets.',
+            'Licence.required' => 'La licence est obligatoire',
+            'Licence.image' => 'La licence doit être une image.',
+            'Licence.mimes' => 'La licence doit être au format: jpeg, png, jpg, gif, svg.',
+            'Licence.max' => 'La taille de l\'image de la licence ne peut pas dépasser 2048 kilo-octets.',
             'role.required' => 'Le champ rôle est obligatoire.',
             'role.in' => 'Le rôle doit être soit client, soit chauffeur.',
             'zone_id.required' => 'Le champ zone_id est obligatoire.',

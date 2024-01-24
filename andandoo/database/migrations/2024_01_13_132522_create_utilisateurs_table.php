@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('Telephone');
             $table->string('ImageProfile');
             $table->string('PermisConduire');
+            $table->string('Licence');
             $table->enum('role', ['chauffeur', 'client']);
             $table->foreignId('zone_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->boolean('TemporaryBlock')->default(false);
