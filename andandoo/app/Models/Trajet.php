@@ -16,9 +16,9 @@ class Trajet extends Model
         'Prix',
         'utilisateur_id'
     ];
-    public function utilisateur()
+    public function voiture()
     {
-        return $this->belongsTo(Utilisateur::class);
+        return $this->belongsTo(Voiture::class);
     }
     public function reservations()
     {

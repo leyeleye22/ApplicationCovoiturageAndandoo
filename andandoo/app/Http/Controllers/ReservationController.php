@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
+use App\Models\Trajet;
 
 class ReservationController extends Controller
 {
@@ -40,13 +41,6 @@ class ReservationController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -59,41 +53,56 @@ class ReservationController extends Controller
             'data' => null,
             'statusCode' => 500,
         ];
-
+    
         try {
             $validatedData = $request->validated();
-            $voiture = Voiture::where('id', $validatedData["voiture_id"])->first();
-
-            if ($voiture->disponible) {
-                $reservation = new  Reservation();
-                $reservation->fill($validatedData);
-                $reservation->voiture_id = $validatedData["voiture_id"];
-                $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
-
+            $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
+    
+            if (!$trajet->voiture->disponible) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Réservation indisponible : la voiture n\'est pas disponible',
+                    'statusCode' => 400,
+                ];
+            } elseif ($validatedData['NombrePlaces'] > $trajet->voiture->NbrPlaces) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Impossible de réserver plus de places que celles disponibles dans la voiture',
+                    'statusCode' => 419,
+                ];
+            } elseif ($trajet->reservations()->where('utilisateur_id', $request->user()->id)->exists()) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Vous avez déjà une réservation sur ce trajet.',
+                    'statusCode' => 400,
+                ];
+            } else {
+                $reservation = new Reservation($validatedData);
+                $reservation->trajet()->associate($trajet);
+                $reservation->utilisateur()->associate($request->user());
+    
                 if ($reservation->save()) {
                     $response = [
                         'success' => true,
                         'message' => 'Votre réservation est en cours de validation',
-                        'date' => $reservation,
+                        'data' => $reservation,
                         'statusCode' => 200,
                     ];
                 } else {
                     $response['message'] = 'Échec de la réservation';
                 }
-            } else {
-                $response = [
-                    'success' => false,
-                    'message' => 'Réservation indisponible',
-                    'statusCode' => 400,
-                ];
             }
         } catch (\Exception $e) {
             $response['message'] = 'Une erreur s\'est produite lors de l\'enregistrement de votre réservation.';
             $response['error'] = $e->getMessage();
         }
-
+    
         return response()->json($response, $response['statusCode']);
     }
+    
+    
+    
+    
 
 
     /**

@@ -52,6 +52,7 @@ class TrajetController extends Controller
             $id = Auth::guard('apiut')->user()->voiture->id;
             $trajet->fill($validatedData);
             $trajet->voiture_id = $id;
+            $trajet->DescriptionTrajet=$request->DescriptionTrajet;
             if ($trajet->save()) {
                 return response()->json([
                     'success' => true,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReservationAccepted;
 use App\Models\Reservation;
 use App\Models\Utilisateur;
 use Illuminate\Support\Facades\Auth;
@@ -47,9 +48,9 @@ class UtilisateurController extends Controller
     {
         try {
             $user = Auth::guard('apiut')->user();
-            $voiture= $user->voiture;
+            $voiture = $user->voiture;
             if ($voiture) {
-                $voiture->disponible=true;
+                $voiture->disponible = true;
                 $voiture->update();
                 return response()->json([
                     'success' => true,
@@ -75,9 +76,9 @@ class UtilisateurController extends Controller
     {
         try {
             $user = Auth::guard('apiut')->user();
-            $voiture= $user->voiture;
+            $voiture = $user->voiture;
             if ($voiture) {
-                $voiture->disponible=true;
+                $voiture->disponible = true;
                 $voiture->update();
                 return response()->json([
                     'success' => false,
@@ -100,7 +101,7 @@ class UtilisateurController extends Controller
         }
     }
 
-  
+
 
     /**
      * Display the specified resource.
@@ -137,9 +138,10 @@ class UtilisateurController extends Controller
     public function update(Reservation $reservation)
     {
         try {
-            if (!$reservation->Accepted) {
+            if ($reservation->trajet->voiture->disponible) {
                 $reservation->Accepted = true;
                 $reservation->update();
+                event(new ReservationAccepted($reservation));
                 return response()->json([
                     'success' => true,
                     'message' => 'Reservation ont ete  modifier avec succes.',
@@ -149,7 +151,7 @@ class UtilisateurController extends Controller
                 // La sauvegarde a échoué
                 return response()->json([
                     'success' => false,
-                    'message' => 'Échec du modification du reservation',
+                    'message' => 'Impossible d\'accepter un reservation votre voiture est pleine',
                 ], 500);
             }
         } catch (\Exception $e) {
@@ -171,7 +173,7 @@ class UtilisateurController extends Controller
                 $reservation->delete();
                 return response()->json([
                     'success' => true,
-                    'message' => 'Reservation ont ete  supprimer avec succes.',
+                    'message' => 'Reservation a ete  supprimer avec succes.',
                     'date' => $reservation
                 ]);
             } else {

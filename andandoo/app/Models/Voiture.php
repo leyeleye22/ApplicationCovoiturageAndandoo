@@ -17,4 +17,8 @@ class Voiture extends Model
     {
         return $this->belongsTo(Utilisateur::class);
     }
+    public function trajet()
+    {
+        return $this->hasMany(Trajet::class);
+    }
 }
