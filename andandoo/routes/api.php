@@ -42,8 +42,7 @@ Route::post('/createzone', [ZonesController::class, 'create']);
 Route::post('/updatezone/{zones}', [ZonesController::class, 'update']);
 Route::get('/listzone', [ZonesController::class, 'show']);
 Route::delete('/deletezone/{zones}', [ZonesController::class, 'delete']);
-// Messages Admin
-Route::get('/listMessage', [MessageController::class, 'show']);
+
 //Reservation
 Route::middleware('auth:apiut,client:client')->group(function () {
     Route::get('/ListReservation', [ReservationController::class, 'index']);
@@ -75,13 +74,23 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
     Route::post('/AccepterReservation/{reservation}', [UtilisateurController::class, 'update']); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
-
 });
-Route::middleware('auth:api')->group(function(){
+Route::middleware('auth:api')->group(function () {
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
     Route::get('/listerClient', [UtilisateurController::class, 'showClient']);
     Route::get('/listerVoiture/Disponible', [VoitureController::class, 'showVoitureD']);
     Route::get('/listerVoiture/Indisponible', [VoitureController::class, 'showVoitureInd']);
     Route::get('/listerVoitures', [VoitureController::class, 'showVoiture']);
+});
+
+// Messages Admin
+Route::get('/listMessage', [MessageController::class, 'show']);
+Route::post('/envoyer', [MessageController::class, 'send']);
+Route::get('/repondre/Message', [MessageController::class, 'response']);
+Route::middleware('auth:apiut,client:chauffeur')->group(function () {
+    Route::post('/logout/chauffeur', [UtilisateurController::class, 'logoutChauffeur']);
+});
+Route::middleware('auth:apiut,client:client')->group(function () {
+    Route::post('/logout/client', [UtilisateurController::class, 'logoutClient']);
 });
 

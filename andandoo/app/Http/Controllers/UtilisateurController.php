@@ -164,4 +164,15 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
+    public function logoutChauffeur(){
+        auth()->guard('apiut')->logout();
+
+        return response()->json(['message' => 'Successfully logged out chauffeur']);
+    }
+    
+    public function logoutClient(){
+        auth()->guard('apiut')->logout();
+
+        return response()->json(['message' => 'Successfully logged out client']);
+    }
 }

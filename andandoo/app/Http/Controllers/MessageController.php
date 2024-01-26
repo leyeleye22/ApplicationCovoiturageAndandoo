@@ -12,15 +12,17 @@ class MessageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api',['except' => ['send']]);
     }
 
     public function show()
     {
         try {
-            $messages = new Message();
+            $messages =Message::all();
             return response()->json(
-                ['data' => $messages],
+                [   'messages' => 'Success',
+                    'StatusCode'=>200,
+                    'data' => $messages],
                 Response::HTTP_OK
             );
         } catch (\Exception $e) {
@@ -29,5 +31,17 @@ class MessageController extends Controller
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+    public function send(StoreMessageRequest $request){
+        $validatedData = $request->validated();
+            $message = new Message();
+            $message->fill($validatedData);
+            if($message->save()){
+                return response()->json([
+                    'message' => 'success',
+                    'SatusCode' => 200,
+                    'Data' => $message
+                ]);
+            }
     }
 }
