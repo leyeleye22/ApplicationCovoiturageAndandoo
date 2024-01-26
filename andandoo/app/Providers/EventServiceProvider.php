@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\ActivationReservation;
+use App\Events\DesactivationReservation;
 use App\Events\ReservationAccepted;
+use App\Listeners\HandleActivationReservation;
+use App\Listeners\HandleDesactivationReservation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\HandleReservationAccepted;
@@ -23,9 +27,13 @@ class EventServiceProvider extends ServiceProvider
         ReservationAccepted::class=>[
             HandleReservationAccepted::class
         ],
-        'App\Events\ReservationAccepted' => [
-            'App\Listeners\HandleReservationAccepted',
+        DesactivationReservation::class=>[
+            HandleDesactivationReservation::class
         ],
+        ActivationReservation::class=>[
+            HandleActivationReservation::class
+        ],
+   
     ];
 
     /**

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Trajet;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
+use App\Events\ActivationReservation;
 use App\Http\Requests\StoreTrajetRequest;
 use App\Http\Requests\UpdateTrajetRequest;
 
@@ -54,6 +56,7 @@ class TrajetController extends Controller
             $trajet->voiture_id = $id;
             $trajet->DescriptionTrajet=$request->DescriptionTrajet;
             if ($trajet->save()) {
+                event(new ActivationReservation($trajet));
                 return response()->json([
                     'success' => true,
                     'message' => 'Trajet enregistré avec succès.',
@@ -116,7 +119,7 @@ public function update(UpdateTrajetRequest $request, Trajet $trajet)
     try {
         $validatedData = $request->validated();
         if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
-            throw new \Exception('Vous n\'êtes pas autorisé à modifier ce trajet.');
+            throw new Exception('Vous n\'êtes pas autorisé à modifier ce trajet.');
         }
 
         if ($trajet->update($validatedData)) {
@@ -146,7 +149,7 @@ public function destroy(Trajet $trajet)
 
     try {
         if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
-            throw new \Exception('Vous n\'êtes pas autorisé à supprimer ce trajet.');
+            throw new Exception('Vous n\'êtes pas autorisé à supprimer ce trajet.');
         }
 
         if ($trajet->delete()) {

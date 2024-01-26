@@ -41,67 +41,6 @@ class UtilisateurController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function active()
-    {
-        try {
-            $user = Auth::guard('apiut')->user();
-            $voiture = $user->voiture;
-            if ($voiture) {
-                $voiture->disponible = true;
-                $voiture->update();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Reservation Ouvert ',
-                    'date' => $voiture
-                ]);
-            } else {
-                // La sauvegarde a échoué
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Echec d\'ouverture',
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Echec d\'ouverture des reservations',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-    public function inactive()
-    {
-        try {
-            $user = Auth::guard('apiut')->user();
-            $voiture = $user->voiture;
-            if ($voiture) {
-                $voiture->disponible = true;
-                $voiture->update();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Reservation fermé ',
-                    'date' => $voiture
-                ]);
-            } else {
-                // La sauvegarde a échoué
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Echec de fermeture',
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Echec du fermeture des reservations',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-
 
     /**
      * Display the specified resource.

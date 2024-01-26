@@ -36,6 +36,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'loginuser']);
 Route::post('/registeredadmin', [AuthController::class, 'RegisterAdmin']);
 Route::post('/loginadmin', [AuthController::class, 'login']);
+Route::post('/logoutadmin', [AuthController::class, 'logout']);
 //Zones
 Route::post('/createzone', [ZonesController::class, 'create']);
 Route::post('/updatezone/{zones}', [ZonesController::class, 'update']);
@@ -74,7 +75,4 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::post('/AccepterReservation/{reservation}', [UtilisateurController::class, 'update']); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 
-    //Activer/desactiver Reservation
-    Route::post('/ActiverReservation', [UtilisateurController::class, 'active']);
-    Route::post('/DesactiverReservation', [UtilisateurController::class, 'inactive']); //verbe put marche pas
 });

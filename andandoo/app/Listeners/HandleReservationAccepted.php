@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\DesactivationReservation;
 use App\Mail\RefusedReservation;
 use App\Events\ReservationAccepted;
 use Illuminate\Support\Facades\Mail;
@@ -24,20 +25,11 @@ class HandleReservationAccepted implements ShouldQueue
     {
 
         $reservation = $event->reservation;
-
         $trajet = $reservation->trajet;
-
-
         $total_place_reserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
         if ($total_place_reserve == $trajet->voiture->NbrPlaces) {
             $trajet->voiture()->update(['disponible' => false]);
-            $reservations = $trajet->reservations->disponible;
-            foreach ($reservations as $reservation) {
-                if (!$reservations->disponible) {
-                    Mail::to($reservation->utilisateur->Email)->send(new RefusedReservation());
-                    $reservation->delete();
-                }
-            }
+            event(new DesactivationReservation($trajet->voiture));
         }
     }
 }
