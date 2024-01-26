@@ -143,6 +143,7 @@ public function update(UpdateTrajetRequest $request, Trajet $trajet)
  */
 public function destroy(Trajet $trajet)
 {
+
     $success = false;
     $message = '';
     $statusCode = 500;

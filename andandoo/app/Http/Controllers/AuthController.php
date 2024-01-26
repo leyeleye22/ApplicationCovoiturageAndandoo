@@ -249,24 +249,24 @@ class AuthController extends Controller
     }
     public function unblockUser(Utilisateur $user)
     {
-        $response = [];
-
+        $response = ['error' => 'notithing'];
+        
         try {
-            if ($user->TemporaryBlock) {
-                if ($user->PermanentBlock) {
-                    $response = ['error' => 'User cannot be unblocked permanently'];
+                if ($user->TemporaryBlock) {
+                    if ($user->PermanentBlock) {
+                        $response = ['error' => 'User cannot be unblocked permanently'];
+                    } else {
+                        $user->TemporaryBlock = false;
+                        $user->save();
+                        $response = ['message' => 'User unblocked successfully'];
+                    }
                 } else {
-                    $user->TemporaryBlock = false;
-                    $user->save();
-                    $response = ['message' => 'User unblocked successfully'];
+                    $response = ['error' => 'User cannot be unblocked'];
                 }
-            } else {
-                $response = ['error' => 'User cannot be unblocked'];
-            }
         } catch (\Exception $e) {
             $response = ['error' => $e->getMessage()];
         }
 
-        return response()->json($response, $response['error'] ? 500 : 200);
+        return response()->json($response, $response['error'] ? 200 : 200);
     }
 }

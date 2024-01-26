@@ -53,11 +53,11 @@ class ReservationController extends Controller
             'data' => null,
             'statusCode' => 500,
         ];
-    
+
         try {
             $validatedData = $request->validated();
             $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
-    
+
             if (!$trajet->voiture->disponible) {
                 $response = [
                     'success' => false,
@@ -80,7 +80,7 @@ class ReservationController extends Controller
                 $reservation = new Reservation($validatedData);
                 $reservation->trajet()->associate($trajet);
                 $reservation->utilisateur()->associate($request->user());
-    
+
                 if ($reservation->save()) {
                     $response = [
                         'success' => true,
@@ -96,13 +96,13 @@ class ReservationController extends Controller
             $response['message'] = 'Une erreur s\'est produite lors de l\'enregistrement de votre réservation.';
             $response['error'] = $e->getMessage();
         }
-    
+
         return response()->json($response, $response['statusCode']);
     }
-    
-    
-    
-    
+
+
+
+
 
 
     /**
@@ -165,7 +165,7 @@ class ReservationController extends Controller
 
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 $reservation->fill($validatedData);
-                $reservation->voiture_id = $validatedData["voiture_id"];
+                $reservation->trajet_id = $validatedData["trajet_id"];
                 $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
 
                 if ($reservation->update()) {
@@ -218,6 +218,43 @@ class ReservationController extends Controller
                 } else {
                     $response['message'] = 'Échec de la suppression';
                 }
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => 'Impossible de supprimer cette réservation',
+                    'statusCode' => 403,
+                ];
+            }
+        } catch (\Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => 'Une erreur s\'est produite lors de la suppression de votre réservation.',
+                'error' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($response, $response['statusCode']);
+    }
+    public function delete()
+    {
+
+        $response = [
+            'success' => false,
+            'message' => '',
+            'statusCode' => 500,
+        ];
+
+        try {
+            $reservations = Reservation::where('utilisateur_id', Auth::guard('apiut')->user()->id)->get();
+            if ($reservations) {
+                foreach ($reservations as $reservation) {
+                    $reservation->delete();
+                }
+                $response = [
+                    'success' => true,
+                    'message' => 'Votre réservation a été supprimée avec succès',
+                    'statusCode' => 200,
+                ];
             } else {
                 $response = [
                     'success' => false,

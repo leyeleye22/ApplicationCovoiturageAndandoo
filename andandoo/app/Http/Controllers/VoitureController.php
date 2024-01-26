@@ -115,4 +115,55 @@ class VoitureController extends Controller
 
         return response()->json($response, $response['statusCode']);
     }
+    public function showVoitureD(){
+        try{
+            $voiture=Voiture::where('disponible',true)->get();
+            if($voiture){
+                return response()->json([
+                    'message' => 'success',
+                    'StatusCode'=>200,
+                    'Data'=>$voiture
+                ]);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Impossible',
+                'error'=>$e->getMessage()
+            ]);
+        }
+    }
+    public function showVoitureInd(){
+        try{
+            $voiture=Voiture::where('disponible',false)->get();
+            if($voiture){
+                return response()->json([
+                    'message' => 'success',
+                    'StatusCode'=>200,
+                    'Data'=>$voiture
+                ]);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Impossible',
+                'error'=>$e->getMessage()
+            ]);
+        }
+    }
+    public function showVoiture(){
+        try{
+            $voiture=Voiture::all();
+            if($voiture){
+                return response()->json([
+                    'message' => 'success',
+                    'StatusCode'=>200,
+                    'Data'=>$voiture
+                ]);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Impossible',
+                'error'=>$e->getMessage()
+            ]);
+        }
+    }
 }

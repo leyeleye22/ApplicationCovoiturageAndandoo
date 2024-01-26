@@ -51,6 +51,7 @@ Route::middleware('auth:apiut,client:client')->group(function () {
     Route::post('/CreateReservation', [ReservationController::class, 'store']);
     Route::post('/UpdateReservation/{reservation}', [ReservationController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteReservation/{reservation}', [ReservationController::class, 'destroy']);
+    Route::delete('/DeleteReservations', [ReservationController::class, 'delete']);
     Route::post('Donner/avis', [AvisController::class, 'create']);
     Route::post('Modifier/avis/{avis}', [AvisController::class, 'update']);
 });
@@ -76,3 +77,11 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 
 });
+Route::middleware('auth:api')->group(function(){
+    Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
+    Route::get('/listerClient', [UtilisateurController::class, 'showClient']);
+    Route::get('/listerVoiture/Disponible', [VoitureController::class, 'showVoitureD']);
+    Route::get('/listerVoiture/Indisponible', [VoitureController::class, 'showVoitureInd']);
+    Route::get('/listerVoitures', [VoitureController::class, 'showVoiture']);
+});
+

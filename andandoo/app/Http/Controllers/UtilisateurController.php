@@ -41,7 +41,41 @@ class UtilisateurController extends Controller
         }
     }
 
-
+    public function showChauffeur(){
+        try{
+            $chauffeur=Utilisateur::where('role','chauffeur')->get();
+            if($chauffeur){
+                return response()->json([
+                    'message' => 'success',
+                    'StatusCode'=>200,
+                    'Data'=>$chauffeur
+                ]);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Impossible',
+                'error'=>$e->getMessage()
+            ]);
+        }
+    }
+    public function showClient(){
+        try{
+            $client=Utilisateur::where('role','client')->get();
+            if($client){
+                return response()->json([
+                    'message' => 'success',
+                    'StatusCode'=>200,
+                    'Data'=>$client
+                ]);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Impossible',
+                'error'=>$e->getMessage()
+            ]);
+        }
+    }
+    
     /**
      * Display the specified resource.
      */
