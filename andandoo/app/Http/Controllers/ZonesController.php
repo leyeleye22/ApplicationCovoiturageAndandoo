@@ -46,7 +46,7 @@ class ZonesController extends Controller
             foreach ($zones as $zone) {
                 $data[] = [
                     'id' => $zone['id'],
-                    'nomzones' => $zone['NomZ'],
+                    'nom' => $zone['NomZ'],
                 ];
             }
             
