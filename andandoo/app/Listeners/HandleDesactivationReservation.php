@@ -28,7 +28,7 @@ class HandleDesactivationReservation
         $reservations=Reservation::where('voiture_id',$voiture->id)->get();
         foreach($reservations as $reservation){
             Mail::send('MailDesactivationTrajet', function ($message) use ($reservation){
-                $message->to($reservation->utilisateur->email);
+                $message->to($reservation->utilisateur->Email);
                 $message->subject('Reservation Annuler');
            });
         }

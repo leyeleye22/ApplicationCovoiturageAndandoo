@@ -14,7 +14,7 @@ class ZonesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api',['except'=>['show']]);
     }
 
     public function create(StoreZonesRequest $request)

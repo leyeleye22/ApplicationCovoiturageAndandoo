@@ -26,11 +26,13 @@ class HandleActivationReservation
         $trajet = $event->trajet;
         $trajet->voiture()->update(['disponible' => true]);
         $users = Utilisateur::where('zone_id', $trajet->voiture->utilisateur->zone_id)->get();
+
         if ($users) {
             foreach ($users as $user) {
+
                 if ($user->role == "client") {
                     Mail::send('MailActivationTrajet', function ($message) use ($user) {
-                        $message->to($user->email);
+                        $message->to($user->Email);
                         $message->subject('Reservation Disponible');
                     });
                 }
