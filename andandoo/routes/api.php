@@ -61,20 +61,19 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
     Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteTrajet/{trajet}', [TrajetController::class, 'destroy']);
+      // Voiture
+      Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
+      Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
+      Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
+      //Reservation
+      Route::get('/ListReservations', [UtilisateurController::class, 'index']);
+      Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
+      Route::post('/AccepterReservation/{reservation}',
+       [UtilisateurController::class, 'update']); //verbe put marche pas
+      Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 });
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 
-Route::middleware('auth:apiut,client:chauffeur')->group(function () {
-    // Voiture
-    Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
-    Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
-    Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
-    //Reservation
-    Route::get('/ListReservations', [UtilisateurController::class, 'index']);
-    Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
-    Route::post('/AccepterReservation/{reservation}', [UtilisateurController::class, 'update']); //verbe put marche pas
-    Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
-});
 Route::middleware('auth:api')->group(function () {
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
     Route::get('/listerClient', [UtilisateurController::class, 'showClient']);

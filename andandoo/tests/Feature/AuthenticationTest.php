@@ -35,7 +35,7 @@ class AuthenticationTest extends TestCase
     }
     public function testLoginAdmin(): void
     {
-        $credentials = ['email' => 'leye@gmail.com', 'password' => 'leye22@22'];
+        $credentials = ['email' => 'admin@andandoo.com', 'password' => 'andandoo12'];
         $response = $this->post('api/loginadmin', $credentials);
         $response->assertStatus(200);
     }
@@ -43,7 +43,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user, 'api');
-        $user_id=5;
+        $user_id=9;
         $response = $this->post('api/BlockerTemporairement/'.$user_id);
         $response->assertStatus(200);
     }
@@ -51,7 +51,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user, 'api');
-        $user_id=6;
+        $user_id=9;
         $response = $this->post('api/BlockerDefinitivement/'.$user_id);
         $response->assertStatus(200);
     }
@@ -59,8 +59,15 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user, 'api');
-        $user_id=5;
+        $user_id=9;
         $response = $this->post('api/Debloquert/'.$user_id);
         $response->assertStatus(200);
+    }
+    public function testLogoutAdmin():void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+        $response = $this->post('api/logoutadmin');
+        $response->assertStatus(500);
     }
 }
