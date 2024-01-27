@@ -14,7 +14,7 @@ class ZonesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api',['except'=>['show']]);
+        $this->middleware('auth:api', ['except' => ['show']]);
     }
 
     public function create(StoreZonesRequest $request)
@@ -22,16 +22,16 @@ class ZonesController extends Controller
         try {
             $validatedData = $request->validated();
             $zones = new Zones();
-       
+
             $zones->NomZ = $validatedData['nom'];
             $zones->user_id = auth()->user()->id;
             $zones->save();
 
-            return response()->json(['message' => 'Zone created successfully'], Response::HTTP_CREATED);
+            return response()->json(['message' => 'Zone creer avec succés'], Response::HTTP_CREATED);
         } catch (QueryException $e) {
-            $errorMessage = 'Failed to create zone. Database error.';
+            $errorMessage = 'Echec de creation du zone. Erreur de base de donnée.';
         } catch (\Exception $e) {
-            $errorMessage = 'Failed to create zone. Unexpected error.';
+            $errorMessage = 'Echec de creation du zone. Erreur System.';
         }
 
         return response()->json(['error' => $errorMessage ?? 'Unknown error'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -41,12 +41,21 @@ class ZonesController extends Controller
     public function show()
     {
         try {
-            // Fetch and return the list of zones
             $zones = Zones::all();
-            return response()->json(['data' => $zones], Response::HTTP_OK);
+            $data = [];
+            foreach ($zones as $zone) {
+                $data[] = [
+                    'id' => $zone['id'],
+                    'nomzones' => $zone['NomZ'],
+                ];
+            }
+            
+            return response()->json($data, Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to retrieve zones. Unexpected error.'],
-            Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                ['error' => 'Echec de recuperation des zones. Consulter erreur.'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -57,12 +66,14 @@ class ZonesController extends Controller
             $zones->NomZ = $validatedData['nom'];
             $zones->save();
 
-            return response()->json(['message' => 'Zone updated successfully'], Response::HTTP_OK);
+            return response()->json(['message' => 'Zone modifié avec succés'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
+            return response()->json(['error' => 'Zone non trouvé.'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update zone. Unexpected error.'],
-            Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                ['error' => 'Echec de de modification du zone. Consulter  Erreur.'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -70,12 +81,14 @@ class ZonesController extends Controller
     {
         try {
             $zones->delete();
-            return response()->json(['message' => 'Zone deleted successfully'], Response::HTTP_OK);
+            return response()->json(['message' => 'Zone supprimer avec succés'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Zone not found.'], Response::HTTP_NOT_FOUND);
+            return response()->json(['error' => 'Zone non trouvé.'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete zone. Unexpected error.'],
-            Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                ['error' => 'Echec de suppression du zone.'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

@@ -41,7 +41,7 @@ class AuthController extends Controller
             'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
         ];
 
-        // try {
+        try {
         $validatedData = $request->validated();
         $utilisateur = new Utilisateur();
         $utilisateur->fill($validatedData);
@@ -49,18 +49,18 @@ class AuthController extends Controller
         $utilisateur->password = $user;
         $utilisateur->Licence = $request->Licence;
         if ($utilisateur->save()) {
-            $response['message'] = 'User registered successfully';
+            $response['message'] = 'Utilisateur inscrit avec succés';
             $response['user'] = $utilisateur;
             $response['statusCode'] = Response::HTTP_CREATED;
         }
-        // } catch (ValidationException $e) {
-        //     $response['error'] = $e->validator->errors();
-        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        // } catch (QueryException $e) {
-        //     $response['error'] = 'Failed to register user. Database error.';
-        // } catch (\Exception $e) {
-        //     $response['error'] = 'Failed to register user. Unexpected error.';
-        // }
+        } catch (ValidationException $e) {
+            $response['error'] = $e->validator->errors();
+            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        } catch (QueryException $e) {
+            $response['error'] = 'Erreur d\inscription de l\'utilisateur. Erreur de base de donnes.';
+        } catch (\Exception $e) {
+            $response['error'] = 'Erreur d\inscription de l\'utilisateur.Erreur System.';
+        }
 
         return response()->json($response, $response['statusCode']);
     }
@@ -73,13 +73,13 @@ class AuthController extends Controller
             $user = User::where('email', $credentials['email'])->first();
 
             if ($user && $user->TemporaryBlock) {
-                $response = ['error' => 'Account temporarily blocked'];
+                $response = ['error' => 'Compte Temporairement bloquer'];
                 $statusCode = 403;
             } elseif ($user && $user->PermanentBlock) {
-                $response = ['error' => 'Account permanently blocked'];
+                $response = ['error' => 'Compte Definitivement bloquer'];
                 $statusCode = 403;
             } elseif (!$token = Auth::guard('apiut')->attempt($credentials)) {
-                throw new \Exception('Unauthorized');
+                throw new \Exception('Vous n\'êtes pas authoriser');
             } else {
                 $utilisateur = auth()->guard('apiut')->user();
                 $response = $this->respondWithTokens($token, $utilisateur);

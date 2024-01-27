@@ -29,9 +29,9 @@ class HandleActivationReservation
 
         if ($users) {
             foreach ($users as $user) {
-
+                $data=[];
                 if ($user->role == "client") {
-                    Mail::send('MailActivationTrajet', function ($message) use ($user) {
+                    Mail::send('MailActivationTrajet',$data, function ($message) use ($user) {
                         $message->to($user->Email);
                         $message->subject('Reservation Disponible');
                     });
