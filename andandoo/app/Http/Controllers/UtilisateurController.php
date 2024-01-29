@@ -45,13 +45,26 @@ class UtilisateurController extends Controller
     public function showChauffeur()
     {
         try {
-            $chauffeur = Utilisateur::where('role', 'chauffeur')->get();
-            if ($chauffeur) {
-                return response()->json([
-                    'message' => 'success',
-                    'StatusCode' => 200,
-                    'Data' => $chauffeur
-                ]);
+            $chauffeurs = Utilisateur::where('role', 'chauffeur')->get();
+            $data = [];
+
+            foreach ($chauffeurs as $chauffeur) {
+                $nom = $chauffeur['zone']->NomZ;
+                $data[] = [
+                    'Nom' => $chauffeur['Nom'],
+                    'Prenom' => $chauffeur['Prenom'],
+                    'Telephone' => $chauffeur['Telephone'],
+                    'Email' => $chauffeur['Email'],
+                    'Image' => $chauffeur['ImageProfile'],
+                    'Licence' => $chauffeur['Licence'],
+                    'PermisConduire' => $chauffeur['PermisConduire'],
+                    'role' => $chauffeur['role'],
+                    'Zone' => $nom
+                ];
+            }
+            if ($chauffeurs) {
+
+                return response()->json($data, Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             return response()->json([
