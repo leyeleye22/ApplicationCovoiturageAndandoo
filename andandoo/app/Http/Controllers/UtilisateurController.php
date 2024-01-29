@@ -60,8 +60,20 @@ class UtilisateurController extends Controller
     }
     public function showClient(){
         try{
-            $client=Utilisateur::where('role','client')->get();
-            if($client){
+            $clients=Utilisateur::where('role','client')->get();
+            $data=[];
+            foreach($clients as $client){
+                $data[]=[
+                    'Nom'=>$client->Nom,
+                    'Prenom'=>$client->Prenom,
+                    'Email'=>$client->Telephone,
+                    'Image'=>$client->ImageProfile,
+                    'role'=>$client->role,
+                    'Zone'=>$client->zone->NomZ
+                ];
+            }
+            if($clients){
+
                 return response()->json([
                     'message' => 'success',
                     'StatusCode'=>200,

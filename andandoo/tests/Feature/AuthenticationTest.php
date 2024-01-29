@@ -70,4 +70,18 @@ class AuthenticationTest extends TestCase
         $response = $this->post('api/logoutadmin');
         $response->assertStatus(500);
     }
+    public function testLogoutClient():void
+    {
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'api');
+        $response = $this->post('api/logout/client');
+        $response->assertStatus(200);
+    }
+    public function testLogoutChauffeur():void
+    {
+        $user = Utilisateur::factory()->create();
+        $this->actingAs($user, 'api');
+        $response = $this->post('api/logout/client');
+        $response->assertStatus(200);
+    }
 }

@@ -16,8 +16,8 @@ class ZoneTest extends TestCase
     public function testInsererZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leyezone@gmail.com',
-            'password' => bcrypt('leye22@22'),
+            'email' => 'admin@andandoo.com',
+            'password' => bcrypt('andandoo12'),
         ]);
         $this->actingAs($user, 'api');
         $zone = Zones::factory()->create();
@@ -28,8 +28,8 @@ class ZoneTest extends TestCase
     public function testModifierZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leyeadminzonee@gmail.com',
-            'password' => bcrypt('leye22@22'),
+            'email' => 'admin@andandoo.com',
+            'password' => bcrypt('andandoo12'),
         ]);
         $this->actingAs($user, 'api');
 
@@ -44,8 +44,8 @@ class ZoneTest extends TestCase
     public function testListerZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leyeadmin2@gmail.com',
-            'password' => bcrypt('leye22@22'),
+            'email' => 'admin@andandoo.com',
+            'password' => bcrypt('andandoo12'),
         ]);
         $this->actingAs($user, 'api');
         $response = $this->get('api/listzone');
@@ -54,8 +54,8 @@ class ZoneTest extends TestCase
     public function testSupprimerZone(): void
     {
         $user = User::factory()->create([
-            'email' => 'leyeadmin23@gmail.com',
-            'password' => bcrypt('leye22@22'),
+            'email' => 'admin@andandoo.com',
+            'password' => bcrypt('andandoo12'),
         ]);
         $this->actingAs($user, 'api');
         $zoneTr = Zones::FindOrFail(1);
