@@ -7,7 +7,8 @@ use App\Models\Reservation;
 use App\Models\Utilisateur;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUtilisateurRequest;
-use App\Http\Requests\UpdateUtilisateurRequest;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class UtilisateurController extends Controller
 {
@@ -78,11 +79,7 @@ class UtilisateurController extends Controller
             }
             if ($clients) {
 
-                return response()->json([
-                    'message' => 'success',
-                    'StatusCode' => 200,
-                    'Data' => $data
-                ]);
+                return response()->json($data, Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             return response()->json([
