@@ -81,16 +81,6 @@ class UtilisateurController extends Controller
 
             foreach ($chauffeurs as $chauffeur) {
                 $nom = $chauffeur['zone']->NomZ;
-                if ($chauffeur['TemporaryBlock']) {
-                    $blockT = "oui";
-                } else {
-                    $blockT = "non";
-                }
-                if ($chauffeur['PermanentBlock']) {
-                    $blockD = "oui";
-                } else {
-                    $blockD = "non";
-                }
                 $data[] = [
                     'id' => $chauffeur['id'],
                     'Nom' => $chauffeur['Nom'],
@@ -102,8 +92,8 @@ class UtilisateurController extends Controller
                     'PermisConduire' => $chauffeur['PermisConduire'],
                     'role' => $chauffeur['role'],
                     'Zone' => $nom,
-                    'BlockerTemporairement' => $blockT,
-                    'BlockerDefinitivement' => $blockD
+                    'BlockerTemporairement' => $chauffeur['TemporaryBlock'],
+                    'BlockerDefinitivement' => $chauffeur['PermanentBlock']
                 ];
             }
             if ($chauffeurs) {
