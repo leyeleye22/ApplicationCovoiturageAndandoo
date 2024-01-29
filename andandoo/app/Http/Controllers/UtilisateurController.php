@@ -50,7 +50,7 @@ class UtilisateurController extends Controller
             foreach ($users as $user) {
                 $nom = $user['zone']->NomZ;
                 $data[] = [
-                    'id' => $client['id'],
+
                     'Nom' => $user['Nom'],
                     'Prenom' => $user['Prenom'],
                     'Telephone' => $user['Telephone'],
@@ -82,6 +82,7 @@ class UtilisateurController extends Controller
             foreach ($chauffeurs as $chauffeur) {
                 $nom = $chauffeur['zone']->NomZ;
                 $data[] = [
+                    'id' => $chauffeur['id'],
                     'Nom' => $chauffeur['Nom'],
                     'Prenom' => $chauffeur['Prenom'],
                     'Telephone' => $chauffeur['Telephone'],
