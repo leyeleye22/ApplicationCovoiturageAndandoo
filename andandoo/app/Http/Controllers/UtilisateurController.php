@@ -77,7 +77,7 @@ class UtilisateurController extends Controller
                 return response()->json([
                     'message' => 'success',
                     'StatusCode'=>200,
-                    'Data'=>$client
+                    'Data'=>$data
                 ]);
             }
         }catch(\Exception $e){
