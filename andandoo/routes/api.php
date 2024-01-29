@@ -77,6 +77,7 @@ Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
     Route::get('/listerClient', [UtilisateurController::class, 'showClient']);
+    Route::get('/listerUtilisateur', [UtilisateurController::class, 'showUsers']);
     Route::get('/listerVoiture/Disponible', [VoitureController::class, 'showVoitureD']);
     Route::get('/listerVoiture/Indisponible', [VoitureController::class, 'showVoitureInd']);
     Route::get('/listerVoitures', [VoitureController::class, 'showVoiture']);

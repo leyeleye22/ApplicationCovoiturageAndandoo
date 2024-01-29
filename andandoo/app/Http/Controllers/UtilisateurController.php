@@ -41,7 +41,37 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
+    public function showUsers()
+    {
+        try {
+            $users = Utilisateur::all();
+            $data = [];
 
+            foreach ($users as $user) {
+                $nom = $user['zone']->NomZ;
+                $data[] = [
+                    'Nom' => $user['Nom'],
+                    'Prenom' => $user['Prenom'],
+                    'Telephone' => $user['Telephone'],
+                    'Email' => $user['Email'],
+                    'Image' => $user['ImageProfile'],
+                    'Licence' => $user['Licence'],
+                    'PermisConduire' => $user['PermisConduire'],
+                    'role' => $user['role'],
+                    'Zone' => $nom
+                ];
+            }
+            if ($users) {
+
+                return response()->json($data, Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Impossible',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
     public function showChauffeur()
     {
         try {
@@ -73,6 +103,7 @@ class UtilisateurController extends Controller
             ]);
         }
     }
+
     public function showClient()
     {
         try {
