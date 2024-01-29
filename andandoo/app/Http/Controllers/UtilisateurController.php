@@ -62,7 +62,9 @@ class UtilisateurController extends Controller
         try{
             $clients=Utilisateur::where('role','client')->get();
             $data=[];
+
             foreach($clients as $client){
+           
                 $data[]=[
                     'Nom'=>$client->Nom,
                     'Prenom'=>$client->Prenom,

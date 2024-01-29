@@ -15,4 +15,8 @@ class Zones extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function utilisateur()
+    {
+        return $this->hasMany(Utilisateur::class);
+    }
 }

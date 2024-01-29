@@ -65,4 +65,8 @@ class Utilisateur extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(Voiture::class);
     }
+    public function zone()
+    {
+        return $this->belongsTo(Zones::class);
+    }
 }
