@@ -50,6 +50,7 @@ class UtilisateurController extends Controller
             foreach ($users as $user) {
                 $nom = $user['zone']->NomZ;
                 $data[] = [
+                    'id' => $client['id'],
                     'Nom' => $user['Nom'],
                     'Prenom' => $user['Prenom'],
                     'Telephone' => $user['Telephone'],
@@ -113,6 +114,7 @@ class UtilisateurController extends Controller
             foreach ($clients as $client) {
                 $nom = $client['zone']->NomZ;
                 $data[] = [
+                    'id' => $client['id'],
                     'Nom' => $client['Nom'],
                     'Prenom' => $client['Prenom'],
                     'Telephone' => $client['Telephone'],
@@ -133,7 +135,6 @@ class UtilisateurController extends Controller
             ]);
         }
     }
-
     /**
      * Display the specified resource.
      */
