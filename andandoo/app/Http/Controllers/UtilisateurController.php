@@ -41,55 +41,57 @@ class UtilisateurController extends Controller
         }
     }
 
-    public function showChauffeur(){
-        try{
-            $chauffeur=Utilisateur::where('role','chauffeur')->get();
-            if($chauffeur){
+    public function showChauffeur()
+    {
+        try {
+            $chauffeur = Utilisateur::where('role', 'chauffeur')->get();
+            if ($chauffeur) {
                 return response()->json([
                     'message' => 'success',
-                    'StatusCode'=>200,
-                    'Data'=>$chauffeur
+                    'StatusCode' => 200,
+                    'Data' => $chauffeur
                 ]);
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Impossible',
-                'error'=>$e->getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
-    public function showClient(){
-        try{
-            $clients=Utilisateur::where('role','client')->get();
-            $data=[];
+    public function showClient()
+    {
+        try {
+            $clients = Utilisateur::where('role', 'client')->get();
+            $data = [];
 
-            foreach($clients as $client){
-           
-                $data[]=[
-                    'Nom'=>$client->Nom,
-                    'Prenom'=>$client->Prenom,
-                    'Email'=>$client->Telephone,
-                    'Image'=>$client->ImageProfile,
-                    'role'=>$client->role,
-                    'Zone'=>$client->zone->NomZ
+            foreach ($clients as $client) {
+                $nom = $client['zone']->NomZ;
+                $data[] = [
+                    'Nom' => $client['Nom'],
+                    'Prenom' => $client['Prenom'],
+                    'Email' => $client['Telephone'],
+                    'Image' => $client['ImageProfile'],
+                    'role' => $client['role'],
+                    'Zone' => $nom
                 ];
             }
-            if($clients){
+            if ($clients) {
 
                 return response()->json([
                     'message' => 'success',
-                    'StatusCode'=>200,
-                    'Data'=>$data
+                    'StatusCode' => 200,
+                    'Data' => $data
                 ]);
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Impossible',
-                'error'=>$e->getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -178,13 +180,15 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
-    public function logoutChauffeur(){
+    public function logoutChauffeur()
+    {
         auth()->guard('apiut')->logout();
 
         return response()->json(['message' => 'Successfully logged out chauffeur']);
     }
-    
-    public function logoutClient(){
+
+    public function logoutClient()
+    {
         auth()->guard('apiut')->logout();
 
         return response()->json(['message' => 'Successfully logged out client']);
