@@ -71,7 +71,8 @@ class UtilisateurController extends Controller
                 $data[] = [
                     'Nom' => $client['Nom'],
                     'Prenom' => $client['Prenom'],
-                    'Email' => $client['Telephone'],
+                    'Telephone' => $client['Telephone'],
+                    'Email' => $client['Email'],
                     'Image' => $client['ImageProfile'],
                     'role' => $client['role'],
                     'Zone' => $nom
