@@ -44,9 +44,15 @@ class AuthController extends Controller
 
         try {
             $validatedData = $request->validated();
-            if (($request->role == "chauffeur") && (!isset($request->ImageProfile) || !isset($request->Licence) || !isset($request->PermisConduire))) {
+            if (
+                $request->role == "chauffeur" &&
+                (!$request->hasFile('ImageProfile') ||
+                    !$request->hasFile('Licence') ||
+                    !$request->hasFile('PermisConduire'))
+            ) {
                 return response()->json($response, $response['statusCode']);
             }
+
 
             $utilisateur = new Utilisateur();
             $utilisateur->fill($validatedData);
@@ -146,13 +152,17 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Mot de passe ou email incorrect '], 419);
+            return response()->json(['error' => 'Mot de passe ou email incorrect'], 403);
         }
 
         $user = auth()->user();
-
-        return $this->respondWithToken($token, $user);
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+            'status_code' => 200 // Ajout du code de statut 200
+        ], 200);
     }
+
     /**
      * Get the authenticated User.
      *
