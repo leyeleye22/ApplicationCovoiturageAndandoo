@@ -29,7 +29,7 @@ class UtilisateurFactory extends Factory
             'ImageProfile' => $faker->imageUrl(),
             'PermisConduire' => $faker->imageUrl(),
             'Licence' => $faker->imageUrl(),
-            'role' => $faker->randomElement(['chauffeur', 'chauffeur']),
+            'role' => $faker->randomElement(['client', 'chauffeur']),
             'zone_id' => 8,
             'password' => $faker->password(8),
         ];

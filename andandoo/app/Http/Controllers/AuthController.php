@@ -247,11 +247,11 @@ class AuthController extends Controller
     protected function respondWithTokens($token, $utilisateur)
     {
         return response()->json([
-            'access_token' => $token,
+            'data'=>[ 'access_token' => $token,
             'utilisateur' => $utilisateur,
             'statusCode' => 200,
             'token_type' => 'bearer',
-            'expires_in' => 3600
+            'expires_in' => 3600]
         ]);
     }
     public function blockTemporarilyUser(Utilisateur $user)
