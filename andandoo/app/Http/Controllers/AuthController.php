@@ -94,10 +94,16 @@ class AuthController extends Controller
             $user = User::where('email', $credentials['email'])->first();
 
             if ($user && $user->TemporaryBlock) {
-                $response = ['error' => 'Compte Temporairement bloquer'];
+                $response = [
+                    'error' => 'Compte Temporairement bloquer',
+                    'status' => 403
+                ];
                 $statusCode = 403;
             } elseif ($user && $user->PermanentBlock) {
-                $response = ['error' => 'Compte Definitivement bloquer'];
+                $response = [
+                    'error' => 'Compte Definitivement bloquer',
+                    'status' => 403
+                ];
                 $statusCode = 403;
             } elseif (!$token = Auth::guard('apiut')->attempt($credentials)) {
                 throw new \Exception('Vous n\'êtes pas authoriser');
@@ -116,8 +122,10 @@ class AuthController extends Controller
             }
         }
 
-        return response()->json($response, $statusCode);
+        // Renvoyer la réponse avec le code d'état
+        return response()->json($response, $statusCode ?? 500);
     }
+
 
     public function RegisterAdmin(RegisterAdminRequest $request)
     {
@@ -241,6 +249,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'utilisateur' => $utilisateur,
+            'statusCode' => 200,
             'token_type' => 'bearer',
             'expires_in' => 3600
         ]);
