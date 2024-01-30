@@ -24,7 +24,7 @@ class StoreZonesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => 'required|min:3|max:18',
+            'nom' => 'required|min:3|max:18|unique:zones',
         ];
     }
     public function failedValidation(validator $validator)
@@ -43,6 +43,7 @@ class StoreZonesRequest extends FormRequest
             'nom.required' => 'Le champs nom est requis',
             'nom.min' => 'le nom doit être superieur egal à 3 caractere',
             'nom.max' => 'le nom doit pas dépasser 18 caractere',
+            'nom.unique' => 'Ce zone existe deja',
         ];
     }
 }

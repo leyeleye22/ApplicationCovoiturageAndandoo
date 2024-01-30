@@ -23,7 +23,7 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
-        $var = ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'];
+        
         
         return [
             'Nom' => 'required|string|min:2|max:255',

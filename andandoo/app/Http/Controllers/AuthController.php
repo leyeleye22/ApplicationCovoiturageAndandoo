@@ -35,14 +35,19 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
+
         $response = [
-            'message' => '',
+            'message' => 'Les images doivent être rempli',
             'user' => null,
-            'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            'statusCode' => 400,
         ];
-        
+
         try {
             $validatedData = $request->validated();
+            if (($request->role == "chauffeur") && (!isset($request->ImageProfile) || !isset($request->Licence) || !isset($request->PermisConduire))) {
+                return response()->json($response, $response['statusCode']);
+            }
+
             $utilisateur = new Utilisateur();
             $utilisateur->fill($validatedData);
             $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
@@ -76,9 +81,6 @@ class AuthController extends Controller
             $utilisateur->$fieldName = $filename;
         }
     }
-
-
-
     public function loginuser(LoginRequest $request)
     {
         try {

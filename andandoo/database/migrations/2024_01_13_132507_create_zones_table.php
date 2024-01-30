@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
-            $table->string('NomZ');
+            $table->string('NomZ')->unique();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
