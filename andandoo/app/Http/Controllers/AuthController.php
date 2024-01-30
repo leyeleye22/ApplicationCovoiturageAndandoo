@@ -27,7 +27,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-       $this->middleware('auth:api' , ['except' => [
+        $this->middleware('auth:api', ['except' => [
             'login', 'register',
             'loginuser', 'RegisterAdmin', 'VerifMail', 'test'
         ]]);
@@ -40,30 +40,43 @@ class AuthController extends Controller
             'user' => null,
             'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
         ];
-
+        
         try {
-        $validatedData = $request->validated();
-        $utilisateur = new Utilisateur();
-        $utilisateur->fill($validatedData);
-        $user = Hash::make($utilisateur->password);
-        $utilisateur->password = $user;
-        $utilisateur->Licence = $request->Licence;
-        if ($utilisateur->save()) {
-            $response['message'] = 'Utilisateur inscrit avec succés';
-            $response['user'] = $utilisateur;
-            $response['statusCode'] = Response::HTTP_CREATED;
-        }
+            $validatedData = $request->validated();
+            $utilisateur = new Utilisateur();
+            $utilisateur->fill($validatedData);
+            $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
+            $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
+            $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
+            $utilisateur->password = Hash::make($utilisateur->password);
+
+            if ($utilisateur->save()) {
+                $response['message'] = 'Utilisateur inscrit avec succès';
+                $response['user'] = $utilisateur;
+                $response['statusCode'] = Response::HTTP_CREATED;
+            }
         } catch (ValidationException $e) {
             $response['error'] = $e->validator->errors();
             $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
         } catch (QueryException $e) {
-            $response['error'] = 'Erreur d\inscription de l\'utilisateur. Erreur de base de donnes.';
+            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur de base de données.';
         } catch (\Exception $e) {
-            $response['error'] = 'Erreur d\inscription de l\'utilisateur.Erreur System.';
+            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur système.';
         }
 
         return response()->json($response, $response['statusCode']);
     }
+
+    private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
+    {
+        if ($request->file($fileKey)) {
+            $file = $request->file($fileKey);
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path($path), $filename);
+            $utilisateur->$fieldName = $filename;
+        }
+    }
+
 
 
     public function loginuser(LoginRequest $request)
@@ -157,7 +170,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['status'=>200,'message' => 'Successfully logged out']);
+        return response()->json(['status' => 200, 'message' => 'Successfully logged out']);
     }
 
     /**
@@ -250,19 +263,19 @@ class AuthController extends Controller
     public function unblockUser(Utilisateur $user)
     {
         $response = ['error' => 'notithing'];
-        
+
         try {
-                if ($user->TemporaryBlock) {
-                    if ($user->PermanentBlock) {
-                        $response = ['error' => 'User cannot be unblocked permanently'];
-                    } else {
-                        $user->TemporaryBlock = false;
-                        $user->save();
-                        $response = ['message' => 'User unblocked successfully'];
-                    }
+            if ($user->TemporaryBlock) {
+                if ($user->PermanentBlock) {
+                    $response = ['error' => 'User cannot be unblocked permanently'];
                 } else {
-                    $response = ['error' => 'User cannot be unblocked'];
+                    $user->TemporaryBlock = false;
+                    $user->save();
+                    $response = ['message' => 'User unblocked successfully'];
                 }
+            } else {
+                $response = ['error' => 'User cannot be unblocked'];
+            }
         } catch (\Exception $e) {
             $response = ['error' => $e->getMessage()];
         }
