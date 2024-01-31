@@ -60,6 +60,8 @@ class VoitureController extends Controller
                 $validatedData = $request->validated();
                 $voiture = new Voiture();
                 $voiture->fill($validatedData);
+                $this->saveImage($request, 'ImageVoitures', 'images/voiture', $voiture, 'ImageVoitures');
+
                 $voiture->utilisateur_id = $user->id;
 
                 if ($voiture->save()) {
@@ -77,6 +79,15 @@ class VoitureController extends Controller
         }
 
         return response()->json($response, $response['statusCode']);
+    }
+    private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
+    {
+        if ($request->file($fileKey)) {
+            $file = $request->file($fileKey);
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path($path), $filename);
+            $utilisateur->$fieldName = $filename;
+        }
     }
 
 
@@ -115,54 +126,57 @@ class VoitureController extends Controller
 
         return response()->json($response, $response['statusCode']);
     }
-    public function showVoitureD(){
-        try{
-            $voiture=Voiture::where('disponible',true)->get();
-            if($voiture){
+    public function showVoitureD()
+    {
+        try {
+            $voiture = Voiture::where('disponible', true)->get();
+            if ($voiture) {
                 return response()->json([
                     'message' => 'success',
-                    'StatusCode'=>200,
-                    'Data'=>$voiture
+                    'StatusCode' => 200,
+                    'Data' => $voiture
                 ]);
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Impossible',
-                'error'=>$e->getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
-    public function showVoitureInd(){
-        try{
-            $voiture=Voiture::where('disponible',false)->get();
-            if($voiture){
+    public function showVoitureInd()
+    {
+        try {
+            $voiture = Voiture::where('disponible', false)->get();
+            if ($voiture) {
                 return response()->json([
                     'message' => 'success',
-                    'StatusCode'=>200,
-                    'Data'=>$voiture
+                    'StatusCode' => 200,
+                    'Data' => $voiture
                 ]);
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Impossible',
-                'error'=>$e->getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
-    public function showVoiture(){
-        try{
-            $voiture=Voiture::all();
-            if($voiture){
+    public function showVoiture()
+    {
+        try {
+            $voiture = Voiture::all();
+            if ($voiture) {
                 return response()->json([
                     'message' => 'success',
-                    'StatusCode'=>200,
-                    'Data'=>$voiture
+                    'StatusCode' => 200,
+                    'Data' => $voiture
                 ]);
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Impossible',
-                'error'=>$e->getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
