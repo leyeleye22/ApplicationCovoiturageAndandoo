@@ -55,6 +55,7 @@ class VoitureController extends Controller
             $voiture = $user->voiture;
             if (isset($voiture)) {
                 $response['message'] = 'Vous avez déjà ajouté une voiture';
+                $response['statusCode'] = 401;
             } elseif ($user->role == "client") {
                 $response['message'] = 'Vous n\êtes pas un chauffeur';
             } else {
