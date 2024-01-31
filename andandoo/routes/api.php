@@ -87,10 +87,7 @@ Route::middleware('auth:api')->group(function () {
 Route::get('/listMessage', [MessageController::class, 'show']);
 Route::post('/envoyer', [MessageController::class, 'send']);
 Route::get('/repondre/Message', [MessageController::class, 'response']);
-Route::middleware('auth:apiut,client:chauffeur')->group(function () {
-    Route::post('/logout/chauffeur', [UtilisateurController::class, 'logoutChauffeur']);
-});
 Route::middleware('auth:apiut,client:client')->group(function () {
-    Route::post('/logout/client', [UtilisateurController::class, 'logoutClient']);
+    Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 });
 

@@ -226,17 +226,10 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
-    public function logoutChauffeur()
+    public function logout()
     {
         auth()->guard('apiut')->logout();
 
-        return response()->json(['message' => 'Successfully logged out chauffeur']);
-    }
-
-    public function logoutClient()
-    {
-        auth()->guard('apiut')->logout();
-
-        return response()->json(['message' => 'Successfully logged out client']);
+        return response()->json(['message' => 'Deconnexion reussi']);
     }
 }
