@@ -3,14 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Throwable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Auth\AuthenticationException;
-use App\Exceptions\ServerNotAvailableException;
-use App\Exceptions\DatabaseNotAvailableException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -28,16 +22,10 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
- 
-
-
-    /**
-     * Vérifie si la demande est une API.
-     *
-     * @return bool
-     */
-    protected function isApiRequest()
+    public function register(): void
     {
-        return strpos(request()->getRequestUri(), '/api/') === 0;
+        $this->reportable(function (Throwable $e) {
+            //
+        });
     }
 }
