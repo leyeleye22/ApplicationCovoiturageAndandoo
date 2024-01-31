@@ -11,6 +11,7 @@ use App\Http\Controllers\VoitureController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\NewsletterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,20 +62,23 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
     Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteTrajet/{trajet}', [TrajetController::class, 'destroy']);
-      // Voiture
-      Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
-      Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
-      Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
-      //Reservation
-      Route::get('/ListReservations', [UtilisateurController::class, 'index']);
-      Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
-      Route::post('/AccepterReservation/{reservation}',
-       [UtilisateurController::class, 'update']); //verbe put marche pas
-      Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
+    // Voiture
+    Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
+    Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
+    Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
+    //Reservation
+    Route::get('/ListReservations', [UtilisateurController::class, 'index']);
+    Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
+    Route::post(
+        '/AccepterReservation/{reservation}',
+        [UtilisateurController::class, 'update']
+    ); //verbe put marche pas
+    Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 });
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
-
+Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::middleware('auth:api')->group(function () {
+    Route::get('/lister/newsletter', [NewsletterController::class, 'index']);
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
     Route::get('/listerClient', [UtilisateurController::class, 'showClient']);
     Route::get('/listerUtilisateur', [UtilisateurController::class, 'showUsers']);
@@ -90,4 +94,3 @@ Route::get('/repondre/Message', [MessageController::class, 'response']);
 Route::middleware('auth:apiut,client:client')->group(function () {
     Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 });
-
