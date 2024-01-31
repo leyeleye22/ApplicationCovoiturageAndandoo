@@ -17,11 +17,17 @@ class VoitureController extends Controller
         try {
             $user = Auth::guard('apiut')->user();
             $vehicule = $user->voiture;
+            
             if ($vehicule) {
+                $data = ['id' => $vehicule['id'],
+                'ImageVoitures' => $vehicule['ImageVoitures'],
+                'Descriptions' => $vehicule['Descriptions'],
+                'NbrPlaces' => $vehicule['NbrPlaces'],
+            ];
                 return response()->json([
                     'success' => true,
                     'message' => 'Voiture récuppérré avec succès.',
-                    'data' => $vehicule,
+                    'data' => $data,
                 ]);
             } else {
                 return response()->json([
