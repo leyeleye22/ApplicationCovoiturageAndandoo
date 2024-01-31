@@ -26,7 +26,7 @@ class StoreVoitureRequest extends FormRequest
         return [
             'ImageVoitures' => 'required|image|max:2048',
             'Descriptions' => 'required|string|max:255',
-            'NbrPlaces' => 'required|integer|min:1',
+            'NbrPlaces' => 'required|integer|min:4|max:6',
         ];
     }
     public function failedValidation(validator $validator)
@@ -49,7 +49,8 @@ class StoreVoitureRequest extends FormRequest
             'Descriptions.string' => 'La description doit être une chaîne de  caractére',
             'Descriptions.max' => 'La description ne doit pas depasser 255 caractére',
             'NbrPlaces.required' => 'Veuillez choisir une nombre de place',
-            'NbrPlaces.min' => 'Il faut minimum choisir une nombre de place',
+            'NbrPlaces.min' => 'Il faut minimum 4 places',
+            'NbrPlaces.max' => 'Il faut minimum 7 places',
             'NbrPlaces.integer' => 'Le nombre de places doit être un chiffre'
 
         ];
