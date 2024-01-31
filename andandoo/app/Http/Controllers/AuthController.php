@@ -21,17 +21,15 @@ use App\Http\Requests\RegisterAdminRequest;
 use App\Notifications\SmsValidationAuthentification;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use App\Exceptions\DatabaseNotAvailableException;
+use App\Exceptions\ServerNotAvailableException;
+
+
+
 
 class AuthController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => [
-            'login', 'register',
-            'loginuser', 'RegisterAdmin', 'VerifMail', 'test'
-        ]]);
-    }
 
     public function register(RegisterRequest $request)
     {

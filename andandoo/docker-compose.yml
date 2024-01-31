@@ -3,7 +3,7 @@ services:
     # Mysql database container
     db:
         image: mysql
-        container_name: mysql_certif
+        container_name: mysql_andandoo
         restart: always
         volumes:
             - db-data:/var/lib/mysql
@@ -12,12 +12,12 @@ services:
         ports:
             - "3309:3306"
         networks:
-            - certif
+            - andandoo
 
     # phpmyadmin container
     phpmyadmin:
         image: phpmyadmin
-        container_name: phpmyadmin_certif
+        container_name: phpmyadmin_andandoo
         restart: always
         depends_on:
             - db
@@ -26,11 +26,11 @@ services:
         environment:
             PMA_HOST: db
         networks:
-            - certif
+            - andandoo
 
     www:
         build: docker/php
-        container_name: certification
+        container_name: andandoo_certif
         ports:
             - "8002:80"
         volumes:
@@ -38,10 +38,10 @@ services:
             - ./:/var/www/html
         restart: always
         networks:
-            - certif
+            - andandoo
 
 networks:
-    certif:
+    andandoo:
 
 
 volumes:

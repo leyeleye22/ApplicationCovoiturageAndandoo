@@ -53,7 +53,6 @@ class VoitureController extends Controller
         try {
             $user = Auth::guard('apiut')->user();
             $voiture = $user->voiture;
-
             if (isset($voiture)) {
                 $response['message'] = 'Vous avez déjà ajouté une voiture';
             } else {
