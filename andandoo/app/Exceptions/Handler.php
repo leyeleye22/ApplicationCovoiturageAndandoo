@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Veuillez fournir le bon token',
                 'details' => 'Verifier votre role svp',
                 'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'ne vous est pas authoriser',
-            ], 405);
+            ], 422);
         });
         $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
             return response()->json([
