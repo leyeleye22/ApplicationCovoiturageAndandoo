@@ -162,11 +162,8 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
-        return response()->json([
-            'token' => $token,
-            'user' => $user,
-            'status_code' => 200 // Ajout du code de statut 200
-        ], 200);
+        $response = $this->respondWithToken($token, $user);
+        return response()->json($response);
     }
 
     /**
@@ -236,23 +233,25 @@ class AuthController extends Controller
     protected function respondWithToken($token, $user)
     {
         return response()->json([
-            'data'=>[
-            'access_token' => $token,
-            'utilisateur' => $user,
-            'statusCode' => 200,
-            'token_type' => 'bearer',
-            'expires_in' => 3600]
+            'data' => [
+                'access_token' => $token,
+                'utilisateur' => $user,
+                'statusCode' => 200,
+                'token_type' => 'bearer',
+                'expires_in' => 3600
+            ]
         ]);
     }
     protected function respondWithTokens($token, $utilisateur)
     {
         return response()->json([
-            'data'=>[
-            'access_token' => $token,
-            'utilisateur' => $utilisateur,
-            'statusCode' => 200,
-            'token_type' => 'bearer',
-            'expires_in' => 3600]
+            'data' => [
+                'access_token' => $token,
+                'utilisateur' => $utilisateur,
+                'statusCode' => 200,
+                'token_type' => 'bearer',
+                'expires_in' => 3600
+            ]
         ]);
     }
     public function blockTemporarilyUser(Utilisateur $user)
