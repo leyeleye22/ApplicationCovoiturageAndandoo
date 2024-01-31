@@ -10,6 +10,7 @@ use App\Exceptions\ServerNotAvailableException;
 use App\Exceptions\DatabaseNotAvailableException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -34,6 +35,13 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
             ], 500);
+        });
+        $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
+            return response()->json([
+                'error' => 'Vous avez utiliser une mauvaise methode',
+                'details' => 'La method utiliser n\est pas supporter',
+                'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'Supporte pas la methode utiliser',
+            ], 405);
         });
         $this->renderable(function (RouteNotFoundException $e, $request) {
             return response()->json([
@@ -134,7 +142,7 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Non authentifié.'], 401);
         }
 
-        return redirect()->route('login'); // Redirection vers la route nommée 'login'
+        return redirect()->route('login');
     }
 
 

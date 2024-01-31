@@ -47,7 +47,7 @@ class VoitureController extends Controller
             'success' => false,
             'message' => '',
             'data' => null,
-            'statusCode' => 500,
+            'statusCode' => '',
         ];
 
         try {
