@@ -236,16 +236,19 @@ class AuthController extends Controller
     protected function respondWithToken($token, $user)
     {
         return response()->json([
+            'data'=>[
             'access_token' => $token,
             'utilisateur' => $user,
+            'statusCode' => 200,
             'token_type' => 'bearer',
-            'expires_in' => 3600
+            'expires_in' => 3600]
         ]);
     }
     protected function respondWithTokens($token, $utilisateur)
     {
         return response()->json([
-            'data'=>[ 'access_token' => $token,
+            'data'=>[
+            'access_token' => $token,
             'utilisateur' => $utilisateur,
             'statusCode' => 200,
             'token_type' => 'bearer',
