@@ -56,8 +56,7 @@ class MessageController extends Controller
     {
         try {
             $data = $request->contenue;
-            $user = Message::where('id', $request->id)->first();
-            if (Mail::to($user->Email)->send(new reponse($data))) {
+            if (Mail::to($request->email)->send(new reponse($data))) {
                 return response()->json(['message' => 'reponse envoye avec success']);
             } else {
                 return response()->json(['message' => 'reponse non envoyer']);
