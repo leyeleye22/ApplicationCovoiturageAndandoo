@@ -14,11 +14,18 @@ class NewsletterController extends Controller
     public function index()
     {
         try {
-            $newsletter = Newsletter::all();
+            $newsletters = Newsletter::all();
+            $data = [];
+            foreach ($newsletters as $newsletter) {
+                $data[] = [
+                    'id' => $newsletter['id'],
+                    'email' => $newsletter['email'],
+                ];
+            }
             return response()->json([
                 'message' => '
             recuperation des newsletter',
-                'Data' => $newsletter
+                $data
             ], 200);
         } catch (\Throwable $th) {
         }
