@@ -26,12 +26,12 @@ class TrajetController extends Controller
                 $placedispo = $totalplaces - $total_place_reserve;
                 $data[] = [
                     'id' => $trajet['id'],
-                    'Lieu depart' => $trajet['LieuDepart'],
-                    'Lieu arrivee' => $trajet['LieuArrivee'],
-                    'Heure depart' => $trajet['HeureD'],
+                    'LieuDepart' => $trajet['LieuDepart'],
+                    'LieuArrivee' => $trajet['LieuArrivee'],
+                    'HeureDepart' => $trajet['HeureD'],
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
-                    'Nombre place disponible' => $placedispo
+                    'NombrePlaceDisponible' => $placedispo
                 ];
             }
             if ($trajets) {
