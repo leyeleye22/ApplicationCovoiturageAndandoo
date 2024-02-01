@@ -26,7 +26,7 @@ class StoreMessageRequest extends FormRequest
         return [
             'NomComplet' => ['required', 'string', 'min:3', 'max:30'],
             'Email' => ['required', 'email'],
-            'Contenue' => ['required', 'string', 'min:2', 'max:20']
+            'Contenue' => ['required', 'string', 'min:2']
         ];
     }
     public function failedValidation(validator $validator)
@@ -51,8 +51,7 @@ class StoreMessageRequest extends FormRequest
             'Email.email' => 'Le champ Email doit être une adresse e-mail valide.',
             'Contenue.required' => 'Le champ Contenu est requis.',
             'Contenue.string' => 'Le champ Contenu doit être une chaîne de caractères.',
-            'Contenue.min' => 'Le champ Contenu doit avoir au moins :min caractères.',
-            'Contenue.max' => 'Le champ Contenu ne doit pas dépasser :max caractères.'
+            'Contenue.min' => 'Le champ Contenu doit avoir au moins :min caractères.'
         ];
     }
     
