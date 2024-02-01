@@ -22,11 +22,7 @@ class NewsletterController extends Controller
                     'email' => $newsletter['email'],
                 ];
             }
-            return response()->json([
-                'message' => '
-            recuperation des newsletter',
-                $data
-            ], 200);
+            return response()->json([$data]);
         } catch (\Throwable $th) {
         }
     }
