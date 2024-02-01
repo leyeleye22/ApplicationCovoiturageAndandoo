@@ -24,6 +24,7 @@ class NewsletterController extends Controller
             }
             return response()->json($data);
         } catch (\Throwable $th) {
+            return $th->getMessage();
         }
     }
 

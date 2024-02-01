@@ -17,17 +17,26 @@ class TrajetController extends Controller
      */
     public function index()
     {
-
         try {
-            $trajet = Trajet::all();
-            if ($trajet) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Trajet reccupéré avec succès.',
-                    'date' => $trajet
-                ]);
+            $trajets = Trajet::all();
+            $data = [];
+            foreach ($trajets as $trajet) {
+                $totalplaces = $trajet->voiture->NbrPlaces;
+                $total_place_reserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
+                $placedispo = $totalplaces - $total_place_reserve;
+                $data[] = [
+                    'id' => $trajet['id'],
+                    'Lieu depart' => $trajet['LieuDepart'],
+                    'Lieu arrivee' => $trajet['LieuArrivee'],
+                    'Heure depart' => $trajet['HeureD'],
+                    'Prix' => $trajet['Prix'],
+                    'Description' => $trajet['DescriptionTrajet'],
+                    'Nombre place disponible' => $placedispo
+                ];
+            }
+            if ($trajets) {
+                return response()->json($data);
             } else {
-                // La sauvegarde a échoué
                 return response()->json([
                     'success' => false,
                     'message' => 'Échec du recuperation du trajet',
@@ -43,6 +52,8 @@ class TrajetController extends Controller
     }
 
 
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -54,7 +65,7 @@ class TrajetController extends Controller
             $id = Auth::guard('apiut')->user()->voiture->id;
             $trajet->fill($validatedData);
             $trajet->voiture_id = $id;
-            $trajet->DescriptionTrajet=$request->DescriptionTrajet;
+            $trajet->DescriptionTrajet = $request->DescriptionTrajet;
             if ($trajet->save()) {
                 event(new ActivationReservation($trajet));
                 return response()->json([
@@ -106,65 +117,65 @@ class TrajetController extends Controller
         }
     }
 
-/**
- * Update the specified resource in storage.
- */
-public function update(UpdateTrajetRequest $request, Trajet $trajet)
-{
-    $success = false;
-    $message = '';
-    $data = null;
-    $statusCode = 500;
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateTrajetRequest $request, Trajet $trajet)
+    {
+        $success = false;
+        $message = '';
+        $data = null;
+        $statusCode = 500;
 
-    try {
-        $validatedData = $request->validated();
-        if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
-            throw new Exception('Vous n\'êtes pas autorisé à modifier ce trajet.');
+        try {
+            $validatedData = $request->validated();
+            if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
+                throw new Exception('Vous n\'êtes pas autorisé à modifier ce trajet.');
+            }
+
+            if ($trajet->update($validatedData)) {
+                $success = true;
+                $message = 'Trajet modifié avec succès.';
+                $data = $trajet;
+                $statusCode = 200;
+            } else {
+                $message = 'Échec de la modification du trajet.';
+            }
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $statusCode = 403;
         }
 
-        if ($trajet->update($validatedData)) {
-            $success = true;
-            $message = 'Trajet modifié avec succès.';
-            $data = $trajet;
-            $statusCode = 200;
-        } else {
-            $message = 'Échec de la modification du trajet.';
-        }
-    } catch (\Exception $e) {
-        $message = $e->getMessage();
-        $statusCode = 403;
+        return response()->json(['success' => $success, 'message' => $message, 'data' => $data], $statusCode);
     }
 
-    return response()->json(['success' => $success, 'message' => $message, 'data' => $data], $statusCode);
-}
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Trajet $trajet)
+    {
 
-/**
- * Remove the specified resource from storage.
- */
-public function destroy(Trajet $trajet)
-{
+        $success = false;
+        $message = '';
+        $statusCode = 500;
 
-    $success = false;
-    $message = '';
-    $statusCode = 500;
+        try {
+            if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
+                throw new Exception('Vous n\'êtes pas autorisé à supprimer ce trajet.');
+            }
 
-    try {
-        if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
-            throw new Exception('Vous n\'êtes pas autorisé à supprimer ce trajet.');
+            if ($trajet->delete()) {
+                $success = true;
+                $message = 'Trajet supprimé avec succès.';
+                $statusCode = 200;
+            } else {
+                $message = 'Échec de la suppression du trajet.';
+            }
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $statusCode = 403;
         }
 
-        if ($trajet->delete()) {
-            $success = true;
-            $message = 'Trajet supprimé avec succès.';
-            $statusCode = 200;
-        } else {
-            $message = 'Échec de la suppression du trajet.';
-        }
-    } catch (\Exception $e) {
-        $message = $e->getMessage();
-        $statusCode = 403;
+        return response()->json(['success' => $success, 'message' => $message], $statusCode);
     }
-
-    return response()->json(['success' => $success, 'message' => $message], $statusCode);
-}
 }
