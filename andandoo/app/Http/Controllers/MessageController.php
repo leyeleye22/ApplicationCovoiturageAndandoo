@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Mail\Response as reponse;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
@@ -51,17 +52,14 @@ class MessageController extends Controller
             ]);
         }
     }
-    public function response(UpdateMessageRequest $request)
+    public function response(Request $request)
     {
         try {
             $data = $request->contenue;
-            $email = Message::where('id', $request->id)->select('email');
-            Mail::send('Responsemail', $data, function ($message) use ($email) {
-                $message->to($email);
-                $message->subject('Reponse de l\'administrateur');
-            });
+            $user = Message::where('id', $request->id)->first();
+            Mail::to($user->email)->send(new reponse($data));
         } catch (\Throwable $th) {
-            //throw $th;
+            return  $th->getMessage();
         }
     }
 }
