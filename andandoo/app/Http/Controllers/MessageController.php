@@ -57,7 +57,8 @@ class MessageController extends Controller
         try {
             $data = $request->contenue;
             $user = Message::where('id', $request->id)->first();
-            Mail::to($user->email)->send(new reponse($data));
+            Mail::to($user->Email)->send(new reponse($data));
+            return response()->json(['message'=>'reponse envoye avec success']);
         } catch (\Throwable $th) {
             return  $th->getMessage();
         }
