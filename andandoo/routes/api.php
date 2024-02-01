@@ -90,7 +90,7 @@ Route::middleware('auth:api')->group(function () {
 // Messages Admin
 Route::get('/listMessage', [MessageController::class, 'show']);
 Route::post('/envoyer', [MessageController::class, 'send']);
-Route::get('/repondre/Message', [MessageController::class, 'response']);
+Route::post('/repondre/Message', [MessageController::class, 'response']);
 Route::middleware('auth:apiut,client:client')->group(function () {
     Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 });
