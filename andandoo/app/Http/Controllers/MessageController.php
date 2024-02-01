@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,5 +53,15 @@ class MessageController extends Controller
     }
     public function response(UpdateMessageRequest $request)
     {
+        try {
+            $data = $request->contenue;
+            $email = Message::where('id', $request->id)->select('email');
+            Mail::send('Responsemail', $data, function ($message) use ($email) {
+                $message->to($email);
+                $message->subject('Reponse de l\'administrateur');
+            });
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
