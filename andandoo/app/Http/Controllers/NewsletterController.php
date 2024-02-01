@@ -36,9 +36,13 @@ class NewsletterController extends Controller
                 return response()->json([
                     'message' => 'Vous etes enregistrer merci'
                 ]);
+            } else {
+                return response()->json([
+                    'message' => 'Mail non reçu'
+                ]);
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            return $th->getMessage();
         }
     }
 
