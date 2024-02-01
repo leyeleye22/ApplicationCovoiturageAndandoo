@@ -12,36 +12,41 @@ class MessageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api',['except' => ['send']]);
+        $this->middleware('auth:api', ['except' => ['send']]);
     }
 
     public function show()
     {
         try {
-            $messages =Message::all();
-            return response()->json(
-                [   'messages' => 'Success',
-                    'StatusCode'=>200,
-                    'data' => $messages],
-                Response::HTTP_OK
-            );
+            $messages = Message::all();
+            $data = [];
+            foreach ($messages as $message) {
+                $data[] = [
+                    'nomComplet' => $message['NomComplet'],
+                    'email' => $message['Email'],
+                    'contenue' => $message['Contenue']
+                ];
+            }
+
+            return response()->json($data, Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(
-                ['error' => 'Failed to retrieve message. Unexpected error.'],
+                ['error' => 'Echec de recuperation des messages'],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
-    public function send(StoreMessageRequest $request){
+    public function send(StoreMessageRequest $request)
+    {
         $validatedData = $request->validated();
-            $message = new Message();
-            $message->fill($validatedData);
-            if($message->save()){
-                return response()->json([
-                    'message' => 'success',
-                    'SatusCode' => 200,
-                    'Data' => $message
-                ]);
-            }
+        $message = new Message();
+        $message->fill($validatedData);
+        if ($message->save()) {
+            return response()->json([
+                'message' => 'success',
+                'SatusCode' => 200,
+                'Data' => $message
+            ]);
+        }
     }
 }
