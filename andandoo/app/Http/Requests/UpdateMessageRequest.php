@@ -24,7 +24,7 @@ class UpdateMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:messages,id',
+            'email' => 'required|email|exists:messages,email',
             'contenue' => 'required|string|min:2',
         ];
     }
@@ -41,12 +41,12 @@ class UpdateMessageRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'l\'identifiant est requis',
-            'id.integer' => 'l\'identifiant doit être un nombre entier',
-            'id.exists' => 'Cette personne n\'existe pas',
+            'email.required' => 'l\'identifiant est requis',
+            'email.email' => 'l\'email n\'est pas valide',
+            'email.exists' => 'l\'email n\'existe pas',
             'contenue.required' => 'Impossible d\'envoyer un message vide',
             'contenue.string' => 'le contenue doit être une chaine de caractere',
-            'contenue.min' => ''
+            'contenue.min' => 'c\est trop petit comme contenu'
         ];
     }
 }

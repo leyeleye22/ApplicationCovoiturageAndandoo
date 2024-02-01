@@ -52,7 +52,7 @@ class MessageController extends Controller
             ]);
         }
     }
-    public function response(Request $request)
+    public function response(UpdateMessageRequest $request)
     {
         try {
             $data = $request->contenue;
