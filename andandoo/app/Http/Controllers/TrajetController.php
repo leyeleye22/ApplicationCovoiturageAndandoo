@@ -28,6 +28,7 @@ class TrajetController extends Controller
                     'id' => $trajet['id'],
                     'LieuDepart' => $trajet['LieuDepart'],
                     'LieuArrivee' => $trajet['LieuArrivee'],
+                    'DeateDepart' => $trajet['DateDepart'],
                     'HeureDepart' => $trajet['HeureD'],
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
