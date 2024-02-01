@@ -24,8 +24,8 @@ class UpdateMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required|integer|exists:messages,id'],
-            'contenue' => ['required|string|min:2'],
+            'id' => 'required|integer|exists:messages,id',
+            'contenue' => 'required|string|min:2',
         ];
     }
     public function failedValidation(validator $validator)
