@@ -22,6 +22,7 @@ class MessageController extends Controller
             $data = [];
             foreach ($messages as $message) {
                 $data[] = [
+                    'id' => $message['id'],
                     'nomComplet' => $message['NomComplet'],
                     'email' => $message['Email'],
                     'contenue' => $message['Contenue']
@@ -48,5 +49,8 @@ class MessageController extends Controller
                 'Data' => $message
             ]);
         }
+    }
+    public function response(UpdateMessageRequest $request)
+    {
     }
 }
