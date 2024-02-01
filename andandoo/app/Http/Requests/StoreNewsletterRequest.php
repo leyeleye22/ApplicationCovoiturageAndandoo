@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class StoreNewsletterRequest extends FormRequest
 {
     /**
@@ -23,7 +24,7 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email']
+            'email' => ['required|email|unique:newsletters,email']
         ];
     }
     public function failedValidation(validator $validator)
@@ -40,6 +41,7 @@ class StoreNewsletterRequest extends FormRequest
     {
         return [
             'email.required' => 'Le champ email est requis.',
+            'email.unique' => 'Vous etes deja enregistrer merci de votre soutien',
         ];
     }
 }
