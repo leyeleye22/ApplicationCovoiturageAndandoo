@@ -28,7 +28,7 @@ class MessageController extends Controller
                 ];
             }
 
-            return response()->json($data, Response::HTTP_OK);
+            return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json(
                 ['error' => 'Echec de recuperation des messages'],

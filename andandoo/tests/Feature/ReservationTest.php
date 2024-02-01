@@ -46,6 +46,7 @@ class ReservationTest extends TestCase
     {
         $user = Utilisateur::factory()->create();
         $this->actingAs($user,'apiut');
+        
         $reservationtr=Reservation::FindOrFail(1);
         $response = $this->delete('api/DeleteReservation/'.$reservationtr->id);
         $response->assertStatus(200);
