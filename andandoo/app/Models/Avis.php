@@ -9,8 +9,8 @@ class Avis extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'contenue',
-        'notation'
+        'Contenue',
+        'Notation'
     ];
     public function utilisateur()
     {
