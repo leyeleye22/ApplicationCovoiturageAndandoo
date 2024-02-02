@@ -57,6 +57,7 @@ Route::middleware('auth:apiut,client:client')->group(function () {
 });
 
 //Trajet
+//oui
 Route::get('/ListTrajet', [TrajetController::class, 'index']);
 Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     Route::get('/mestrajets', [TrajetController::class, 'mestrajets']);
