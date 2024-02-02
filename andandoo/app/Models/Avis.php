@@ -13,5 +13,5 @@ class Avis extends Model
         'Notation',
         'utilisateur_id',
         'voiture_id'
-    ]
+    ];
 }
