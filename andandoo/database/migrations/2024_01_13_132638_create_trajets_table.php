@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('DateDepart');
             $table->time('HeureD');
             $table->float('Prix');
-            $table->string('DescriptionTrajet');
+            $table->string('DescriptionTrajet')->nullable();
             $table->enum('Status', ['terminee', 'enCours'])->default('enCours');
             $table->foreignId('voiture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

@@ -23,7 +23,7 @@ class ZonesController extends Controller
             $validatedData = $request->validated();
             $zones = new Zones();
 
-            $zones->NomZ = $validatedData['nom'];
+            $zones->NomZ = $request->NomZ;
             $zones->user_id = auth()->user()->id;
             $zones->save();
 
@@ -49,7 +49,7 @@ class ZonesController extends Controller
                     'nom' => $zone['NomZ'],
                 ];
             }
-            
+
             return response()->json($data, Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(

@@ -115,7 +115,7 @@ class TrajetController extends Controller
             $validatedData = $request->validated();
             $trajet = new Trajet();
             $id = Auth::guard('apiut')->user()->voiture->id;
-            $dateexist = Trajet::where('DateDepart', $request)
+            $dateexist = Trajet::where('DateDepart', $request->DateDepart)
                 ->where('HeureD', $request->HeureD)
                 ->where('voiture_id', $id)->first();
             if ($dateexist) {
