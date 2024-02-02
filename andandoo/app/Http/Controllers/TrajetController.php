@@ -79,7 +79,7 @@ class TrajetController extends Controller
     public function mestrajets()
     {
         try {
-            $mestrajets = Trajet::where('voiture_id', Auth::guard('apiut')->user()->voiture->id);
+            $mestrajets = Trajet::where('voiture_id', Auth::guard('apiut')->user()->voiture->id)->get();
             $data = [];
             foreach ($mestrajets as $mestajet) {
                 $data[] = [
