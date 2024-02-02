@@ -18,39 +18,63 @@ class TrajetController extends Controller
     public function index()
     {
         try {
-            $trajets = Trajet::all();
+   
+            $trajets = Trajet::with('voiture.utilisateur')->get();
+
+     
             $data = [];
+
+   
             foreach ($trajets as $trajet) {
-                $totalplaces = $trajet->voiture->NbrPlaces;
-                $total_place_reserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
-                $placedispo = $totalplaces - $total_place_reserve;
+            
+                $totalPlaces = $trajet->voiture->NbrPlaces;
+                $totalPlaceReserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
+                $placeDispo = $totalPlaces - $totalPlaceReserve;
+
+             
+                $chauffeur = $trajet->voiture->utilisateur;
+                $prenom = $chauffeur->Nom;
+                $nom = $chauffeur->Prenom;
+                $imageChauffeur = $chauffeur->ImageProfile;
+                $imageVoiture = $trajet->voiture->ImageVoitures;
+
+                
                 $data[] = [
                     'id' => $trajet['id'],
                     'LieuDepart' => $trajet['LieuDepart'],
                     'LieuArrivee' => $trajet['LieuArrivee'],
-                    'DeateDepart' => $trajet['DateDepart'],
-                    'HeureDepart' => $trajet['HeureD'],
+                    'DateDepart' => $trajet['DateDepart'], 
+                    'HeureDepart' => $trajet['HeureD'], 
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
-                    'NombrePlaceDisponible' => $placedispo
+                    'NombrePlaceDisponible' => $placeDispo,
+                    'NomChauffeur' => $nom,
+                    'PrenomChauffeur' => $prenom,
+                    'ImageProfile' => $imageChauffeur,
+                    'ImageVoiture' => $imageVoiture,
                 ];
             }
-            if ($trajets) {
+
+          
+            if (!empty($data)) {
                 return response()->json($data);
             } else {
+             
                 return response()->json([
                     'success' => false,
-                    'message' => 'Échec du recuperation du trajet',
-                ], 500);
+                    'message' => 'Aucun trajet trouvé.',
+                ], 404);
             }
         } catch (\Exception $e) {
+  
             return response()->json([
                 'success' => false,
-                'message' => 'Une erreur s\'est produite lors du recuperation du trajet.',
+                'message' => 'Une erreur s\'est produite lors de la récupération des trajets.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
 
 
@@ -97,6 +121,7 @@ class TrajetController extends Controller
     {
         try {
             if ($trajet) {
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Trajet reccupéré avec succès.',
