@@ -18,33 +18,33 @@ class TrajetController extends Controller
     public function index()
     {
         try {
-   
+
             $trajets = Trajet::with('voiture.utilisateur')->get();
 
-     
+
             $data = [];
 
-   
+
             foreach ($trajets as $trajet) {
-            
+
                 $totalPlaces = $trajet->voiture->NbrPlaces;
                 $totalPlaceReserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
                 $placeDispo = $totalPlaces - $totalPlaceReserve;
 
-             
+
                 $chauffeur = $trajet->voiture->utilisateur;
-                $prenom = $chauffeur->Nom;
-                $nom = $chauffeur->Prenom;
+                $nom = $chauffeur->Nom;
+                $prenom = $chauffeur->Prenom;
                 $imageChauffeur = $chauffeur->ImageProfile;
                 $imageVoiture = $trajet->voiture->ImageVoitures;
 
-                
+
                 $data[] = [
                     'id' => $trajet['id'],
                     'LieuDepart' => $trajet['LieuDepart'],
                     'LieuArrivee' => $trajet['LieuArrivee'],
-                    'DateDepart' => $trajet['DateDepart'], 
-                    'HeureDepart' => $trajet['HeureD'], 
+                    'DateDepart' => $trajet['DateDepart'],
+                    'HeureDepart' => $trajet['HeureD'],
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
                     'NombrePlaceDisponible' => $placeDispo,
@@ -55,18 +55,18 @@ class TrajetController extends Controller
                 ];
             }
 
-          
+
             if (!empty($data)) {
                 return response()->json($data);
             } else {
-             
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Aucun trajet trouvé.',
                 ], 404);
             }
         } catch (\Exception $e) {
-  
+
             return response()->json([
                 'success' => false,
                 'message' => 'Une erreur s\'est produite lors de la récupération des trajets.',
