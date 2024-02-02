@@ -25,7 +25,7 @@ class StoreTrajetRequest extends FormRequest
     {
         return [
             'LieuDepart' => 'required|string|max:255',
-            'LieuArrivee' => 'required|string|max:255',
+            'LieuArrivee' => 'required|string|max:255|different:LieuDepart',
             'DateDepart' => 'required|date|after_or_equal:today',
             'HeureD' => 'required|date_format:H:i',
             'Prix' => 'required|numeric|min:0',
@@ -52,6 +52,7 @@ class StoreTrajetRequest extends FormRequest
             'LieuArrivee.required' => 'Le lieu d\'arrivée est obligatoire.',
             'LieuArrivee.string' => 'Le lieu d\'arrivée doit être une chaîne de caractères.',
             'LieuArrivee.max' => 'Le lieu d\'arrivée ne doit pas dépasser 255 caractères.',
+            'LieuArrivee.different' => 'Le lieu d\'arrivée ne doit pas etre le meme que le lieu de depart',
             'DateDepart.required' => 'La date de départ est obligatoire.',
             'DateDepart.date' => 'La date de départ doit être une date valide.',
             'DateDepart.after_or_equal' => 'La date de départ doit être aujourd\'hui ou dans le futur.',

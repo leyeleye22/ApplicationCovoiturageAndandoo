@@ -74,6 +74,32 @@ class TrajetController extends Controller
             ], 500);
         }
     }
+    public function mestrajets()
+    {
+        try {
+            $mestrajets = Trajet::where('voiture_id', Auth::guard('apiut')->user()->voiture->id);
+            $data = [];
+            foreach ($mestrajets as $mestajet) {
+                $data[] = [
+                    'id' => $mestajet['id'],
+                    'LieuDepart' => $mestajet['LieuDepart'],
+                    'LieuArrivee' => $mestajet['LieuArrivee'],
+                    'HeureD' => $mestajet['HeureD'],
+                    'Prix' => $mestajet['Prix'],
+                    'DescriptionTrajet' => $mestajet['DescriptionTrajet']
+                ];
+            }
+            if ($mestrajets) {
+                return response()->json($data);
+            } else {
+                return response()->json([
+                    'messages' => 'Vous avez 0 trajet'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 
 
 
@@ -85,9 +111,19 @@ class TrajetController extends Controller
     public function store(StoreTrajetRequest $request)
     {
         try {
+
             $validatedData = $request->validated();
             $trajet = new Trajet();
             $id = Auth::guard('apiut')->user()->voiture->id;
+            $dateexist = Trajet::where('DateDepart', $request)
+                ->where('HeureD', $request->HeureD)
+                ->where('voiture_id', $id)->first();
+            if ($dateexist) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vous avez deja un trajet a cette heure',
+                ]);
+            }
             $trajet->fill($validatedData);
             $trajet->voiture_id = $id;
             $trajet->DescriptionTrajet = $request->DescriptionTrajet;

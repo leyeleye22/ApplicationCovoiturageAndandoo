@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('Telephone');
             $table->string('ImageProfile')->nullable();
             $table->string('PermisConduire')->nullable();
+            $table->string('CarteGrise')->nullable();
             $table->string('Licence')->nullable();
             $table->enum('role', ['chauffeur', 'client']);
             $table->foreignId('zone_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

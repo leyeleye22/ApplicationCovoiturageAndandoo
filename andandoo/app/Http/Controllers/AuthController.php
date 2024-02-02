@@ -37,7 +37,7 @@ class AuthController extends Controller
         $response = [
             'message' => 'Les images doivent être rempli',
             'user' => null,
-            'statusCode' => 400,
+            'statusCode' => 422,
         ];
 
         try {
@@ -46,7 +46,8 @@ class AuthController extends Controller
                 $request->role == "chauffeur" &&
                 (!$request->hasFile('ImageProfile') ||
                     !$request->hasFile('Licence') ||
-                    !$request->hasFile('PermisConduire'))
+                    !$request->hasFile('PermisConduire') ||
+                    !$request->hasFile('CarteGrise'))
             ) {
                 return response()->json($response, $response['statusCode']);
             }
@@ -57,6 +58,7 @@ class AuthController extends Controller
             $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
             $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
             $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
+            $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
             $utilisateur->password = Hash::make($utilisateur->password);
 
             if ($utilisateur->save()) {

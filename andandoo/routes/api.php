@@ -59,7 +59,7 @@ Route::middleware('auth:apiut,client:client')->group(function () {
 //Trajet
 Route::get('/ListTrajet', [TrajetController::class, 'index']);
 Route::middleware('auth:apiut,client:chauffeur')->group(function () {
-   
+    Route::post('/mestrajets', [TrajetController::class, 'mestrajets']);
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
     Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteTrajet/{trajet}', [TrajetController::class, 'destroy']);
@@ -76,6 +76,7 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     ); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 });
+Route::get('/lister/{utilisateur}',[AvisController::class, 'show']);
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::middleware('auth:api')->group(function () {

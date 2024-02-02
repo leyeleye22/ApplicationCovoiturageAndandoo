@@ -6,6 +6,7 @@ use App\Models\Avis;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreAvisRequest;
 use App\Http\Requests\UpdateAvisRequest;
+use App\Models\Utilisateur;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 class AvisController extends Controller
@@ -54,9 +55,13 @@ class AvisController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Avis $avis)
+    public function show(Utilisateur $utilisateur)
     {
-        //
+        // try {
+        //      $avis=Avis
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        // }
     }
 
     /**
