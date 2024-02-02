@@ -27,7 +27,7 @@ class UpdateTrajetRequest extends FormRequest
             'LieuDepart' => 'required|string|max:255',
             'LieuArrivee' => 'required|string|max:255',
             'DateDepart' => 'required|date|after_or_equal:today',
-            'HeureD' => 'required|date_format:H:i',
+            'HeureD' => 'required|date_format:H:i:s',
             'Prix' => 'required|numeric|min:0',
             'DescriptionTrajet' => 'nullable|string',
         ];
@@ -56,7 +56,7 @@ class UpdateTrajetRequest extends FormRequest
             'DateDepart.date' => 'La date de départ doit être une date valide.',
             'DateDepart.after_or_equal' => 'La date de départ doit être aujourd\'hui ou dans le futur.',
             'HeureD.required' => 'L\'heure de départ est obligatoire.',
-            'HeureD.date_format' => 'L\'heure de départ doit être au format H:i(12:30).',
+            'HeureD.date_format' => 'L\'heure de départ doit être au format H:i(12:30:30).',
             'Prix.required' => 'Le prix du trajet est obligatoire.',
             'Prix.numeric' => 'Le prix du trajet doit être un nombre.',
             'Prix.min' => 'Le prix du trajet ne peut pas être négatif.',
