@@ -37,7 +37,7 @@ class TrajetController extends Controller
                 $prenom = $chauffeur->Prenom;
                 $imageChauffeur = $chauffeur->ImageProfile;
                 $imageVoiture = $trajet->voiture->ImageVoitures;
-
+//nice
 
                 $data[] = [
                     'id' => $trajet['id'],
