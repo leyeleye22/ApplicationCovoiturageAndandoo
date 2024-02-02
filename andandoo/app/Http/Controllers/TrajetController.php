@@ -19,7 +19,7 @@ class TrajetController extends Controller
     {
         try {
 
-            $trajets = Trajet::with('voiture.utilisateur')->get();
+            $trajets = Trajet::with('voiture_id', Auth::guard('apiut')->user()->voiture->id)->get();
 
 
             $data = [];
@@ -48,7 +48,7 @@ class TrajetController extends Controller
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
                     'NombrePlaceDisponible' => $placeDispo,
-                    'Status'=>$trajet['Status'],
+                    'Status' => $trajet['Status'],
                     'ChauffeurId' => $chauffeur->id,
                     'NomChauffeur' => $nom,
                     'PrenomChauffeur' => $prenom,
