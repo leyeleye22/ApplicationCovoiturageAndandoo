@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Avis extends Model
 {
     use HasFactory;
+    protected $fillable=[
+        'contenue',
+        'notation'
+    ]
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);
