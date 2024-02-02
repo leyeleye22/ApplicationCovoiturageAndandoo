@@ -59,7 +59,7 @@ Route::middleware('auth:apiut,client:client')->group(function () {
 //Trajet
 Route::get('/ListTrajet', [TrajetController::class, 'index']);
 Route::middleware('auth:apiut,client:chauffeur')->group(function () {
-    Route::post('/mestrajets', [TrajetController::class, 'mestrajets']);
+    Route::get('/mestrajets', [TrajetController::class, 'mestrajets']);
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
     Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteTrajet/{trajet}', [TrajetController::class, 'destroy']);
