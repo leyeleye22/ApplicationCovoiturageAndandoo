@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->integer('NombrePlaces');
+            $table->integer('NombrePlaces')->default(1);
             $table->boolean('Accepted')->default(false);
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('trajet_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
