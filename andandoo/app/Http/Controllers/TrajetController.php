@@ -80,15 +80,33 @@ class TrajetController extends Controller
     {
         try {
             $mestrajets = Trajet::where('voiture_id', Auth::guard('apiut')->user()->voiture->id)->get();
-            $data = [];
-            foreach ($mestrajets as $mestajet) {
+            foreach ($mestrajets as $mestrajet) {
+
+                $totalPlaces = $mestrajet->voiture->NbrPlaces;
+                $totalPlaceReserve = $mestrajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
+                $placeDispo = $totalPlaces - $totalPlaceReserve;
+
+
+                $chauffeur = $mestrajet->voiture->utilisateur;
+                $nom = $chauffeur->Nom;
+                $prenom = $chauffeur->Prenom;
+                $imageChauffeur = $chauffeur->ImageProfile;
+                $imageVoiture = $mestrajet->voiture->ImageVoitures;
                 $data[] = [
-                    'id' => $mestajet['id'],
-                    'LieuDepart' => $mestajet['LieuDepart'],
-                    'LieuArrivee' => $mestajet['LieuArrivee'],
-                    'HeureD' => $mestajet['HeureD'],
-                    'Prix' => $mestajet['Prix'],
-                    'DescriptionTrajet' => $mestajet['DescriptionTrajet']
+                    'id' => $mestrajet['id'],
+                    'LieuDepart' => $mestrajet['LieuDepart'],
+                    'LieuArrivee' => $mestrajet['LieuArrivee'],
+                    'DateDepart' => $mestrajet['DateDepart'],
+                    'HeureDepart' => $mestrajet['HeureD'],
+                    'Prix' => $mestrajet['Prix'],
+                    'Description' => $mestrajet['DescriptionTrajet'],
+                    'NombrePlaceDisponible' => $placeDispo,
+                    'Status' => $mestrajet['Status'],
+                    'ChauffeurId' => $chauffeur->id,
+                    'NomChauffeur' => $nom,
+                    'PrenomChauffeur' => $prenom,
+                    'ImageProfile' => $imageChauffeur,
+                    'ImageVoiture' => $imageVoiture,
                 ];
             }
             if ($mestrajets) {
