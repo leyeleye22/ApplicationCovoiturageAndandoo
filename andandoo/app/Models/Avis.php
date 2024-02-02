@@ -11,7 +11,7 @@ class Avis extends Model
     protected $fillable=[
         'contenue',
         'notation'
-    ]
+    ];
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);
