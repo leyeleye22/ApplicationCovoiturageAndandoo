@@ -48,6 +48,7 @@ class TrajetController extends Controller
                     'Prix' => $trajet['Prix'],
                     'Description' => $trajet['DescriptionTrajet'],
                     'NombrePlaceDisponible' => $placeDispo,
+                    'ChauffeurId' => $chauffeur->id,
                     'NomChauffeur' => $nom,
                     'PrenomChauffeur' => $prenom,
                     'ImageProfile' => $imageChauffeur,
