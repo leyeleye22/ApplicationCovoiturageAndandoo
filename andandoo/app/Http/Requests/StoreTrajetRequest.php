@@ -28,7 +28,7 @@ class StoreTrajetRequest extends FormRequest
             'LieuArrivee' => 'required|string|max:255|different:LieuDepart',
             'DateDepart' => 'required|date|after_or_equal:today',
             'HeureD' => 'required|date_format:H:i',
-            'Prix' => 'required|numeric|min:0',
+            'Prix' => 'required|numeric|min:100',
             'DescriptionTrajet' => 'nullable|string',
         ];
     }

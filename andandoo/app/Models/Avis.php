@@ -10,10 +10,8 @@ class Avis extends Model
     use HasFactory;
     protected $fillable=[
         'Contenue',
-        'Notation'
-    ];
-    public function utilisateur()
-    {
-        return $this->belongsTo(Utilisateur::class);
-    }
+        'Notation',
+        'utilisateur_id',
+        'voiture_id'
+    ]
 }

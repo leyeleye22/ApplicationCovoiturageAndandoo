@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('Contenue');
             $table->integer('Notation');
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('voiture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

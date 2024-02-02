@@ -76,7 +76,7 @@ Route::middleware('auth:apiut,client:chauffeur')->group(function () {
     ); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 });
-Route::get('/lister/{utilisateur}',[AvisController::class, 'show']);
+Route::get('/lister/{utilisateur}', [AvisController::class, 'show']);
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::middleware('auth:api')->group(function () {

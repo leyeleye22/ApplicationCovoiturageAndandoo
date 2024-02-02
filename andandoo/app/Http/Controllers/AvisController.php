@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateAvisRequest;
 use App\Models\Utilisateur;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+
 class AvisController extends Controller
 {
     /**
@@ -19,34 +20,35 @@ class AvisController extends Controller
         //
     }
 
-  public function create(StoreAvisRequest $req)
-{
-    $success = false;
-    $responseData = [];
-    $statusCode = 500;
+    public function create(StoreAvisRequest $req)
+    {
+        $success = false;
+        $responseData = [];
+        $statusCode = 500;
 
-    try {
-        $validatedData = $req->validated();
-        $avis = new Avis();
-        $avis->fill($validatedData);
-        $avis->utilisateur_id = Auth::guard('apiut')->user()->id;
-        $avis->save();
-        $success = true;
-        $responseData = ['success' => true, 'avis' => $avis];
-        $statusCode = 200;
-    } catch (ValidationException $e) {
-        $responseData = ['success' => false, 'errors' => $e->errors()];
-        $statusCode = 422;
-    } catch (QueryException $e) {
-        $responseData = ['success' => false, 'error' => 'Erreur de base de données.'];
-        $statusCode = 500;
-    } catch (\Exception $e) {
-        $responseData = ['success' => false, 'error' => $e->getMessage()];
-        $statusCode = 500;
+        try {
+            $validatedData = $req->validated();
+            $avis = new Avis();
+            $avis->fill($validatedData);
+            $avis->utilisateur_id = Auth::guard('apiut')->user()->id;
+            $avis->voiture_id = $req->id;
+            $avis->save();
+            $success = true;
+            $responseData = ['success' => true, 'avis' => $avis];
+            $statusCode = 200;
+        } catch (ValidationException $e) {
+            $responseData = ['success' => false, 'errors' => $e->errors()];
+            $statusCode = 422;
+        } catch (QueryException $e) {
+            $responseData = ['success' => false, 'error' => 'Erreur de base de données.'];
+            $statusCode = 500;
+        } catch (\Exception $e) {
+            $responseData = ['success' => false, 'error' => $e->getMessage()];
+            $statusCode = 500;
+        }
+
+        return response()->json($responseData, $statusCode);
     }
-
-    return response()->json($responseData, $statusCode);
-}
 
     /**
      * Store a newly created resource in storage.
@@ -80,7 +82,7 @@ class AvisController extends Controller
         $success = false;
         $responseData = [];
         $statusCode = 500;
-    
+
         try {
             $validatedData = $request->validated();
             if ($avis->utilisateur_id !== Auth::guard('apiut')->user()->id) {
@@ -100,8 +102,8 @@ class AvisController extends Controller
             $responseData = ['success' => false, 'error' => $e->getMessage()];
             $statusCode = 403;
         }
-    
-        return response()->json($success,$statusCode,$responseData);
+
+        return response()->json($success, $statusCode, $responseData);
     }
 
     /**
