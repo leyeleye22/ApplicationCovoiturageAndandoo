@@ -37,6 +37,7 @@ class UtilisateurController extends Controller
                 $client = $reservation->utilisateur;
                 $trajet = $reservation->trajet;
                 $data[] = [
+                    'id' => $reservation->id,
                     'Profile' => $client->ImageProfile,
                     'Nom' => $client->Nom,
                     'Prenom' => $client->Prenom,
