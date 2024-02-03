@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ReservationAccepted;
+use App\Models\Voiture;
 use App\Models\Reservation;
 use App\Models\Utilisateur;
+use App\Events\ReservationAccepted;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUtilisateurRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +19,19 @@ class UtilisateurController extends Controller
     public function index()
     {
         try {
-            $user = Auth::guard('apiut')->user()->id;
-            $reservations = Reservation::where('utilisateur_id', $user)->get();
+            $chauffeurId = Auth::guard('apiut')->user()->id;
+
+            $voiture = Voiture::where('chauffeur_id', $chauffeurId)->first();
+
+            $trajets = $voiture->trajets;
+
+            $reservations = collect();
+
+            foreach ($trajets as $trajet) {
+                $reservationsDuTrajet = $trajet->reservations;
+                $reservations = $reservations->concat($reservationsDuTrajet);
+            }
+
             $data = [];
             foreach ($reservations as $reservation) {
                 $client = $reservation->utilisateur;
@@ -51,6 +63,7 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
+
     public function showUsers()
     {
         try {
