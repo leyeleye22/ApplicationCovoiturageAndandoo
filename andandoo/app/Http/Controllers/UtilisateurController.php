@@ -19,9 +19,9 @@ class UtilisateurController extends Controller
     public function index()
     {
         try {
-            $chauffeurId = Auth::guard('apiut')->user()->id;
+            $chauffeur = Auth::guard('apiut')->user();
 
-            $voiture = Voiture::where('chauffeur_id', $chauffeurId)->first();
+            $voiture = $chauffeur->voiture;
 
             $trajets = $voiture->trajets;
 
