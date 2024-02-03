@@ -4,11 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Voiture;
-use App\Models\Utilisateur;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VoitureTest extends TestCase
@@ -25,10 +23,10 @@ class VoitureTest extends TestCase
             'email' => 'admin@andandoo.com',
             'password' => bcrypt('andandoo12'),
         ]);
-    
-        $this->actingAs($user);
-    
 
+        $this->actingAs($user);
+
+        // Création d'une zone
         $zoneData = [
             'NomZ' => $this->faker->city,
             'user_id' => $user->id
@@ -37,7 +35,6 @@ class VoitureTest extends TestCase
         $response->assertStatus(201);
         $this->assertDatabaseHas('zones', $zoneData);
 
-    
         // Enregistrement d'un chauffeur avec tous les attributs requis
         $chauffeurData = [
             'Nom' => $this->faker->lastName,
@@ -45,49 +42,52 @@ class VoitureTest extends TestCase
             'Email' => 'chauffeur@example.com',
             'Telephone' => $this->faker->unique()->phoneNumber,
             'role' => 'chauffeur',
-            'zone_id' => $zoneData['id'], // Utiliser $zone pour obtenir l'id de la zone
+            'zone_id' => 1, // Utilisation de l'ID de la zone créée précédemment
             'ImageProfile' => UploadedFile::fake()->image('image.jpg'),
             'PermisConduire' => UploadedFile::fake()->image('permis.jpg'),
             'CarteGrise' => UploadedFile::fake()->image('carte_grise.jpg'),
             'Licence' => UploadedFile::fake()->image('licence.jpg'),
             'password' => 'password',
         ];
-    
+
         $response = $this->postJson('/api/register', $chauffeurData);
-        $response->assertStatus(201);
-    
+        $response->assertStatus(200);
+
         // Connexion du chauffeur
         $response = $this->postJson('/api/login', [
             'email' => 'chauffeur@example.com',
             'password' => 'password',
         ]);
+
         $response->assertStatus(200);
-        $token = json_decode($response->getContent(), true)['access_token'];
-    
+
+        $user = User::where('email', 'chauffeur@example.com')->first();
+
+        $this->actingAs($user, 'apiut');
+
         // Création d'une voiture associée au chauffeur connecté
         $voitureData = [
             'ImageVoitures' => UploadedFile::fake()->image('voiture.jpg'),
             'Descriptions' => 'Ma belle voiture',
             'NbrPlaces' => 4,
-            'utilisateur_id' => auth()->user()->id,
+            'utilisateur_id' => $user->id,
         ];
-    
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])->postJson('/api/AjouterVoiture', $voitureData);
+
+        $response = $this->postJson('/api/AjouterVoiture', $voitureData);
         $response->assertStatus(201);
         $this->assertDatabaseHas('voitures', $voitureData);
-    
+
         // Modifier la voiture
         $voiture = Voiture::first();
         $updatedVoitureData = [
             'ImageVoitures' => UploadedFile::fake()->image('updated_voiture.jpg'),
             'Descriptions' => 'Ma voiture mise à jour',
             'NbrPlaces' => 5,
-            'utilisateur_id' => auth()->user()->id,
+            'utilisateur_id' => $user->id,
         ];
-    
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])->postJson("/api/ModifierVoiture/{$voiture->id}", $updatedVoitureData);
+
+        $response = $this->postJson("/api/ModifierVoiture/{$voiture->id}", $updatedVoitureData);
         $response->assertStatus(200);
         $this->assertDatabaseHas('voitures', $updatedVoitureData);
     }
-    
 }

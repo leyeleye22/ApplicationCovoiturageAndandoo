@@ -234,7 +234,7 @@ class UtilisateurController extends Controller
     public function destroy(Reservation $reservation)
     {
         try {
-            if ($reservation) {
+            if ($reservation->Accepted == false) {
                 $reservation->delete();
                 return response()->json([
                     'success' => true,
