@@ -23,7 +23,7 @@ class UtilisateurController extends Controller
 
             $voiture = $chauffeur->voiture;
 
-            $trajets = $voiture->trajets;
+            $trajets = $voiture->trajet;
 
             $reservations = collect();
 
