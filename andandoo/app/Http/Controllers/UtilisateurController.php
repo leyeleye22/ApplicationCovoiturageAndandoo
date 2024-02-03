@@ -246,7 +246,7 @@ class UtilisateurController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Échec du suppression du reservation',
-                ], 500);
+                ], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
