@@ -24,7 +24,7 @@ class UpdateZonesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => 'required|min:3|max:18',
+            'NomZ' => 'required|min:3|max:100',
         ];
     }
     public function failedValidation(validator $validator)
@@ -40,9 +40,9 @@ class UpdateZonesRequest extends FormRequest
     public function messages()
     {
         return [
-            'nom.required' => 'Le champs nom est requis',
-            'nom.min' => 'le nom doit être superieur egal à 3 caractere',
-            'nom.max' => 'le nom doit pas dépasser 18 caractere',
+            'NomZ.required' => 'Le champs nom est requis',
+            'NomZ.min' => 'le nom doit être superieur egal à 3 caractere',
+            'NomZ.max' => 'le nom doit pas dépasser 100 caractere',
         ];
     }
 }

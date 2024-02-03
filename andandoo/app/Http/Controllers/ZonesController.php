@@ -62,8 +62,8 @@ class ZonesController extends Controller
     public function update(UpdateZonesRequest $request, Zones $zones)
     {
         try {
-            $validatedData = $request->validated();
-            $zones->NomZ = $validatedData['nom'];
+
+            $zones->NomZ = $request->NomZ;
             $zones->save();
 
             return response()->json(['message' => 'Zone modifié avec succés'], Response::HTTP_OK);

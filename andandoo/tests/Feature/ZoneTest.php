@@ -2,64 +2,56 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\Zones;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class ZoneTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function testInsererZone(): void
+    use RefreshDatabase, WithFaker;
+
+    public function testZoneOperations()
     {
         $user = User::factory()->create([
             'email' => 'admin@andandoo.com',
             'password' => bcrypt('andandoo12'),
         ]);
-        $this->actingAs($user, 'api');
-        $zone = Zones::factory()->create();
-        $zoneinsere = $zone->toArray();
-        $this->assertDatabaseHas('Zones', $zoneinsere);
-    }
+    
+        $this->actingAs($user);
+    
 
-    public function testModifierZone(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'admin@andandoo.com',
-            'password' => bcrypt('andandoo12'),
-        ]);
-        $this->actingAs($user, 'api');
-
-        $zone = [
-            'NomZ' => 'Pikine Thies',
-            'user_id' => auth()->user()->id
+        $zoneData = [
+            'NomZ' => $this->faker->city,
+            'user_id' => $user->id
         ];
-        $zoneTr = Zones::FindOrFail(2);
-        $response = $this->post('api/updatezone/' . $zoneTr->id, $zone);
+        $response = $this->postJson('/api/createzone', $zoneData);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('zones', $zoneData);
+
+        $createdZone = Zones::where('NomZ', $zoneData['NomZ'])->first();
+    
+
+        $updatedZoneData = [
+            'NomZ' => 'Nouveau nom de zone', 
+            'user_id' => $user->id
+        ];
+        $response = $this->postJson("/api/updatezone/{$createdZone->id}", $updatedZoneData);
         $response->assertStatus(200);
-    }
-    public function testListerZone(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'admin@andandoo.com',
-            'password' => bcrypt('andandoo12'),
-        ]);
-        $this->actingAs($user, 'api');
-        $response = $this->get('api/listzone');
+    
+        $this->assertDatabaseHas('zones', ['id' => $createdZone->id, 'NomZ' => $updatedZoneData['NomZ']]);
+    
+
+        $response = $this->get('/api/listzone');
         $response->assertStatus(200);
-    }
-    public function testSupprimerZone(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'admin@andandoo.com',
-            'password' => bcrypt('andandoo12'),
-        ]);
-        $this->actingAs($user, 'api');
-        $zoneTr = Zones::FindOrFail(1);
-        $response = $this->delete('api/deletezone/'.$zoneTr->id);
+    
+
+        $response = $this->delete("/api/deletezone/{$createdZone->id}");
         $response->assertStatus(200);
+        $this->assertDatabaseMissing('zones', ['id' => $createdZone->id]);
     }
+    
+    
+    
 }

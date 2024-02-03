@@ -198,6 +198,12 @@ class UtilisateurController extends Controller
     {
         try {
             if ($reservation->trajet->voiture->disponible) {
+                if ($reservation->Accepted) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Impossible d\'accepter cette reservation deux fois',
+                    ]);
+                }
                 $reservation->Accepted = true;
                 $reservation->update();
                 event(new ReservationAccepted($reservation));
