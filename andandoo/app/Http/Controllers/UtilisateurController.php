@@ -28,18 +28,14 @@ class UtilisateurController extends Controller
                     'Profile' => $client->ImageProfile,
                     'Nom' => $client->Nom,
                     'Prenom' => $client->Prenom,
-                    'LieuDepart'=>$trajet->LieuDepart,
-                    'LieuArrivee'=>$trajet->LieuArrivee,
-                    'HeureD'=>$trajet->HeureD,
-                    'DateDepart'=>$trajet->DateDepart,
+                    'LieuDepart' => $trajet->LieuDepart,
+                    'LieuArrivee' => $trajet->LieuArrivee,
+                    'HeureD' => $trajet->HeureD,
+                    'DateDepart' => $trajet->DateDepart,
                 ];
             }
             if ($reservations) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Vos reservation ont ete  modifier avec succes.',
-                    'date' => $reservation
-                ]);
+                return response()->json($data);
             } else {
                 // La sauvegarde a échoué
                 return response()->json([
