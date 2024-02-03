@@ -24,7 +24,7 @@ class StoreReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'NombrePlaces' => 'required|integer',
+            'NombrePlaces' => 'nullable|integer',
             'trajet_id' => 'required|integer|exists:trajets,id',
         ];
     }
@@ -41,7 +41,6 @@ class StoreReservationRequest extends FormRequest
     public function messages()
     {
         return [
-            'NombrePlaces.required' => 'Veuillez donnez une nombre de place à reserver',
             'NombrePlaces.integer' => 'Veuillez donnez une nombre de place valide',
             'trajet_id.required' => 'Veuillez choisir un trajet',
             'trajet_id.integer' => 'Choississez un trajet valide',

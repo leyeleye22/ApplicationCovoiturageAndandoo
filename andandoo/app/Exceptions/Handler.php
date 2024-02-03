@@ -33,7 +33,7 @@ class Handler extends ExceptionHandler
             Log::error("Une exception de base de données s'est produite: " . $e->getMessage());
             return response()->json([
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
-            ], 500);
+            ], $e->getStatusCode() ?: 400);
         });
 
         $this->renderable(function (InvalidArgumentException $e, $request) {
@@ -41,21 +41,21 @@ class Handler extends ExceptionHandler
                 'error' => 'Veuillez fournir le bon token',
                 'details' => 'Verifier votre role svp',
                 'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'ne vous est pas authoriser',
-            ], 422);
+            ], $e->getStatusCode() ?: 400);
         });
         $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
             return response()->json([
                 'error' => 'Vous avez utiliser une mauvaise methode',
                 'details' => 'La method utiliser n\est pas supporter',
                 'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'Supporte pas la methode utiliser',
-            ], 405);
+            ], $e->getStatusCode() ?: 400);
         });
         $this->renderable(function (RouteNotFoundException $e, $request) {
             return response()->json([
                 'error' => 'Veuillez vous connecter svp!!!.',
                 'details' => 'Soit Vous n\'etes pas connecter soit vous n\'avez les droit d\'acces necessaire',
                 'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'vous est interdite',
-            ], 401);
+            ], $e->getStatusCode() ?: 400);
         });
         $this->reportable(function (\Illuminate\Auth\AuthenticationException $e) {
             Log::error("Une erreur d'authentification s'est produite: " . $e->getMessage());
@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
                 'message' => 'Erreur de base de données lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], 500);
+            ], $e->getStatusCode() ?: 400);
         });
 
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
@@ -82,7 +82,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur d\'authentification lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], 401);
+            ], $e->getStatusCode() ?: 400);
         });
 
         $this->renderable(function (\Illuminate\Validation\ValidationException $e, $request) {
@@ -90,7 +90,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur de validation lors du rendu.',
                 'details' => $e->errors(),
                 'url' => $request->url()
-            ], 422);
+            ], $e->getStatusCode() ?: 400);
         });
 
         $this->renderable(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
@@ -98,13 +98,13 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur de modèle non trouvée lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], 404);
+            ], $e->getStatusCode() ?: 400);
         });
         $this->reportable(function (\Illuminate\Database\QueryException $e) {
             Log::error("Une exception de base de données s'est produite: " . $e->getMessage());
             return response()->json([
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
-            ], 500);
+            ], $e->getStatusCode() ?: 400);
         });
 
         $this->reportable(function (\Illuminate\Auth\AuthenticationException $e) {
