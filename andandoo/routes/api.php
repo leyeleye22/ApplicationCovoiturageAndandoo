@@ -45,7 +45,7 @@ Route::get('/listzone', [ZonesController::class, 'show']);
 Route::delete('/deletezone/{zones}', [ZonesController::class, 'delete']);
 
 //Reservation
-Route::middleware('auth:apiut,client:client')->group(function () {
+Route::middleware('auth:apiut,role:client')->group(function () {
     Route::get('/ListReservation', [ReservationController::class, 'index']);
     Route::get('/Details/{reservation}', [ReservationController::class, 'show']);
     Route::post('/CreateReservation', [ReservationController::class, 'store']);
@@ -59,7 +59,7 @@ Route::middleware('auth:apiut,client:client')->group(function () {
 //Trajet
 //oui
 Route::get('/ListTrajet', [TrajetController::class, 'index']);
-Route::middleware('auth:apiut,client:chauffeur')->group(function () {
+Route::middleware('auth:apiut,role:chauffeur')->group(function () {
     Route::get('/mestrajets', [TrajetController::class, 'mestrajets']);
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
     Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
@@ -94,6 +94,6 @@ Route::middleware('auth:api')->group(function () {
 Route::get('/listMessage', [MessageController::class, 'show']);
 Route::post('/envoyer', [MessageController::class, 'send']);
 Route::post('/repondre/Message', [MessageController::class, 'response']);
-Route::middleware('auth:apiut,client:client')->group(function () {
+Route::middleware('auth:apiut,role:client')->group(function () {
     Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 });

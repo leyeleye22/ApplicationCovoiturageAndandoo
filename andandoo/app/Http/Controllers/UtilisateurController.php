@@ -19,8 +19,22 @@ class UtilisateurController extends Controller
     {
         try {
             $user = Auth::guard('apiut')->user()->id;
-            $reservation = Reservation::where('utilisateur_id', $user)->get();
-            if ($reservation) {
+            $reservations = Reservation::where('utilisateur_id', $user)->get();
+            $data = [];
+            foreach ($reservations as $reservation) {
+                $client = $reservation->utilisateur;
+                $trajet = $reservation->trajet;
+                $data[] = [
+                    'Profile' => $client->ImageProfile,
+                    'Nom' => $client->Nom,
+                    'Prenom' => $client->Prenom,
+                    'LieuDepart'=>$trajet->LieuDepart,
+                    'LieuArrivee'=>$trajet->LieuArrivee,
+                    'HeureD'=>$trajet->HeureD,
+                    'DateDepart'=>$trajet->DateDepart,
+                ];
+            }
+            if ($reservations) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Vos reservation ont ete  modifier avec succes.',
