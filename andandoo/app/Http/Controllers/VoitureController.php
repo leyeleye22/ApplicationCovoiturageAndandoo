@@ -17,13 +17,14 @@ class VoitureController extends Controller
         try {
             $user = Auth::guard('apiut')->user();
             $vehicule = $user->voiture;
-            
+
             if ($vehicule) {
-                $data = ['id' => $vehicule['id'],
-                'ImageVoitures' => $vehicule['ImageVoitures'],
-                'Descriptions' => $vehicule['Descriptions'],
-                'NbrPlaces' => $vehicule['NbrPlaces'],
-            ];
+                $data = [
+                    'id' => $vehicule['id'],
+                    'ImageVoitures' => $vehicule['ImageVoitures'],
+                    'Descriptions' => $vehicule['Descriptions'],
+                    'NbrPlaces' => $vehicule['NbrPlaces'],
+                ];
                 return response()->json([
                     'success' => true,
                     'message' => 'Voiture récuppérré avec succès.',
@@ -88,15 +89,7 @@ class VoitureController extends Controller
 
         return response()->json($response, $response['statusCode']);
     }
-    private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
-    {
-        if ($request->file($fileKey)) {
-            $file = $request->file($fileKey);
-            $filename = date('YmdHi') . $file->getClientOriginalName();
-            $file->move(public_path($path), $filename);
-            $utilisateur->$fieldName = $filename;
-        }
-    }
+
 
 
 
@@ -114,7 +107,7 @@ class VoitureController extends Controller
             if (Auth::guard('apiut')->user()->id == $voiture->utilisateur_id) {
                 $validatedData = $request->validated();
                 $voiture->fill($validatedData);
-
+                $this->saveImage($request, 'ImageVoitures', 'images/voiture', $voiture, 'ImageVoitures');
                 if ($voiture->save()) {
                     $response['success'] = true;
                     $response['message'] = 'Votre voiture a été modifiée avec succès.';
@@ -131,8 +124,20 @@ class VoitureController extends Controller
             $response['message'] = 'Une erreur s\'est produite lors de la modification de votre voiture.';
             $response['error'] = $e->getMessage();
         }
+        if (empty($response['statusCode'])) {
+            $response['statusCode'] = 500; // Default to 500 if status code is not set
+        }
 
         return response()->json($response, $response['statusCode']);
+    }
+    private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
+    {
+        if ($request->file($fileKey)) {
+            $file = $request->file($fileKey);
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path($path), $filename);
+            $utilisateur->$fieldName = $filename;
+        }
     }
     public function showVoitureD()
     {

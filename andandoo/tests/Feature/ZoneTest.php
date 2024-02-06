@@ -14,44 +14,63 @@ class ZoneTest extends TestCase
 
     public function testZoneOperations()
     {
-        $user = User::factory()->create([
+        $admin = $this->createAdmin();
+        $zoneData = $this->generateZoneData();
+
+        $createdZone = $this->addZone($admin, $zoneData);
+        $this->updateZone($admin, $createdZone);
+        $this->listZones();
+        $this->deleteZone($createdZone);
+    }
+
+    protected function createAdmin()
+    {
+        $admin = User::factory()->create([
             'email' => 'admin@andandoo.com',
             'password' => bcrypt('andandoo12'),
         ]);
-    
-        $this->actingAs($user);
-    
 
-        $zoneData = [
+        $this->actingAs($admin);
+
+        return $admin;
+    }
+
+    protected function generateZoneData()
+    {
+        return [
             'NomZ' => $this->faker->city,
-            'user_id' => $user->id
         ];
+    }
+
+    protected function addZone($admin, $zoneData)
+    {
         $response = $this->postJson('/api/createzone', $zoneData);
         $response->assertStatus(201);
         $this->assertDatabaseHas('zones', $zoneData);
+        return Zones::where('NomZ', $zoneData['NomZ'])->first();
+    }
 
-        $createdZone = Zones::where('NomZ', $zoneData['NomZ'])->first();
-    
-
+    protected function updateZone($admin, $zone)
+    {
         $updatedZoneData = [
-            'NomZ' => 'Nouveau nom de zone', 
-            'user_id' => $user->id
+            'NomZ' => 'Nouveau nom de zone',
         ];
-        $response = $this->postJson("/api/updatezone/{$createdZone->id}", $updatedZoneData);
-        $response->assertStatus(200);
-    
-        $this->assertDatabaseHas('zones', ['id' => $createdZone->id, 'NomZ' => $updatedZoneData['NomZ']]);
-    
 
+        $response = $this->postJson("/api/updatezone/{$zone->id}", $updatedZoneData);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('zones', ['id' => $zone->id, 'NomZ' => $updatedZoneData['NomZ']]);
+    }
+
+    protected function listZones()
+    {
         $response = $this->get('/api/listzone');
         $response->assertStatus(200);
-    
-
-        $response = $this->delete("/api/deletezone/{$createdZone->id}");
-        $response->assertStatus(200);
-        $this->assertDatabaseMissing('zones', ['id' => $createdZone->id]);
     }
-    
-    
-    
+
+    protected function deleteZone($zone)
+    {
+        $response = $this->delete("/api/deletezone/{$zone->id}");
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('zones', ['id' => $zone->id]);
+    }
 }
