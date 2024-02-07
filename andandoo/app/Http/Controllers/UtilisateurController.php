@@ -275,6 +275,11 @@ class UtilisateurController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->id != $utilisateur->id) {
+                return response()->json([
+                    'message' => 'Vous n\'avez les droits de modification'
+                ]);
+            }
             $validatedData = $request->validated();
             $utilisateur->fill($validatedData);
             $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
