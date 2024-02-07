@@ -80,12 +80,20 @@ Route::get('/ListTrajet', [TrajetController::class, 'index']);
 Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     Route::get('/mestrajets', [TrajetController::class, 'mestrajets']);
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
-    Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']);
+    Route::post('/UpdateTrajet/{trajet}', [TrajetController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteTrajet/{trajet}', [TrajetController::class, 'destroy']);
     // Voiture
     Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
     Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
     Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
+    //Reservation
+    Route::get('/ListReservations', [UtilisateurController::class, 'index']);
+    Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
+    Route::post(
+        '/AccepterReservation/{reservation}',
+        [UtilisateurController::class, 'update']
+    ); //verbe put marche pas
+    Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 });
 
 Route::get('/lister/{utilisateur}', [AvisController::class, 'show']);
