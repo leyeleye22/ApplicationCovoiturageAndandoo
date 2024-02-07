@@ -29,7 +29,7 @@ class UpdateUtilisateurRequest extends FormRequest
             'Nom' => 'required|string|min:2|max:255',
             'Prenom' => 'required|string|max:255',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
-            'NomZ' => 'required|string|exists:zones,NomZ',
+
         ];
     }
 
@@ -58,9 +58,6 @@ class UpdateUtilisateurRequest extends FormRequest
             'Telephone.min' => 'Le téléphone doit comporter au moins 10 caractères.',
             'Telephone.regex' => 'Le téléphone doit commencer 70/77/78/76 suivis de 7 caractere',
             'Telephone.max' => 'Le téléphone ne peut pas dépasser 15 caractères.',
-            'NomZ.required' => 'Le champ NomZ est obligatoire.',
-            'NomZ.integer' => 'Le NomZ doit être un string.',
-            'NomZ.exists' => 'Cette zone n\'existe pas.',
         ];
     }
 }
