@@ -115,5 +115,5 @@ Route::post('/envoyer', [MessageController::class, 'send']);
 Route::post('/repondre/Message', [MessageController::class, 'response']);
 Route::middleware('auth:apiut')->group(function () {
     Route::post('/logout/user', [UtilisateurController::class, 'logout']);
-    Route::post('/Update/Profile', [UtilisateurController::class, 'updateProfile']);
+    Route::post('/Update/Profile/{utilisateur}', [UtilisateurController::class, 'updateProfile']);
 });
