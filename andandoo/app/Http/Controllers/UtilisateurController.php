@@ -7,8 +7,12 @@ use App\Models\Reservation;
 use App\Models\Utilisateur;
 use App\Events\ReservationAccepted;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\QueryException;
 use App\Http\Requests\StoreUtilisateurRequest;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\UpdateUtilisateurRequest;
 
 
 class UtilisateurController extends Controller
@@ -261,5 +265,56 @@ class UtilisateurController extends Controller
         auth()->guard('apiut')->logout();
 
         return response()->json(['message' => 'Deconnexion reussi']);
+    }
+    public function updateProfile(UpdateUtilisateurRequest $request, Utilisateur $utilisateur)
+    {
+        $response = [
+            'message' => 'Les images doivent être rempli',
+            'user' => null,
+            'statusCode' => 422,
+        ];
+
+        try {
+            $validatedData = $request->validated();
+            if (
+                $utilisateur->role == "chauffeur" &&
+                (!$request->hasFile('ImageProfile') ||
+                    !$request->hasFile('Licence') ||
+                    !$request->hasFile('PermisConduire') ||
+                    !$request->hasFile('CarteGrise'))
+            ) {
+                return response()->json($response, $response['statusCode']);
+            }
+
+            $utilisateur->fill($validatedData);
+            $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
+            $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
+            $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
+            $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
+
+            if ($utilisateur->update()) {
+                $response['message'] = 'Profile modifier avec succès';
+                $response['user'] = $utilisateur;
+                $response['statusCode'] = Response::HTTP_CREATED;
+            }
+        } catch (ValidationException $e) {
+            $response['error'] = $e->validator->errors();
+            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        } catch (QueryException $e) {
+            $response['error'] = 'Erreur du modification de l\'utilisateur. Erreur de base de données.';
+        } catch (\Exception $e) {
+            $response['error'] = 'Erreur du modification de l\'utilisateur. Erreur système.';
+        }
+
+        return response()->json($response, $response['statusCode']);
+    }
+    private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
+    {
+        if ($request->file($fileKey)) {
+            $file = $request->file($fileKey);
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path($path), $filename);
+            $utilisateur->$fieldName = $filename;
+        }
     }
 }
