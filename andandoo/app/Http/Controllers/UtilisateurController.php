@@ -276,16 +276,6 @@ class UtilisateurController extends Controller
 
         try {
             $validatedData = $request->validated();
-            if (
-                $utilisateur->role == "chauffeur" &&
-                (!$request->hasFile('ImageProfile') ||
-                    !$request->hasFile('Licence') ||
-                    !$request->hasFile('PermisConduire') ||
-                    !$request->hasFile('CarteGrise'))
-            ) {
-                return response()->json($response, $response['statusCode']);
-            }
-
             $utilisateur->fill($validatedData);
             $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
             $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
