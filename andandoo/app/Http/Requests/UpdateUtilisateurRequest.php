@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class UpdateUtilisateurRequest extends FormRequest
 {
     /**
@@ -22,16 +23,16 @@ class UpdateUtilisateurRequest extends FormRequest
      */
     public function rules()
     {
-        
-        
+
+
         return [
             'Nom' => 'required|string|min:2|max:255',
             'Prenom' => 'required|string|max:255',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
-            'zone_id' => 'required|integer|exists:zones,id',
+            'NomZ' => 'required|string|exists:zones,NomZ',
         ];
     }
-    
+
     public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -52,24 +53,14 @@ class UpdateUtilisateurRequest extends FormRequest
             'Prenom.required' => 'Le champ prénom est obligatoire.',
             'Prenom.string' => 'Le prénom doit être une chaîne de caractères.',
             'Prenom.max' => 'Le prénom ne peut pas dépasser 255 caractères.',
-            'Email.required' => 'Le champ email est obligatoire.',
-            'Email.email' => 'L\'email doit être une adresse email valide.',
-            'Email.max' => 'L\'email ne peut pas dépasser 255 caractères.',
-            'Email.unique' => 'Cet email est déjà utilisé.',
             'Telephone.required' => 'Le champ téléphone est obligatoire.',
             'Telephone.string' => 'Le téléphone doit être une chaîne de caractères.',
             'Telephone.min' => 'Le téléphone doit comporter au moins 10 caractères.',
             'Telephone.regex' => 'Le téléphone doit commencer 70/77/78/76 suivis de 7 caractere',
             'Telephone.max' => 'Le téléphone ne peut pas dépasser 15 caractères.',
-            'role.required' => 'Le champ rôle est obligatoire.',
-            'role.in' => 'Le rôle doit être soit client, soit chauffeur.',
-            'zone_id.required' => 'Le champ zone_id est obligatoire.',
-            'zone_id.integer' => 'Le zone_id doit être un entier.',
-            'zone_id.exists' => 'Cette zone n\'existe pas.',
-            'password.required' => 'Le champ mot de passe est obligatoire.',
-            'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
-            'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
-            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
+            'NomZ.required' => 'Le champ NomZ est obligatoire.',
+            'NomZ.integer' => 'Le NomZ doit être un string.',
+            'NomZ.exists' => 'Cette zone n\'existe pas.',
         ];
     }
 }
