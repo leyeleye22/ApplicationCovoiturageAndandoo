@@ -2,27 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
+
 use App\Models\User;
-use App\Mail\ResetPassword;
 use App\Models\Utilisateur;
-use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Session;
-use App\Http\Requests\LoginAdminRequest;
-use Illuminate\Support\Facades\Password;
-use App\Exceptions\RegistrationException;
 use App\Http\Requests\RegisterAdminRequest;
-use App\Notifications\SmsValidationAuthentification;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
-use App\Exceptions\DatabaseNotAvailableException;
-use App\Exceptions\ServerNotAvailableException;
+
 
 
 
@@ -109,7 +100,8 @@ class AuthController extends Controller
                 throw new \Exception('Vous n\'êtes pas authoriser');
             } else {
                 $utilisateur = auth()->guard('apiut')->user();
-                $response = $this->respondWithTokens($token, $utilisateur);
+                $notification = $utilisateur->notifications;
+                $response = $this->respondWithTokens($token, $utilisateur, $notification);
                 $statusCode = 200;
             }
         } catch (\Exception $e) {
@@ -244,12 +236,13 @@ class AuthController extends Controller
             ]
         ]);
     }
-    protected function respondWithTokens($token, $utilisateur)
+    protected function respondWithTokens($token, $utilisateur, $notification)
     {
         return response()->json([
             'data' => [
                 'access_token' => $token,
                 'utilisateur' => $utilisateur,
+                'notification' => $notification,
                 'statusCode' => 200,
                 'token_type' => 'bearer',
                 'expires_in' => 3600

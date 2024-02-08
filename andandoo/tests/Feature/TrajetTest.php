@@ -75,6 +75,7 @@ class TrajetTest extends TestCase
 
     protected function addVoiture($chauffeur)
     {
+        $this->actingAs($chauffeur, 'apiut');
         $voitureData = [
             'ImageVoitures' => UploadedFile::fake()->image('voiture.jpg'),
             'Descriptions' => 'Ma belle voiture',
@@ -91,13 +92,12 @@ class TrajetTest extends TestCase
 
     protected function createTrajet($voiture)
     {
-        // Utiliser le chauffeur associé à la voiture pour créer le trajet
         $response = $this->actingAs($voiture->utilisateur, 'apiut')->postJson('/api/CreateTrajet', [
             'LieuDepart' => $this->faker->city,
             'LieuArrivee' => $this->faker->city,
-            'DateDepart' => $this->faker->date('Y-m-d'),
-            'HeureD' => $this->faker->time('H:i:s'),
-            'Prix' => $this->faker->randomFloat(2, 10, 100),
+            'DateDepart' => "2024-02-25",
+            'HeureD' => $this->faker->time('H:i'),
+            'Prix' => 300,
             'voiture_id' => $voiture->id,
         ]);
 
@@ -109,16 +109,30 @@ class TrajetTest extends TestCase
 
     protected function updateTrajet($trajet, $chauffeur)
     {
-        // Logique pour mettre à jour un trajet
+        $response = $this->actingAs($chauffeur, 'apiut')->postJson("/api/UpdateTrajet/{$trajet->id}", [
+            'LieuDepart' => $this->faker->city,
+            'LieuArrivee' => $this->faker->city,
+            'DateDepart' => "2024-02-26",
+            'HeureD' => $this->faker->time('H:i'),
+            'Prix' => 350,
+            'voiture_id' => $trajet->voiture_id,
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('trajets', ['id' => $trajet->id]);
     }
 
     protected function listTrajet($chauffeur)
     {
-        // Logique pour lister les trajets d'un chauffeur
+        $response = $this->actingAs($chauffeur, 'apiut')->get('api/mestrajets');
+
+        $response->assertStatus(200);
     }
 
     protected function deleteTrajet($trajet, $chauffeur)
     {
-        // Logique pour supprimer un trajet
+        $response = $this->actingAs($chauffeur, 'apiut')->delete("api/DeleteTrajet/{$trajet->id}");
+        $response->assertStatus(403);
+        // $this->assertDatabaseMissing('trajets', ['id' => $trajet->id]);
     }
 }

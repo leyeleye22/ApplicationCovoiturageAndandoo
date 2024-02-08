@@ -9,7 +9,7 @@ echo "DB_DATABASE=laravelTest" >> .env
 php artisan optimize:clear
 #php artisan migrate:fresh
 # Exécution des tests
-php artisan test --filter=VoitureTest
+php artisan test
 
 # Restauration de la base de données en laravel après les tests
 sed -i '/DB_DATABASE=laravelTest/d' .env

@@ -165,7 +165,6 @@ class ReservationController extends Controller
 
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 $reservation->fill($validatedData);
-                $reservation->trajet_id = $validatedData["trajet_id"];
                 $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
 
                 if ($reservation->update()) {

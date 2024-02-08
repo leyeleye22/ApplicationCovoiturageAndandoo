@@ -16,7 +16,6 @@ class ZoneTest extends TestCase
     {
         $admin = $this->createAdmin();
         $zoneData = $this->generateZoneData();
-
         $createdZone = $this->addZone($admin, $zoneData);
         $this->updateZone($admin, $createdZone);
         $this->listZones();

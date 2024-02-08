@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Trajet;
+use App\Models\Utilisateur;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
 use App\Events\ActivationReservation;
 use App\Http\Requests\StoreTrajetRequest;
 use App\Http\Requests\UpdateTrajetRequest;
+use App\Notifications\UserNotification;
 
 class TrajetController extends Controller
 {
@@ -37,7 +39,7 @@ class TrajetController extends Controller
                 $prenom = $chauffeur->Prenom;
                 $imageChauffeur = $chauffeur->ImageProfile;
                 $imageVoiture = $trajet->voiture->ImageVoitures;
-//nice
+                //nice
 
                 $data[] = [
                     'id' => $trajet['id'],
@@ -149,6 +151,10 @@ class TrajetController extends Controller
             $trajet->DescriptionTrajet = $request->DescriptionTrajet;
             if ($trajet->save()) {
                 event(new ActivationReservation($trajet));
+                $users = Utilisateur::all();
+                foreach ($users as $user) {
+                    $user->notify(new UserNotification($trajet));
+                }
                 return response()->json([
                     'success' => true,
                     'message' => 'Trajet enregistré avec succès.',

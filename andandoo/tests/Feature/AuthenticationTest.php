@@ -2,86 +2,162 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Zone;
+use App\Models\Zones;
 use App\Models\Utilisateur;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationTest extends TestCase
 {
+    use RefreshDatabase, WithFaker;
+
     /**
-     * A basic feature test example.
-     * // $response = $this->post('/login');
+     * Test the authentication process.
+     *
+     * @return void
      */
-    public function testresgisterUser(): void
+    public function testAuthentication()
     {
-        $user = Utilisateur::factory()->create();
-        $unserinsert = $user->toArray();
-        $this->assertDatabaseHas('Utilisateurs', $unserinsert);
+        $admin = $this->createAdmin();
+        $zone = $this->createZone($admin);
+        $chauffeur = $this->createChauffeur($zone);
+        $client = $this->createClient($zone);
+        $this->loginAdmin($admin);
+        $this->loginUser($client);
+        $this->blockTemporarilyUser($admin, $chauffeur);
+        $this->unlockUser($admin, $chauffeur);
+        $this->blockDefinitelyUser($admin, $client);
+        $this->logoutAdmin($admin);
+        $this->logoutUser($client);
     }
-    public function testRegisterAdmin(): void
+
+    protected function createAdmin()
     {
-        $user = User::factory()->create();
-        $unserinsert = $user->toArray();
-        $this->assertDatabaseHas('Users', $unserinsert);
+        $admin = User::factory()->create([
+            'email' => 'admin@andandoo.com',
+            'password' => bcrypt('andandoo12'),
+        ]);
+
+        $this->actingAs($admin);
+
+        return $admin;
     }
-    public function testLoginUser(): void
+
+    protected function createZone($admin)
     {
-        $user = Utilisateur::factory()->create();
-        $credentials = ['email' => $user->email, 'password' => $user->password];
-        $response = $this->post('api/login', $credentials);
+        $zoneData = [
+            'NomZ' => $this->faker->city,
+            'user_id' => $admin->id
+        ];
+
+        $response = $this->postJson('/api/createzone', $zoneData);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('zones', $zoneData);
+
+        return Zones::where('NomZ', $zoneData['NomZ'])->first();
+    }
+
+    protected function createChauffeur($zone)
+    {
+        $chauffeur = Utilisateur::factory()->create([
+            'Nom' => $this->faker->lastName,
+            'Prenom' => $this->faker->firstName,
+            'Email' => $this->faker->unique()->safeEmail,
+            'Telephone' => $this->faker->unique()->phoneNumber,
+            'role' => 'chauffeur',
+            'zone_id' => $zone->id,
+            'password' => bcrypt('password'),
+        ]);
+
+        return $chauffeur;
+    }
+
+    protected function createClient($zone)
+    {
+        $client = Utilisateur::factory()->create([
+            'Nom' => $this->faker->lastName,
+            'Prenom' => $this->faker->firstName,
+            'Email' => $this->faker->unique()->safeEmail,
+            'Telephone' => $this->faker->unique()->phoneNumber,
+            'role' => 'client',
+            'zone_id' => $zone->id,
+            'password' => bcrypt('password'),
+        ]);
+
+        return $client;
+    }
+
+    protected function loginUser($client)
+    {
+        $loginData = [
+            'email' => $client->email,
+            'password' => 'password'
+        ];
+
+        $response = $this->post('api/login', $loginData);
         $response->assertStatus(200);
     }
-    public function testLoginAdmin(): void
+
+    protected function loginAdmin($admin)
     {
-        $credentials = ['email' => 'admin@andandoo.com', 'password' => 'andandoo12'];
-        $response = $this->post('api/loginadmin', $credentials);
+        $loginData = [
+            'email' => $admin->email,
+            'password' => 'andandoo12'
+        ];
+
+        $response = $this->post('api/loginadmin', $loginData);
         $response->assertStatus(200);
     }
-    public function testBloquerTemporairementUtilisateur(): void
+    protected function blockTemporarilyUser($admin, $chauffeur)
     {
-        $user = User::factory()->create();
-        $this->actingAs($user, 'api');
-        $user_id=9;
-        $response = $this->post('api/BlockerTemporairement/'.$user_id);
+
+        $response = $this->actingAs($admin, 'api')->postJson("api/BlockerTemporairement/{$chauffeur->id}");
+
+
         $response->assertStatus(200);
     }
-    public function testBloquerDefinitivementUtilisateur(): void
+
+    protected function blockDefinitelyUser($admin, $client)
     {
-        $user = User::factory()->create();
-        $this->actingAs($user, 'api');
-        $user_id=9;
-        $response = $this->post('api/BlockerDefinitivement/'.$user_id);
+
+        $response = $this->actingAs($admin, 'api')->postJson("api/BlockerDefinitivement/{$client->id}");
+
         $response->assertStatus(200);
     }
-    public function testDebloquerUtilisateur(): void
+
+    protected function unlockUser($admin, $chauffeur)
     {
-        $user = User::factory()->create();
-        $this->actingAs($user, 'api');
-        $user_id=9;
-        $response = $this->post('api/Debloquert/'.$user_id);
-        $response->assertStatus(200);
+
+        if ($chauffeur->TemporaryBlock) {
+            $response = $this->actingAs($admin, 'api')->postJson("api/Debloquer/{$chauffeur->id}");
+            $response->assertStatus(200);
+        }
     }
-    public function testLogoutAdmin():void
+
+    protected function logoutAdmin($admin)
     {
-        $user = User::factory()->create();
-        $this->actingAs($user, 'api');
-        $response = $this->post('api/logoutadmin');
-        $response->assertStatus(500);
+        $loginData = [
+            'email' => $admin->email,
+            'password' => 'andandoo12'
+        ];
+
+        $login =  $this->post('/api/login', $loginData);
+        $token = $login->Json('token');
+        $response = $this->withHeaders(['Authorization' => "Bearer $token)"])->post('/api/logoutadmin');
+        $response->assertStatus(200)
+            ->assertJson([
+                "status" => true,
+                "message" => $response->json('message')
+            ]);
     }
-    public function testLogoutClient():void
+
+    protected function logoutUser($client)
     {
-        $user = Utilisateur::factory()->create();
-        $this->actingAs($user, 'api');
-        $response = $this->post('api/logout/client');
-        $response->assertStatus(200);
-    }
-    public function testLogoutChauffeur():void
-    {
-        $user = Utilisateur::factory()->create();
-        $this->actingAs($user, 'api');
-        $response = $this->post('api/logout/client');
-        $response->assertStatus(200);
+        $token = JWTAuth::fromUser($client);
+        $response = $this->withHeader('Authorization', 'Bearer' . $token)->post('/api/logout/user');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class UpdateReservationRequest extends FormRequest
 {
     /**
@@ -24,7 +25,6 @@ class UpdateReservationRequest extends FormRequest
     {
         return [
             'NombrePlaces' => 'required|integer',
-            'trajet_id' => 'required|integer|exists:trajets,id',
         ];
     }
     public function failedValidation(validator $validator)
@@ -42,9 +42,7 @@ class UpdateReservationRequest extends FormRequest
         return [
             'NombrePlaces.required' => 'Veuillez donnez une nombre de place à reserver',
             'NombrePlaces.integer' => 'Veuillez donnez une nombre de place valide',
-            'trajet_id.required' => 'Veuillez choisir une trajet',
-            'trajet_id.integer' => 'Choississez une trajet valide',
-            'trajet_id.exists' => 'Cette trajet n\'existe pas',
+
         ];
     }
 }
