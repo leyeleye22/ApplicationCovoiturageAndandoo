@@ -52,7 +52,7 @@ Route::middleware('auth:apiut', 'role:client')->group(function () {
     Route::post('/UpdateReservation/{reservation}', [ReservationController::class, 'update']); //verbe put marche pas
     Route::delete('/DeleteReservation/{reservation}', [ReservationController::class, 'destroy']);
     Route::delete('/DeleteReservations', [ReservationController::class, 'delete']);
-    Route::post('Donner/avis', [AvisController::class, 'create']);
+    Route::post('Donner/avis/{trajet}', [AvisController::class, 'create']);
     Route::post('Modifier/avis/{avis}', [AvisController::class, 'update']);
 });
 

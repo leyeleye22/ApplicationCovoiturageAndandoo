@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('avis', function (Blueprint $table) {
             $table->id();
-            $table->string('Contenue');
+            $table->string('Contenue')->nullable();
             $table->integer('Notation');
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('voiture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

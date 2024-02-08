@@ -6,6 +6,7 @@ use App\Models\Avis;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreAvisRequest;
 use App\Http\Requests\UpdateAvisRequest;
+use App\Models\Trajet;
 use App\Models\Utilisateur;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +21,7 @@ class AvisController extends Controller
         //
     }
 
-    public function create(StoreAvisRequest $req)
+    public function create(StoreAvisRequest $req, Trajet $trajet)
     {
         $success = false;
         $responseData = [];
@@ -31,7 +32,7 @@ class AvisController extends Controller
             $avis = new Avis();
             $avis->fill($validatedData);
             $avis->utilisateur_id = Auth::guard('apiut')->user()->id;
-            $avis->voiture_id = $req->voiture_id;
+            $avis->voiture_id = $trajet->voiture->id;
             $avis->save();
             $success = true;
             $responseData = ['success' => true, 'avis' => $avis];
