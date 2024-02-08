@@ -53,7 +53,7 @@ Route::middleware('auth:apiut', 'role:client')->group(function () {
     Route::delete('/DeleteReservation/{reservation}', [ReservationController::class, 'destroy']);
     Route::delete('/DeleteReservations', [ReservationController::class, 'delete']);
     Route::post('Donner/avis/{trajet}', [AvisController::class, 'create']);
-    Route::post('Modifier/avis/{avis}', [AvisController::class, 'update']);
+    Route::post('show/avis/{chauffeur}', [AvisController::class, 'lister']);
 });
 
 //Trajet

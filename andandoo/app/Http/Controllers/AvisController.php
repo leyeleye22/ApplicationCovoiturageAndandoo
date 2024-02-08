@@ -78,20 +78,21 @@ class AvisController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAvisRequest $request, Avis $avis)
+    public function lister(Utilisateur $chauffeur)
     {
         $success = false;
         $responseData = [];
+        $data = 0;
         $statusCode = 500;
 
         try {
-            $validatedData = $request->validated();
-            if ($avis->utilisateur_id !== Auth::guard('apiut')->user()->id) {
-                throw new \Exception('Vous n\'êtes pas autorisé à modifier cet avis.');
-            }
-            $avis->update($validatedData);
+            $avis = Avis::where('voiture_id', $chauffeur->voiture->id)->get();
+            // if (!$avis) {
+            //     throw new \Exception('Vous n\'êtes pas autorisé à modifier cet avis.');
+            // }
             $success = true;
-            $responseData = ['success' => true, 'message' => 'L\'avis a été mis à jour avec succès.'];
+            $data = $avis;
+            $responseData = ['success' => true, 'message' => 'Avis ont été recuperer avec succès.'];
             $statusCode = 200;
         } catch (ValidationException $e) {
             $responseData = ['success' => false, 'errors' => $e->errors()];
@@ -104,7 +105,7 @@ class AvisController extends Controller
             $statusCode = 403;
         }
 
-        return response()->json($success, $statusCode, $responseData);
+        return response()->json($success, $statusCode, $responseData, $data);
     }
 
     /**
