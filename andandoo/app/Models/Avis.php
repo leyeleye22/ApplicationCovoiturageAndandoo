@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Avis extends Model
 {
     use HasFactory;
-    protected $fillable=[
+    protected $fillable = [
         'Contenue',
         'Notation',
         'utilisateur_id',

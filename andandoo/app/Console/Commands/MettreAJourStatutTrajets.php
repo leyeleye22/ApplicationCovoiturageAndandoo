@@ -20,6 +20,7 @@ class MettreAJourStatutTrajets extends Command
     public function handle()
     {
         $trajets = Trajet::where('DateDepart', '<', Carbon::now())->get();
+        
 
         foreach ($trajets as $trajet) {
             $trajet->update(['Status' => 'terminee']);
