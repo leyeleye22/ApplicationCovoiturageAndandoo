@@ -31,7 +31,7 @@ class AvisController extends Controller
             $avis = new Avis();
             $avis->fill($validatedData);
             $avis->utilisateur_id = Auth::guard('apiut')->user()->id;
-            $avis->voiture_id = $req->id;
+            $avis->voiture_id = $req->voiture_id;
             $avis->save();
             $success = true;
             $responseData = ['success' => true, 'avis' => $avis];

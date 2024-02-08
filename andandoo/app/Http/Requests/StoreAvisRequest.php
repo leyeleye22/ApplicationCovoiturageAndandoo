@@ -26,6 +26,7 @@ class StoreAvisRequest extends FormRequest
         return [
             'Contenue' => 'string|max:255',
             'Notation' => 'required|integer|min:1|max:5',
+            'trajet_id' => 'required|integer|exits:trajets,id'
         ];
     }
     public function failedValidation(validator $validator)
@@ -47,6 +48,9 @@ class StoreAvisRequest extends FormRequest
             'Notation.integer' => 'Le champ de notation doit être un nombre entier.',
             'Notation.min' => 'La notation doit être d\'au moins :min étoile(s).',
             'Notation.max' => 'La notation ne peut pas dépasser :max étoiles.',
+            'trajet_id.require' => 'Le ctrajet est obligatoire.',
+            'trajet_id.integer' => 'Le trajet doit être un nombre entier',
+            'trajet_id.exists' => 'Ce trajet existe pas',
         ];
     }
 }
