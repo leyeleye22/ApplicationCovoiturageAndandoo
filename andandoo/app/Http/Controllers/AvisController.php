@@ -82,23 +82,26 @@ class AvisController extends Controller
     {
         $success = false;
         $responseData = [];
-        $data = 0;
+        $avis = 0;
         $statusCode = 500;
 
         try {
-            $user = Auth::guard('apiut')->user();
-            if ($user->role == "chauffeur") {
+            $users = Utilisateur::where('role', 'chauffeur')->get();
+            $data = [];
+            foreach ($users as $user) {
                 $avis = Avis::where('voiture_id', $user->voiture->id)->get();
-                $success = true;
-                $data = $avis;
-                $responseData = ['success' => true, 'message' => 'Avis ont été recuperer avec succès.'];
-                $statusCode = 200;
-            } else {
-                $success = true;
-                $data = 0;
-                $responseData = ['success' => true, 'message' => 'O avis'];
-                $statusCode = 200;
+                $data[] = [
+                    'NomChauffeur' => $user->Nom,
+                    'PrenomChauffeur' => $user->Prenom,
+                    'PhotoProfile' => $user->ImageProfile,
+                    'Avis' => $avis
+                ];
             }
+
+            $success = true;
+            $avis = $data;
+            $responseData = ['success' => true, 'message' => 'Avis ont été recuperer avec succès.'];
+            $statusCode = 200;
         } catch (ValidationException $e) {
             $responseData = ['success' => false, 'errors' => $e->errors()];
             $statusCode = 422;
@@ -110,7 +113,7 @@ class AvisController extends Controller
             $statusCode = 403;
         }
 
-        return response()->json($success, $statusCode, $responseData, $data);
+        return response()->json($success, $statusCode, $responseData, $avis);
     }
 
     /**
