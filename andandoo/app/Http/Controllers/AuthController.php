@@ -265,7 +265,7 @@ class AuthController extends Controller
     }
 
     public function blockPermanentlyUser(Utilisateur $user)
-    {
+    {//nickel
         try {
             $user->PermanentBlock = true;
             $user->TemporaryBlock = false;
