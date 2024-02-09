@@ -113,7 +113,7 @@ class AvisController extends Controller
             $statusCode = 403;
         }
 
-        return response()->json($success, $avis, $responseData);
+        return response()->json($avis);
     }
 
     /**
