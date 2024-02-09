@@ -86,14 +86,19 @@ class AvisController extends Controller
         $statusCode = 500;
 
         try {
-            $avis = Avis::where('voiture_id', $chauffeur->voiture->id)->get();
-            // if (!$avis) {
-            //     throw new \Exception('Vous n\'êtes pas autorisé à modifier cet avis.');
-            // }
-            $success = true;
-            $data = $avis;
-            $responseData = ['success' => true, 'message' => 'Avis ont été recuperer avec succès.'];
-            $statusCode = 200;
+            $user = Auth::guard('apiut')->user();
+            if ($user->role == "chauffeur") {
+                $avis = Avis::where('voiture_id', $user->voiture->id)->get();
+                $success = true;
+                $data = $avis;
+                $responseData = ['success' => true, 'message' => 'Avis ont été recuperer avec succès.'];
+                $statusCode = 200;
+            } else {
+                $success = true;
+                $data = 0;
+                $responseData = ['success' => true, 'message' => 'O avis'];
+                $statusCode = 200;
+            }
         } catch (ValidationException $e) {
             $responseData = ['success' => false, 'errors' => $e->errors()];
             $statusCode = 422;

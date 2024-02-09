@@ -94,7 +94,7 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     ); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
     //Avis
-    Route::get('show/avis/{chauffeur}', [AvisController::class, 'lister']);
+    Route::get('show/avis', [AvisController::class, 'lister']);
 });
 
 Route::get('/lister/{utilisateur}', [AvisController::class, 'show']);
