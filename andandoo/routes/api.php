@@ -76,6 +76,7 @@ Route::get('/ListTrajet', [TrajetController::class, 'index']);
 //     ); //verbe put marche pas
 //     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
 // });
+Route::get('show/avis', [AvisController::class, 'lister']);
 Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     Route::get('/mestrajets', [TrajetController::class, 'mestrajets']);
     Route::post('/CreateTrajet', [TrajetController::class, 'store']);
@@ -94,7 +95,7 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     ); //verbe put marche pas
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
     //Avis
-    Route::get('show/avis', [AvisController::class, 'lister']);
+
 });
 
 Route::get('/lister/{utilisateur}', [AvisController::class, 'show']);
