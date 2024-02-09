@@ -78,7 +78,7 @@ class AvisController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function lister(Utilisateur $chauffeur)
+    public function lister()
     {
         $success = false;
         $responseData = [];
