@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>Bonjour toi</h1>
+    <h1>Bonjour</h1>
     <h3>{{ $responses }}</h3>
 </body>
 
