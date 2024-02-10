@@ -57,7 +57,13 @@ class ReservationController extends Controller
         try {
             $validatedData = $request->validated();
             $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
-
+            if ($trajet->DateDepart > Carbon::now) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Réservation indisponible : la date est expiree',
+                    'statusCode' => 400,
+                ];
+            }
             if (!$trajet->voiture->disponible) {
                 $response = [
                     'success' => false,

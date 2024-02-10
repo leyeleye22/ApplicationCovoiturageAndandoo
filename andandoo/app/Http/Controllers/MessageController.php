@@ -6,7 +6,9 @@ use App\Models\Message;
 use App\Mail\Response as reponse;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\AvertissementRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Mail\Avertissement;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,6 +62,19 @@ class MessageController extends Controller
                 return response()->json(['message' => 'reponse envoye avec success']);
             } else {
                 return response()->json(['message' => 'reponse non envoyer']);
+            }
+        } catch (\Throwable $th) {
+            return  $th->getMessage();
+        }
+    }
+    public function avertissement(AvertissementRequest $request)
+    {
+        try {
+            $data = $request->contenue;
+            if (Mail::to($request->email)->send(new Avertissement($data))) {
+                return response()->json(['message' => 'avertissement envoye avec success']);
+            } else {
+                return response()->json(['message' => 'avertissement non envoyer']);
             }
         } catch (\Throwable $th) {
             return  $th->getMessage();
