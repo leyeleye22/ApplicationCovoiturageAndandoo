@@ -80,9 +80,9 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
 
 });
 
-Route::get('/lister/{utilisateur}', [AvisController::class, 'show']);
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
+Route::get('/nombreutilisateur', [UtilisateurController::class, 'nbruser']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/lister/newsletter', [NewsletterController::class, 'index']);
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);

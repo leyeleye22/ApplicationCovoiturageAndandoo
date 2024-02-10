@@ -231,7 +231,22 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
-
+    public function nbruser()
+    {
+        try {
+            $nombreChauffeur = Utilisateur::where('role', 'chauffeur')->count();
+            $nombreClient = Utilisateur::where('role', 'client')->count();
+            $nombreUtilisateurTotal = Utilisateur::count();
+            return response()->json([
+                'nombreChauffeur' => $nombreChauffeur,
+                'nombreClient' => $nombreClient,
+                'nombreUtilisateurTotal' => $nombreUtilisateurTotal
+            ]);
+        } catch (\Exception $e) {
+            logger()->error('Erreur de recuperation du nombre des utilisateur: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur de calcul'], 500);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
