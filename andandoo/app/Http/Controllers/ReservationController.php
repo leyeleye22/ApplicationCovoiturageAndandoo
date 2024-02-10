@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Trajet;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -57,7 +58,7 @@ class ReservationController extends Controller
         try {
             $validatedData = $request->validated();
             $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
-            if ($trajet->DateDepart > Carbon::now) {
+            if ($trajet->DateDepart > Carbon::now()) {
                 $response = [
                     'success' => false,
                     'message' => 'Réservation indisponible : la date est expiree',
