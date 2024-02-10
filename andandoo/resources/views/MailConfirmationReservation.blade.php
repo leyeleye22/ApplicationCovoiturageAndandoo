@@ -129,6 +129,7 @@
 </head>
 
 <body>
+    <h1>{{ dd($data) }}</h1>
     <div class="mainTicket">
         <h1>Confirmation de Réservation - Trajet Ouakam vers Yoff</h1>
 

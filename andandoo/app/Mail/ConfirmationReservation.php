@@ -16,9 +16,10 @@ class ConfirmationReservation extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    private $data;
+    public function __construct($data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -36,9 +37,8 @@ class ConfirmationReservation extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'view.name',
-        );
+        $data = $this->data;
+        return (new Content())->view('MailConfirmationReservation')->with(compact('data'));
     }
 
     /**
