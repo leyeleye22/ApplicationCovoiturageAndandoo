@@ -28,12 +28,15 @@ class HandleReservationAccepted implements ShouldQueue
         $reservation = $event->reservation;
         $trajet = $reservation->trajet;
         $data[] = [
+            'NomClients' => $reservation->utilisateur->Nom,
+            'PrenomClients' => $reservation->utilisateur->Prenom,
             'LieuDepart' => $trajet->LieuDepart,
             'LieuArrivee' => $trajet->LieuArrivee,
             'DateDepart' => $trajet->DateDepart,
             'HeureD' => $trajet->HeureD,
             'Prix' => $trajet->Prix,
-            'NomChauffeur' => $trajet->voiture->utilisateur->Prenom
+            'NomChauffeur' => $trajet->voiture->utilisateur->Prenom,
+            'TelephoneChauffeur' => $trajet->voiture->utilisateur->Telephone
         ];
         Mail::to($reservation->utilisateur->email)->send(new ConfirmationReservation($data));
         $total_place_reserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');

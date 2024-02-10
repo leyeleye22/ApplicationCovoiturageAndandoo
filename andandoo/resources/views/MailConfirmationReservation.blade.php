@@ -133,9 +133,10 @@
     <div class="mainTicket">
         <h1>Confirmation de Réservation - Trajet Ouakam vers Yoff</h1>
 
-        <p>Cher(e) [Nom du Client],</p>
+        <p>Cher(e) {{ $data[0]['NomClients'] }},</p>
 
-        <p>Nous sommes ravis de vous informer que votre réservation de trajet a été confirmée avec succès! Ci-dessous,
+        <p>Nous sommes ravis de vous iNomClientsnformer que votre réservation de trajet a été confirmée avec succès!
+            Ci-dessous,
             vous
             trouverez les détails de votre voyage:</p>
         <div class="ticket">
@@ -151,25 +152,25 @@
             <div class="ticketBody">
                 <div class="ticketBodyItem">
                     <h3>Lieu de départ</h3>
-                    <p>Ouakam</p>
+                    <p>{{ $data[0]['LieuDepart'] }}</p>
                 </div>
                 <div class="ticketBodyItem">
                     <h3>Lieu d'arrivée</h3>
-                    <p>Yoff</p>
+                    <p>{{ $data[0]['LieuArrivee'] }}</p>
                 </div>
             </div>
             <div class="ticketFooter">
                 <div class="infoVoyage">
                     <label for="">Date de réservation</label>
-                    <h4 for="">06/02/2024</h4>
+                    <h4 for="">{{ $data[0]['DateDepart'] }}</h4>
                     <label for="">Heure de départ</label>
-                    <h4>14:30mn</h4>
+                    <h4>{{ $data[0]['HeureD'] }}</h4>
                 </div>
                 <div class="InfoChaufeur">
                     <label for="">Nom complet du chaufeur</label>
-                    <h4 for="">Moussa Sy</h4>
+                    <h4 for="">{{ $data[0]['NomChauffeur'] }}</h4>
                     <label for="">Numéro de Téléphone</label>
-                    <h4>77 340 98 76</h4>
+                    <h4>{{ $data[0]['TelephoneChauffeur'] }}</h4>
                 </div>
             </div>
         </div>
