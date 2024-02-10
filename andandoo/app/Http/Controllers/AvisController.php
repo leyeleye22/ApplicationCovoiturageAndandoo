@@ -13,14 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 class AvisController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
+  
     public function create(StoreAvisRequest $req, Trajet $trajet)
     {
         $success = false;
@@ -51,32 +44,10 @@ class AvisController extends Controller
         return response()->json($responseData, $statusCode);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+  
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Utilisateur $utilisateur)
-    {
-        // try {
-        //      $avis=Avis
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Avis $avis)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * list the all resource in storage.
      */
     public function lister()
     {
@@ -116,11 +87,4 @@ class AvisController extends Controller
         return response()->json($avis);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Avis $avis)
-    {
-        //
-    }
 }

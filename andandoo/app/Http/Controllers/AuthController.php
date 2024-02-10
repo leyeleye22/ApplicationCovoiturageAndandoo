@@ -100,8 +100,19 @@ class AuthController extends Controller
                 throw new \Exception('Vous n\'êtes pas authoriser');
             } else {
                 $utilisateur = auth()->guard('apiut')->user();
-                $notification = $utilisateur->notifications;
-                $response = $this->respondWithTokens($token, $utilisateur, $notification);
+                $notifications = $utilisateur->notifications;
+                $data = [];
+                foreach ($notifications as $notification) {
+                    $data[] = [
+                        'lieuDepart' => $notification->data['LieuDepart'],
+                        'lieuArriver' => $notification->data['LieuArrivee'],
+                        'dateDepart' => $notification->data['DateDepart'],
+                        'heureDepart' => $notification->data['HeureDepart'],
+                        'prix' => $notification->data['Prix'],
+                        'chauffeur' => $notification->data['Chauffeur'],
+                    ];
+                }
+                $response = $this->respondWithTokens($token, $utilisateur, $data[0]);
                 $statusCode = 200;
             }
         } catch (\Exception $e) {
@@ -265,7 +276,7 @@ class AuthController extends Controller
     }
 
     public function blockPermanentlyUser(Utilisateur $user)
-    {//nickel
+    {
         try {
             $user->PermanentBlock = true;
             $user->TemporaryBlock = false;
