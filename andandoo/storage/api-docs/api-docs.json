@@ -226,7 +226,7 @@
                 ]
             }
         },
-        "http://127.0.0.1:8741/api/listerClient": {
+        "/api/listerClient": {
             "get": {
                 "summary": "Lister Client",
                 "description": "",
@@ -2355,20 +2355,20 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "nom": {
+                                    "NomZ": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "nom": "Yoff"
+                                "NomZ": "Yoff"
                             }
                         }
                     }
                 }
             }
         },
-        "http://127.0.0.1:8002/api/createzone": {
+        "/api/createzone": {
             "post": {
                 "summary": "Ajouter Zone",
                 "description": "",
@@ -2746,7 +2746,7 @@
                 }
             }
         },
-        "http://127.0.0.1:8002/api/registeredadmin": {
+        "/api/registeredadmin": {
             "post": {
                 "summary": "Register Administrateur",
                 "description": "",
@@ -2821,7 +2821,7 @@
                 }
             }
         },
-        "http://127.0.0.1:8002/api/loginadmin": {
+        "/api/loginadmin": {
             "post": {
                 "summary": "Login Administrateur",
                 "description": "",
