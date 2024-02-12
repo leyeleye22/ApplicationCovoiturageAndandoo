@@ -15,13 +15,12 @@ use App\Http\Requests\RegisterAdminRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
-
-
 class AuthController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login']]);
+    }
 
     public function register(RegisterRequest $request)
     {
