@@ -1,0 +1,22 @@
+name: Update main branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: "leyeleye22/ApplicationCovoiturageAndandoo"
+          ref: "main"
+
+      - name: Push changes to main branch on all forks
+        run: |
+          git checkout main
+          git pull origin main
+          git push --force --set-upstream origin main
