@@ -102,3 +102,5 @@ Route::middleware('auth:apiut')->group(function () {
     Route::post('/logout/user', [UtilisateurController::class, 'logout']);
     Route::post('/Update/Profile/{utilisateur}', [UtilisateurController::class, 'updateProfile']);
 });
+
+/////leyeleyeleyelee
