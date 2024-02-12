@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Voiture;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreVoitureRequest;
 use App\Http\Requests\UpdateVoitureRequest;
 
@@ -22,8 +23,9 @@ class VoitureController extends Controller
                 ]);
             }
             $user = Auth::guard('apiut')->user();
-            $vehicule = $user->voiture;
-
+            $vehicule = Cache::rememberForever('voiture_' . $user->id, function () use ($user) {
+                return $user->voiture;
+            });
             if ($vehicule) {
                 $data = [
                     'id' => $vehicule['id'],
@@ -86,6 +88,7 @@ class VoitureController extends Controller
                 $voiture->utilisateur_id = $user->id;
 
                 if ($voiture->save()) {
+                    Cache::forget('voiture_' . $user->id);
                     $response['success'] = true;
                     $response['message'] = 'Votre voiture a été enregistrée avec succès.';
                     $response['data'] = $voiture;
@@ -127,6 +130,7 @@ class VoitureController extends Controller
                 $voiture->fill($validatedData);
                 $this->saveImage($request, 'ImageVoitures', 'images/voiture', $voiture, 'ImageVoitures');
                 if ($voiture->save()) {
+                    Cache::forget('voiture_' . Auth::guard('apiut')->user()->id);
                     $response['success'] = true;
                     $response['message'] = 'Votre voiture a été modifiée avec succès.';
                     $response['data'] = $voiture;

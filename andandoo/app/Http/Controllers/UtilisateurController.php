@@ -8,6 +8,7 @@ use App\Models\Utilisateur;
 use App\Events\ReservationAccepted;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\StoreUtilisateurRequest;
 use Illuminate\Validation\ValidationException;
@@ -78,7 +79,10 @@ class UtilisateurController extends Controller
     public function showUsers()
     {
         try {
-            $users = Utilisateur::all();
+
+            $users  = Cache::rememberForever('utilisateur', function () {
+                return Utilisateur::all();
+            });
             $data = [];
 
             foreach ($users as $user) {
@@ -110,7 +114,10 @@ class UtilisateurController extends Controller
     public function showChauffeur()
     {
         try {
-            $chauffeurs = Utilisateur::where('role', 'chauffeur')->get();
+
+            $chauffeurs  = Cache::rememberForever('chauffeurs', function () {
+                return Utilisateur::where('role', 'chauffeur')->get();
+            });
             $data = [];
 
             foreach ($chauffeurs as $chauffeur) {
@@ -144,8 +151,11 @@ class UtilisateurController extends Controller
 
     public function showClient()
     {
+        $clients = Cache::rememberForever('chauffeurs', function () {
+            return  Utilisateur::where('role', 'client')->get();
+        });
         try {
-            $clients = Utilisateur::where('role', 'client')->get();
+
             $data = [];
 
             foreach ($clients as $client) {
@@ -184,7 +194,7 @@ class UtilisateurController extends Controller
                     'SatusCode' => 403
                 ]);
             }
-            if ($reservation) {
+            if ($reservation->voiture_id == Auth::guard('apiut')->user()->voiture->id) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Reservation ont ete  modifier avec succes.',
@@ -252,14 +262,19 @@ class UtilisateurController extends Controller
     public function nbruser()
     {
         try {
-            $nombreChauffeur = Utilisateur::where('role', 'chauffeur')->count();
-            $nombreClient = Utilisateur::where('role', 'client')->count();
-            $nombreUtilisateurTotal = Utilisateur::count();
-            return response()->json([
-                'nombreChauffeur' => $nombreChauffeur,
-                'nombreClient' => $nombreClient,
-                'nombreUtilisateurTotal' => $nombreUtilisateurTotal
-            ]);
+            $stats = Cache::rememberForever('utilisateurs_stats', function () {
+                $nombreChauffeur = Utilisateur::where('role', 'chauffeur')->count();
+                $nombreClient = Utilisateur::where('role', 'client')->count();
+                $nombreUtilisateurTotal = Utilisateur::count();
+
+                return [
+                    'nombreChauffeur' => $nombreChauffeur,
+                    'nombreClient' => $nombreClient,
+                    'nombreUtilisateurTotal' => $nombreUtilisateurTotal
+                ];
+            });
+
+            return response()->json($stats);
         } catch (\Exception $e) {
             logger()->error('Erreur de recuperation du nombre des utilisateur: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur de calcul'], 500);

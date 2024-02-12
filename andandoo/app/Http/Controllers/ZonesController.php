@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Zones;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\StoreZonesRequest;
 use App\Http\Requests\UpdateZonesRequest;
-use Illuminate\Database\QueryException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ZonesController extends Controller
 {
@@ -26,7 +28,7 @@ class ZonesController extends Controller
             $zones->NomZ = $request->NomZ;
             $zones->user_id = auth()->user()->id;
             $zones->save();
-
+            Cache::forget('zones');
             return response()->json(['message' => 'Zone creer avec succés'], Response::HTTP_CREATED);
         } catch (QueryException $e) {
             $errorMessage = 'Echec de creation du zone. Erreur de base de donnée.';
@@ -41,7 +43,9 @@ class ZonesController extends Controller
     public function show()
     {
         try {
-            $zones = Zones::all();
+            $zones = Cache::rememberForever('zones', function () {
+                return Zones::all();
+            });
             $data = [];
             foreach ($zones as $zone) {
                 $data[] = [
@@ -65,7 +69,7 @@ class ZonesController extends Controller
 
             $zones->NomZ = $request->NomZ;
             $zones->save();
-
+            Cache::forget('zones');
             return response()->json(['message' => 'Zone modifié avec succés'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Zone non trouvé.'], Response::HTTP_NOT_FOUND);
@@ -81,6 +85,7 @@ class ZonesController extends Controller
     {
         try {
             $zones->delete();
+            Cache::forget('zones');
             return response()->json(['message' => 'Zone supprimer avec succés'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Zone non trouvé.'], Response::HTTP_NOT_FOUND);

@@ -8,19 +8,19 @@ use App\Models\Utilisateur;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\RegisterAdminRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
-
-
 class AuthController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login']]);
+    }
 
     public function register(RegisterRequest $request)
     {
@@ -53,6 +53,7 @@ class AuthController extends Controller
             $utilisateur->password = Hash::make($utilisateur->password);
 
             if ($utilisateur->save()) {
+                Cache::forget('utilisateur');
                 $response['message'] = 'Utilisateur inscrit avec succès';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_CREATED;
@@ -97,7 +98,7 @@ class AuthController extends Controller
                 ];
                 $statusCode = 403;
             } elseif (!$token = Auth::guard('apiut')->attempt($credentials)) {
-                throw new \Exception('Vous n\'êtes pas authoriser');
+                throw new \Exception('Email ou password incorrect');
             } else {
                 $utilisateur = auth()->guard('apiut')->user();
                 $notifications = $utilisateur->notifications;
