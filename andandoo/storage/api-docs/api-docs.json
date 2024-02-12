@@ -2431,13 +2431,13 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "nom": {
+                                    "NomZ": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "nom": "plateau"
+                                "NomZ": "plateau"
                             }
                         }
                     }

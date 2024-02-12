@@ -21,6 +21,12 @@ class ReservationController extends Controller
     {
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $userId = Auth::guard('apiut')->user()->id;
 
             $reservation = Cache::remember('reservations_' . $userId, 3600, function () use ($userId) {
@@ -62,6 +68,12 @@ class ReservationController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $validatedData = $request->validated();
             $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
             if ($trajet->DateDepart > Carbon::now()) {
@@ -132,6 +144,12 @@ class ReservationController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 if ($reservation) {
                     $response = [
@@ -175,6 +193,12 @@ class ReservationController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $validatedData = $request->validated();
 
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
@@ -222,6 +246,12 @@ class ReservationController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 if ($reservation->delete()) {
                     Artisan::call('optimize:clear');
@@ -260,6 +290,12 @@ class ReservationController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $reservations = Reservation::where('utilisateur_id', Auth::guard('apiut')->user()->id)->get();
             if ($reservations) {
                 foreach ($reservations as $reservation) {

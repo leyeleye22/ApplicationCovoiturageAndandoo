@@ -15,6 +15,12 @@ class VoitureController extends Controller
     public function index()
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $user = Auth::guard('apiut')->user();
             $vehicule = $user->voiture;
 
@@ -58,6 +64,12 @@ class VoitureController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $user = Auth::guard('apiut')->user();
             $voiture = $user->voiture;
             if (isset($voiture)) {
@@ -104,6 +116,12 @@ class VoitureController extends Controller
         ];
 
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if (Auth::guard('apiut')->user()->id == $voiture->utilisateur_id) {
                 $validatedData = $request->validated();
                 $voiture->fill($validatedData);

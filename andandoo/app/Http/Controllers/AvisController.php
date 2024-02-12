@@ -23,6 +23,12 @@ class AvisController extends Controller
         $statusCode = 500;
 
         try {
+            if (Auth::guard('apiut')->user()->role == "chaufeur") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $validatedData = $req->validated();
             $avis = new Avis();
             $avis->fill($validatedData);

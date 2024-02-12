@@ -23,6 +23,12 @@ class UtilisateurController extends Controller
     public function index()
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $chauffeur = Auth::guard('apiut')->user();
 
             $voiture = $chauffeur->voiture;
@@ -172,6 +178,12 @@ class UtilisateurController extends Controller
     public function show(Reservation $reservation)
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($reservation) {
                 return response()->json([
                     'success' => true,
@@ -201,6 +213,12 @@ class UtilisateurController extends Controller
     public function update(Reservation $reservation)
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($reservation->trajet->voiture->disponible) {
                 if ($reservation->Accepted) {
                     return response()->json([
@@ -253,6 +271,12 @@ class UtilisateurController extends Controller
     public function destroy(Reservation $reservation)
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($reservation->Accepted == false) {
                 $reservation->delete();
                 return response()->json([

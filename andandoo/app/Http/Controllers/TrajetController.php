@@ -82,6 +82,12 @@ class TrajetController extends Controller
     public function mestrajets()
     {
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $userId = Auth::guard('apiut')->user()->id;
             $userCarId = Auth::guard('apiut')->user()->voiture->id;
             $mestrajets = Cache::remember('trajets_' . $userId, 3600, function () use ($userCarId) {
@@ -139,7 +145,12 @@ class TrajetController extends Controller
     public function store(StoreTrajetRequest $request)
     {
         try {
-
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $validatedData = $request->validated();
             $trajet = new Trajet();
             $carId = Auth::guard('apiut')->user()->voiture->id;
@@ -227,6 +238,12 @@ class TrajetController extends Controller
         $statusCode = 500;
 
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             $validatedData = $request->validated();
             if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
                 throw new Exception('Vous n\'êtes pas autorisé à modifier ce trajet.');
@@ -260,6 +277,12 @@ class TrajetController extends Controller
         $statusCode = 500;
 
         try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
             if ($trajet->voiture_id !== Auth::guard('apiut')->user()->voiture->id) {
                 throw new Exception('Vous n\'êtes pas autorisé à supprimer ce trajet.');
             }
