@@ -38,7 +38,7 @@ class HandleReservationAccepted implements ShouldQueue
             'NomChauffeur' => $trajet->voiture->utilisateur->Prenom,
             'TelephoneChauffeur' => $trajet->voiture->utilisateur->Telephone
         ];
-        Mail::to($reservation->utilisateur->email)->send(new ConfirmationReservation($data));
+        Mail::to($reservation->utilisateur->Email)->send(new ConfirmationReservation($data));
         $total_place_reserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
         if ($total_place_reserve == $trajet->voiture->NbrPlaces) {
             $trajet->voiture()->update(['disponible' => false]);

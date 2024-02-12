@@ -8,6 +8,7 @@ use App\Models\Utilisateur;
 use App\Events\ReservationAccepted;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\StoreUtilisateurRequest;
 use Illuminate\Validation\ValidationException;
@@ -78,7 +79,10 @@ class UtilisateurController extends Controller
     public function showUsers()
     {
         try {
-            $users = Utilisateur::all();
+
+            $users  = Cache::remember('utilisateur', 3600, function () {
+                return Utilisateur::all();
+            });
             $data = [];
 
             foreach ($users as $user) {
@@ -110,7 +114,10 @@ class UtilisateurController extends Controller
     public function showChauffeur()
     {
         try {
-            $chauffeurs = Utilisateur::where('role', 'chauffeur')->get();
+
+            $chauffeurs  = Cache::rememberForever('chauffeurs', function () {
+                return Utilisateur::where('role', 'chauffeur')->get();
+            });
             $data = [];
 
             foreach ($chauffeurs as $chauffeur) {
@@ -184,7 +191,7 @@ class UtilisateurController extends Controller
                     'SatusCode' => 403
                 ]);
             }
-            if ($reservation) {
+            if ($reservation->voiture_id == Auth::guard('apiut')->user()->voiture->id) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Reservation ont ete  modifier avec succes.',
