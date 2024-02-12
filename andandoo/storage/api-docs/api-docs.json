@@ -23,6 +23,164 @@
         "multipart/form-data"
     ],
     "paths": {
+        "/api/envoyer/newsletter": {
+            "post": {
+                "summary": "envoyer newsletter",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Newsletter"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/lister/newsletter": {
+            "get": {
+                "summary": "Lister Newsletter",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Newsletter"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/UpdateProfile/{utilisateur}": {
+            "post": {
+                "summary": "Modifier Profile",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Utilisateurs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "utilisateur",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/listerChauffeur": {
             "get": {
                 "summary": "Lister Chauffeur",
@@ -68,7 +226,7 @@
                 ]
             }
         },
-        "/api/listerClient": {
+        "http://127.0.0.1:8741/api/listerClient": {
             "get": {
                 "summary": "Lister Client",
                 "description": "",
@@ -238,6 +396,51 @@
                 },
                 "tags": [
                     "Gestion Voiture/Administrateur"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/SeeMoreVoiture": {
+            "get": {
+                "summary": "Voir Voiture",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Voiture/Chauffeur"
                 ],
                 "parameters": [
                     {
@@ -419,13 +622,13 @@
                 }
             }
         },
-        "": {
-            "get": {
-                "summary": "Modifier Mot de Passe",
+        "/api/repondre/Message": {
+            "post": {
+                "summary": "Repondre Message",
                 "description": "",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -433,8 +636,8 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -442,8 +645,17 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -453,7 +665,7 @@
                     }
                 },
                 "tags": [
-                    "Gestion Securite"
+                    "Gestion Message"
                 ],
                 "parameters": [
                     {
@@ -592,9 +804,9 @@
                 }
             }
         },
-        "/api/Modifier/avis/{avis}": {
+        "/api/show/avis": {
             "post": {
-                "summary": "Modifier Avis",
+                "summary": "Lister Avis",
                 "description": "",
                 "responses": {
                     "201": {
@@ -640,7 +852,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "avis",
+                        "name": "",
                         "type": "string"
                     },
                     {
@@ -672,7 +884,7 @@
                 }
             }
         },
-        "/api/Donner/avis": {
+        "/api/Donner/avis/{trajet}": {
             "post": {
                 "summary": "Donner Avis",
                 "description": "",
@@ -719,6 +931,11 @@
                 ],
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "trajet",
+                        "type": "string"
+                    },
+                    {
                         "in": "header",
                         "name": "User-Agent",
                         "type": "string"
@@ -745,6 +962,51 @@
                         }
                     }
                 }
+            }
+        },
+        "": {
+            "get": {
+                "summary": "Modifier Mot de Passe",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Securite"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
             }
         },
         "/api/forget-password": {
@@ -818,7 +1080,7 @@
                 }
             }
         },
-        "/api/Debloquert/{user}": {
+        "/api/Debloquer/{user}": {
             "post": {
                 "summary": "Debloquer Utilisateur",
                 "description": "",
@@ -985,6 +1247,56 @@
                     {
                         "in": "path",
                         "name": "user",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/Details/{reservation}": {
+            "get": {
+                "summary": "Details Reservation",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Reservation/Client"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "reservation",
                         "type": "string"
                     },
                     {
@@ -1308,6 +1620,61 @@
                 }
             }
         },
+        "/api/DetailsReservation{reservation}": {
+            "get": {
+                "summary": "Details Reservation",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Reservation/Chauffeur"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "reservation",
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/ListReservations": {
             "get": {
                 "summary": "Lister Reservation",
@@ -1471,7 +1838,66 @@
                 ]
             }
         },
-        "/api/ListTrajet": {
+        "/api/DetailsTrajet/{trajet}": {
+            "post": {
+                "summary": "Details Trajet",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion Trajet"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "trajet",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/mestrajets": {
             "get": {
                 "summary": "Lister Trajets",
                 "description": "",
@@ -1752,7 +2178,7 @@
                             "example": {
                                 "LieuDepart": "Pikine",
                                 "LieuArrivee": "Yoff",
-                                "DateDepart": "2024-01-26",
+                                "DateDepart": "2024-01-27",
                                 "HeureD": "12:30",
                                 "Prix": "300",
                                 "DescriptionTrajet": "Jolie"
@@ -1762,7 +2188,7 @@
                 }
             }
         },
-        "/api/listzone": {
+        "/api/documentation": {
             "get": {
                 "summary": "Lister Zone",
                 "description": "",
@@ -1942,7 +2368,7 @@
                 }
             }
         },
-        "/api/createzone": {
+        "http://127.0.0.1:8002/api/createzone": {
             "post": {
                 "summary": "Ajouter Zone",
                 "description": "",
@@ -1992,6 +2418,11 @@
                         "in": "header",
                         "name": "User-Agent",
                         "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "type": "string"
                     }
                 ],
                 "requestBody": {
@@ -2006,7 +2437,7 @@
                                 }
                             },
                             "example": {
-                                "nom": "dakar-plateau"
+                                "nom": "plateau"
                             }
                         }
                     }
@@ -2067,61 +2498,7 @@
                 ]
             }
         },
-        "/api/logout/client": {
-            "post": {
-                "summary": "logout Client",
-                "description": "",
-                "responses": {
-                    "201": {
-                        "description": "Created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorize",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Authentification"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ]
-            }
-        },
-        "/api/logout/chauffeur": {
+        "/api/logout/user": {
             "post": {
                 "summary": "logout Chauffeur",
                 "description": "",
@@ -2242,8 +2619,8 @@
                                 }
                             },
                             "example": {
-                                "email": "ndiaye@ngor.com",
-                                "password": "ngor@123"
+                                "email": "ndia@ngor.com",
+                                "password": "gor@12356"
                             }
                         }
                     }
@@ -2346,7 +2723,7 @@
                             "example": {
                                 "Nom": "Ndiaye",
                                 "Prenom": "Ngor",
-                                "Email": "ndiaye@ngor.com",
+                                "Email": "ndia@ngor.com",
                                 "Telephone": "781567256",
                                 "ImageProfile": {
                                     "type": "string",
@@ -2362,14 +2739,14 @@
                                 },
                                 "role": "chauffeur",
                                 "password": "ngor@123",
-                                "zone_id": "2"
+                                "zone_id": "1"
                             }
                         }
                     }
                 }
             }
         },
-        "/api/registeredadmin": {
+        "http://127.0.0.1:8002/api/registeredadmin": {
             "post": {
                 "summary": "Register Administrateur",
                 "description": "",
@@ -2444,7 +2821,7 @@
                 }
             }
         },
-        "/api/loginadmin": {
+        "http://127.0.0.1:8002/api/loginadmin": {
             "post": {
                 "summary": "Login Administrateur",
                 "description": "",

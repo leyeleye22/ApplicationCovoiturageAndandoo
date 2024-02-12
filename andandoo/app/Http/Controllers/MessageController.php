@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Mail\Avertissement;
 use App\Mail\Response as reponse;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\AvertissementRequest;
 use App\Http\Requests\UpdateMessageRequest;
-use App\Mail\Avertissement;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +24,9 @@ class MessageController extends Controller
     public function show()
     {
         try {
-            $messages = Message::all();
+            $messages = Cache::remember('messages', 3600, function () {
+                return Message::all();
+            });
             $data = [];
             foreach ($messages as $message) {
                 $data[] = [
@@ -47,6 +51,7 @@ class MessageController extends Controller
         $message = new Message();
         $message->fill($validatedData);
         if ($message->save()) {
+        Artisan::call('optimize:clear');
             return response()->json([
                 'message' => 'success',
                 'SatusCode' => 200,

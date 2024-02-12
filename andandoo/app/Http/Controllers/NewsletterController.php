@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Newsletter;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\StoreNewsletterRequest;
 use App\Http\Requests\UpdateNewsletterRequest;
 
@@ -14,7 +16,9 @@ class NewsletterController extends Controller
     public function index()
     {
         try {
-            $newsletters = Newsletter::all();
+            $newsletters = Cache::remember('Newsletter', 3600, function () {
+                return Newsletter::all();
+            });
             $data = [];
             foreach ($newsletters as $newsletter) {
                 $data[] = [
@@ -37,6 +41,7 @@ class NewsletterController extends Controller
             $newsletter = new Newsletter();
             $newsletter->email = $request->email;
             if ($newsletter->save()) {
+                Artisan::call('optimize:clear');
                 return response()->json([
                     'message' => 'Vous etes enregistrer merci'
                 ]);
@@ -48,45 +53,5 @@ class NewsletterController extends Controller
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreNewsletterRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Newsletter $newsletter)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Newsletter $newsletter)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateNewsletterRequest $request, Newsletter $newsletter)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Newsletter $newsletter)
-    {
-        //
     }
 }

@@ -4,9 +4,16 @@ namespace App\Exceptions;
 
 use Exception;
 use Throwable;
+use PDOException;
+use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -35,14 +42,6 @@ class Handler extends ExceptionHandler
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
             ], $e->getStatusCode() ?: 400);
         });
-
-        // $this->renderable(function (InvalidArgumentException $e, $request) {
-        //     return response()->json([
-        //         'error' => 'Veuillez fournir le bon token',
-        //         'details' => 'Verifier votre role svp',
-        //         'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'ne vous est pas authoriser',
-        //     ], $e->getStatusCode() ?: 400);
-        // });
         $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
             return response()->json([
                 'error' => 'Vous avez utiliser une mauvaise methode',
@@ -159,5 +158,38 @@ class Handler extends ExceptionHandler
         $this->reportable(function (ServerNotAvailableException $e) {
             Log::error("Le serveur n'est pas disponible: " . $e->getMessage());
         });
+    }
+    public function render($request, Throwable $exception)
+    {
+        $response = ['error' => $exception->getMessage()];
+        if ($exception instanceof HttpException) {
+            return response()->json(
+                app()->environment('local') ? $response : ['error' => "Httpexception"],
+                $exception->getStatusCode()
+            );
+        } elseif (
+            $exception instanceof QueryException ||
+            $exception instanceof PDOException
+        ) {
+            return response()->json(
+                app()->environment('local') ?
+                    $response : ["error" => "Query exception"],
+                500
+            );
+        } elseif ($exception instanceof BadMethodCallException) {
+            return response()->json(app()->environment('local') ?
+                $response : ["error" => "Bad method call"], 405);
+        } elseif ($exception instanceof TransportException) {
+            return response()->json(app()->environment('local') ?
+                $response : ["error" => "Transport Exception"], 500);
+        } elseif ($exception instanceof ModelNotFoundException) {
+            return response()->json(app()->environment('local') ?
+                $response : ["error" => "Model Not Found"], 404);
+        } elseif (
+            $exception instanceof AuthorizationException
+        ) {
+            return response()->json($response, 403);
+        }
+        return parent::render($request, $exception);
     }
 }

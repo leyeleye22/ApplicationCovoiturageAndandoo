@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Avis;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\StoreAvisRequest;
-use App\Http\Requests\UpdateAvisRequest;
 use App\Models\Trajet;
 use App\Models\Utilisateur;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\StoreAvisRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Requests\UpdateAvisRequest;
 use Illuminate\Validation\ValidationException;
 
 class AvisController extends Controller
 {
-  
+
     public function create(StoreAvisRequest $req, Trajet $trajet)
     {
         $success = false;
@@ -27,6 +29,7 @@ class AvisController extends Controller
             $avis->utilisateur_id = Auth::guard('apiut')->user()->id;
             $avis->voiture_id = $trajet->voiture->id;
             $avis->save();
+            Artisan::call('optimize:clear');
             $success = true;
             $responseData = ['success' => true, 'avis' => $avis];
             $statusCode = 200;
@@ -44,7 +47,7 @@ class AvisController extends Controller
         return response()->json($responseData, $statusCode);
     }
 
-  
+
 
     /**
      * list the all resource in storage.
@@ -57,10 +60,15 @@ class AvisController extends Controller
         $statusCode = 500;
 
         try {
-            $users = Utilisateur::where('role', 'chauffeur')->get();
+            $users = Cache::remember('chauffeur', 3600, function () {
+                return Utilisateur::where('role', 'chauffeur')->get();
+            });
             $data = [];
             foreach ($users as $user) {
-                $avis = Avis::where('voiture_id', $user->voiture->id)->get();
+                $userId = $user->id;
+                $avis = Cache::remember('avis_' . $userId, 3600, function () use ($user) {
+                    return Avis::where('voiture_id', $user->voiture->id)->get();
+                });
                 $data[] = [
                     'NomChauffeur' => $user->Nom,
                     'PrenomChauffeur' => $user->Prenom,
@@ -86,5 +94,4 @@ class AvisController extends Controller
 
         return response()->json($avis);
     }
-
 }

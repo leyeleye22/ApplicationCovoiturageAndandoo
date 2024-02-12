@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Trajet;
 use App\Models\Voiture;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
-use App\Models\Trajet;
-use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -19,11 +21,15 @@ class ReservationController extends Controller
     {
 
         try {
-            $reservation = Reservation::where('utilisateur_id', Auth::guard('apiut')->user()->id)->get();
+            $userId = Auth::guard('apiut')->user()->id;
+
+            $reservation = Cache::remember('reservations_' . $userId, 3600, function () use ($userId) {
+                return Reservation::where('utilisateur_id', $userId)->get();
+            });
             if ($reservation) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Vos trajet ont été  reccupéré avec succès.',
+                    'message' => 'Vos reservations ont été  reccupéré avec succès.',
                     'date' => $reservation
                 ]);
             } else {
@@ -89,6 +95,7 @@ class ReservationController extends Controller
                 $reservation->utilisateur()->associate($request->user());
 
                 if ($reservation->save()) {
+                    Artisan::call('optimize:clear');
                     $response = [
                         'success' => true,
                         'message' => 'Votre réservation est en cours de validation',
@@ -175,6 +182,7 @@ class ReservationController extends Controller
                 $reservation->utilisateur_id = Auth::guard('apiut')->user()->id;
 
                 if ($reservation->update()) {
+                    Artisan::call('optimize:clear');
                     $response = [
                         'success' => true,
                         'message' => 'Votre réservation a été modifiée',
@@ -216,6 +224,7 @@ class ReservationController extends Controller
         try {
             if ($reservation->utilisateur_id == Auth::guard('apiut')->user()->id) {
                 if ($reservation->delete()) {
+                    Artisan::call('optimize:clear');
                     $response = [
                         'success' => true,
                         'message' => 'Votre réservation a été supprimée avec succès',

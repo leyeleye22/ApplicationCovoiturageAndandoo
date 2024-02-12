@@ -8,9 +8,11 @@ use App\Models\Utilisateur;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
 use App\Events\ActivationReservation;
+use Illuminate\Support\Facades\Cache;
+use App\Notifications\UserNotification;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\StoreTrajetRequest;
 use App\Http\Requests\UpdateTrajetRequest;
-use App\Notifications\UserNotification;
 
 class TrajetController extends Controller
 {
@@ -21,8 +23,10 @@ class TrajetController extends Controller
     {
         try {
 
-            $trajets = Trajet::all();
 
+            $trajets = Cache::remember('trajets', 3600, function () {
+                return Trajet::all();
+            });
 
             $data = [];
 
@@ -32,14 +36,11 @@ class TrajetController extends Controller
                 $totalPlaces = $trajet->voiture->NbrPlaces;
                 $totalPlaceReserve = $trajet->reservations()->where('Accepted', true)->sum('NombrePlaces');
                 $placeDispo = $totalPlaces - $totalPlaceReserve;
-
-
                 $chauffeur = $trajet->voiture->utilisateur;
                 $nom = $chauffeur->Nom;
                 $prenom = $chauffeur->Prenom;
                 $imageChauffeur = $chauffeur->ImageProfile;
                 $imageVoiture = $trajet->voiture->ImageVoitures;
-                //nice
 
                 $data[] = [
                     'id' => $trajet['id'],
@@ -81,7 +82,12 @@ class TrajetController extends Controller
     public function mestrajets()
     {
         try {
-            $mestrajets = Trajet::where('voiture_id', Auth::guard('apiut')->user()->voiture->id)->get();
+            $userId = Auth::guard('apiut')->user()->id;
+            $userCarId = Auth::guard('apiut')->user()->voiture->id;
+            $mestrajets = Cache::remember('trajets_' . $userId, 3600, function () use ($userCarId) {
+                return Trajet::where('voiture_id', $userCarId)->get();
+            });
+
             foreach ($mestrajets as $mestrajet) {
 
                 $totalPlaces = $mestrajet->voiture->NbrPlaces;
@@ -136,10 +142,14 @@ class TrajetController extends Controller
 
             $validatedData = $request->validated();
             $trajet = new Trajet();
-            $id = Auth::guard('apiut')->user()->voiture->id;
-            $dateexist = Trajet::where('DateDepart', $request->DateDepart)
-                ->where('HeureD', $request->HeureD)
-                ->where('voiture_id', $id)->first();
+            $carId = Auth::guard('apiut')->user()->voiture->id;
+            $cacheKey = 'trajet_' . $carId . '_' . $validatedData['DateDepart'] . '_' . $validatedData['HeureD'];
+            $dateexist = Cache::remember($cacheKey, 3600, function () use ($carId, $validatedData) {
+                return Trajet::where('DateDepart', $validatedData['DateDepart'])
+                    ->where('HeureD', $validatedData['HeureD'])
+                    ->where('voiture_id', $carId)
+                    ->first();
+            });
             if ($dateexist) {
                 return response()->json([
                     'success' => false,
@@ -147,9 +157,10 @@ class TrajetController extends Controller
                 ]);
             }
             $trajet->fill($validatedData);
-            $trajet->voiture_id = $id;
+            $trajet->voiture_id = $carId;
             $trajet->DescriptionTrajet = $request->DescriptionTrajet;
             if ($trajet->save()) {
+                Artisan::call('optimize:clear');
                 event(new ActivationReservation($trajet));
                 $users = Utilisateur::all();
                 foreach ($users as $user) {
@@ -222,6 +233,7 @@ class TrajetController extends Controller
             }
 
             if ($trajet->update($validatedData)) {
+                Artisan::call('optimize:clear');
                 $success = true;
                 $message = 'Trajet modifié avec succès.';
                 $data = $trajet;
@@ -253,6 +265,7 @@ class TrajetController extends Controller
             }
 
             if ($trajet->delete()) {
+                Artisan::call('optimize:clear');
                 $success = true;
                 $message = 'Trajet supprimé avec succès.';
                 $statusCode = 200;
