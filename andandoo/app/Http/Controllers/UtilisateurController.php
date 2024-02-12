@@ -80,7 +80,7 @@ class UtilisateurController extends Controller
     {
         try {
 
-            $users  = Cache::remember('utilisateur', 3600, function () {
+            $users  = Cache::rememberForever('utilisateur', function () {
                 return Utilisateur::all();
             });
             $data = [];
@@ -151,8 +151,11 @@ class UtilisateurController extends Controller
 
     public function showClient()
     {
+        $clients = Cache::rememberForever('chauffeurs', function () {
+            return  Utilisateur::where('role', 'client')->get();
+        });
         try {
-            $clients = Utilisateur::where('role', 'client')->get();
+
             $data = [];
 
             foreach ($clients as $client) {
@@ -259,14 +262,19 @@ class UtilisateurController extends Controller
     public function nbruser()
     {
         try {
-            $nombreChauffeur = Utilisateur::where('role', 'chauffeur')->count();
-            $nombreClient = Utilisateur::where('role', 'client')->count();
-            $nombreUtilisateurTotal = Utilisateur::count();
-            return response()->json([
-                'nombreChauffeur' => $nombreChauffeur,
-                'nombreClient' => $nombreClient,
-                'nombreUtilisateurTotal' => $nombreUtilisateurTotal
-            ]);
+            $stats = Cache::rememberForever('utilisateurs_stats', function () {
+                $nombreChauffeur = Utilisateur::where('role', 'chauffeur')->count();
+                $nombreClient = Utilisateur::where('role', 'client')->count();
+                $nombreUtilisateurTotal = Utilisateur::count();
+
+                return [
+                    'nombreChauffeur' => $nombreChauffeur,
+                    'nombreClient' => $nombreClient,
+                    'nombreUtilisateurTotal' => $nombreUtilisateurTotal
+                ];
+            });
+
+            return response()->json($stats);
         } catch (\Exception $e) {
             logger()->error('Erreur de recuperation du nombre des utilisateur: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur de calcul'], 500);

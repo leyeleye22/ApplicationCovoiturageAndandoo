@@ -17,7 +17,7 @@ class UserController extends Controller
     {
 
         try {
-            $user = Cache::remember('utilisateur', 3600, function () {
+            $user = Cache::rememberForever('utilisateur', function () {
                 return Utilisateur::all();
             });
             return response()->json(['data' => $user], Response::HTTP_OK);

@@ -23,7 +23,7 @@ class VoitureController extends Controller
                 ]);
             }
             $user = Auth::guard('apiut')->user();
-            $vehicule = Cache::remember('voiture_' . $user->id, 3600, function () use ($user) {
+            $vehicule = Cache::rememberForever('voiture_' . $user->id, function () use ($user) {
                 return $user->voiture;
             });
             if ($vehicule) {
