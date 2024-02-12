@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
 
         return [
             'Nom' => 'required|string|min:2|max:255',
-            'Prenom' => 'required|string|max:255',
+            'Prenom' => 'required|string|min:3|max:255',
             'Email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
             'role' => 'required|in:client,chauffeur',
@@ -56,6 +56,7 @@ class RegisterRequest extends FormRequest
             'Prenom.required' => 'Le champ prénom est obligatoire.',
             'Prenom.string' => 'Le prénom doit être une chaîne de caractères.',
             'Prenom.max' => 'Le prénom ne peut pas dépasser 255 caractères.',
+            'Prenom.min' => 'Le prénom ne peut pas etre inferieur a 3 caractères.',
             'Email.required' => 'Le champ email est obligatoire.',
             'Email.regex' => 'L\'email doit être une adresse email valide.',
             'Email.unique' => 'Cet email est déjà utilisé.',
