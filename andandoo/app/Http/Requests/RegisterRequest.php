@@ -23,19 +23,19 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
-        
-        
+
+
         return [
             'Nom' => 'required|string|min:2|max:255',
             'Prenom' => 'required|string|max:255',
-            'Email' => 'required|string|email|max:255|unique:utilisateurs',
+            'Email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',
             'password' => 'required|string|min:8',
         ];
     }
-    
+
     public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -57,8 +57,7 @@ class RegisterRequest extends FormRequest
             'Prenom.string' => 'Le prénom doit être une chaîne de caractères.',
             'Prenom.max' => 'Le prénom ne peut pas dépasser 255 caractères.',
             'Email.required' => 'Le champ email est obligatoire.',
-            'Email.email' => 'L\'email doit être une adresse email valide.',
-            'Email.max' => 'L\'email ne peut pas dépasser 255 caractères.',
+            'Email.regex' => 'L\'email doit être une adresse email valide.',
             'Email.unique' => 'Cet email est déjà utilisé.',
             'Telephone.required' => 'Le champ téléphone est obligatoire.',
             'Telephone.string' => 'Le téléphone doit être une chaîne de caractères.',
