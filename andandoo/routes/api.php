@@ -74,7 +74,7 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     Route::post(
         '/AccepterReservation/{reservation}',
         [UtilisateurController::class, 'update']
-    ); //verbe put marche pas
+    ); //verbe put marche pasne
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
     //Avis
 
