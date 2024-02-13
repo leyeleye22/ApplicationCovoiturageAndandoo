@@ -54,6 +54,8 @@ class AuthController extends Controller
 
             if ($utilisateur->save()) {
                 Cache::forget('utilisateur');
+                Cache::forget('chauffeurs');
+                Cache::forget('clients');
                 $response['message'] = 'Utilisateur inscrit avec succès';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_CREATED;

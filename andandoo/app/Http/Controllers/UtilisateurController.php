@@ -151,7 +151,7 @@ class UtilisateurController extends Controller
 
     public function showClient()
     {
-        $clients = Cache::rememberForever('chauffeurs', function () {
+        $clients = Cache::rememberForever('clients', function () {
             return  Utilisateur::where('role', 'client')->get();
         });
         try {

@@ -60,7 +60,7 @@ class StoreTrajetRequest extends FormRequest
             'HeureD.date_format' => 'L\'heure de départ doit être au format H:i(12:30).',
             'Prix.required' => 'Le prix du trajet est obligatoire.',
             'Prix.numeric' => 'Le prix du trajet doit être un nombre.',
-            'Prix.min' => 'Le prix du trajet ne peut pas être négatif.',
+            'Prix.min' => 'Le prix du trajet ne peut pas être inferieur a 100.',
             'DescriptionTrajet.string' => 'La description du trajet doit être une chaîne de caractères.',
 
         ];
