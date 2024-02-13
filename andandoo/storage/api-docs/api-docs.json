@@ -2188,7 +2188,7 @@
                 }
             }
         },
-        "/api/documentation": {
+        "/api/listzone": {
             "get": {
                 "summary": "Lister Zone",
                 "description": "",
