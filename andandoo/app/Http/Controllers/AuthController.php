@@ -103,7 +103,7 @@ class AuthController extends Controller
                 throw new \Exception('Email ou password incorrect');
             } else {
                 $utilisateur = auth()->guard('apiut')->user();
-                $notifications = $utilisateur->notifications;
+                $notifications = $utilisateur->unreadNotifications;
                 $data = [];
                 foreach ($notifications as $notification) {
                     $data[] = [
