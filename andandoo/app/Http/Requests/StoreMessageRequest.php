@@ -25,7 +25,7 @@ class StoreMessageRequest extends FormRequest
     {
         return [
             'NomComplet' => ['required', 'string', 'min:3', 'max:30'],
-            'Email' => ['required', 'email'],
+            'Email' => ['required', 'regex:/^.+@.+\..+$/i'],
             'Contenue' => ['required', 'string', 'min:2']
         ];
     }
@@ -48,11 +48,10 @@ class StoreMessageRequest extends FormRequest
             'NomComplet.max' => 'Le champ Nom complet ne doit pas dépasser :max caractères.',
             'Email.required' => 'Le champ Email est requis.',
             'Email.string' => 'Le champ Email doit être une chaîne de caractères.',
-            'Email.email' => 'Le champ Email doit être une adresse e-mail valide.',
+            'Email.regex' => 'Le champ Email doit être une adresse e-mail valide.',
             'Contenue.required' => 'Le champ Contenu est requis.',
             'Contenue.string' => 'Le champ Contenu doit être une chaîne de caractères.',
             'Contenue.min' => 'Le champ Contenu doit avoir au moins :min caractères.'
         ];
     }
-    
 }
