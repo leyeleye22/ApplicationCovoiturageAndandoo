@@ -25,7 +25,7 @@ class TrajetController extends Controller
 
 
             $trajets = Cache::rememberForever('trajets', function () {
-                return Trajet::all();
+                return Trajet::where('Status', 'enCours')->get();
             });
 
             $data = [];
