@@ -91,7 +91,7 @@ class TrajetController extends Controller
             $userId = Auth::guard('apiut')->user()->id;
             $userCarId = Auth::guard('apiut')->user()->voiture->id;
             $mestrajets = Cache::rememberForever('trajets_' . $userId, function () use ($userCarId) {
-                return Trajet::where('voiture_id', $userCarId)->where('Status', 'enCours')->get();
+                return Trajet::where('voiture_id', $userCarId)->get();
             });
 
             foreach ($mestrajets as $mestrajet) {
