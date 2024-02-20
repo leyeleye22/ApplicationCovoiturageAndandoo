@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Your API Title",
-        "description": "Your API Description",
+        "title": "Covoiturage 'Andandoo'",
+        "description": "Une API destiner pour le covoiturage",
         "version": "1.0.0"
     },
     "security": [
