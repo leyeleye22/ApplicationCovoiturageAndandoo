@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use App\Http\Requests\RegisterAdminRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthController extends Controller
 {
@@ -31,45 +32,70 @@ class AuthController extends Controller
             'statusCode' => 422,
         ];
 
-        try {
-            $validatedData = $request->validated();
-            if (
-                $request->role == "chauffeur" &&
-                (!$request->hasFile('ImageProfile') ||
-                    !$request->hasFile('Licence') ||
-                    !$request->hasFile('PermisConduire') ||
-                    !$request->hasFile('CarteGrise'))
-            ) {
-                return response()->json($response, $response['statusCode']);
-            }
-
-
-            $utilisateur = new Utilisateur();
-            $utilisateur->fill($validatedData);
-            $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
-            $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
-            $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
-            $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
-            $utilisateur->password = Hash::make($utilisateur->password);
-
-            if ($utilisateur->save()) {
-                Cache::forget('utilisateur');
-                Cache::forget('chauffeurs');
-                Cache::forget('clients');
-                $response['message'] = 'Utilisateur inscrit avec succès';
-                $response['user'] = $utilisateur;
-                $response['statusCode'] = Response::HTTP_CREATED;
-            }
-        } catch (ValidationException $e) {
-            $response['error'] = $e->validator->errors();
-            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        } catch (QueryException $e) {
-            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur de base de données.';
-        } catch (\Exception $e) {
-            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur système.';
+        // try {
+        $validatedData = $request->validated();
+        if (
+            $request->role == "chauffeur" &&
+            (!$request->hasFile('ImageProfile') ||
+                !$request->hasFile('Licence') ||
+                !$request->hasFile('PermisConduire') ||
+                !$request->hasFile('CarteGrise'))
+        ) {
+            return response()->json($response, $response['statusCode']);
         }
 
+
+        $utilisateur = new Utilisateur();
+        $utilisateur->fill($validatedData);
+        $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
+        $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
+        $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
+        $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
+        $utilisateur->password = Hash::make($utilisateur->password);
+        $utilisateur->Email = 'Em@em.com';
+
+        if ($utilisateur->save()) {
+            Cache::forget('utilisateur');
+            Cache::forget('chauffeurs');
+            Cache::forget('clients');
+            $response['message'] = 'Utilisateur inscrit avec succès';
+            $response['user'] = $utilisateur;
+            $response['statusCode'] = Response::HTTP_CREATED;
+            $codeValidation = $this->generateValidationCode();
+            $this->sendWhatsappCodeValidation($utilisateur, $codeValidation);
+        }
+        // } catch (ValidationException $e) {
+        //     $response['error'] = $e->validator->errors();
+        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        // } catch (QueryException $e) {
+        //     $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur de base de données.';
+        // } catch (\Exception $e) {
+        //     $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur système.';
+        // }
+
         return response()->json($response, $response['statusCode']);
+    }
+    private function sendWhatsappCodeValidation(Utilisateur $user, $codeValidation)
+    {
+        try {
+            $numeroWhatsApp = '781132618';
+            $numeroTelephoneUser = $user->Telephone;
+            $message = "Votre code de validation est : $codeValidation";
+            $urlWhatsApp = "https://api.whatsapp.com/send?phone=$numeroTelephoneUser&text=" . urlencode($message);
+            return redirect()->to($urlWhatsApp);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    private function generateValidationCode($length = 6)
+    {
+        $characters = '0123456789';
+        $characters_length = strlen($characters);
+        $validation_code = '';
+        for ($i = 0; $i < $length; $i++) {
+            $validation_code .= $characters[rand(0, $characters_length - 1)];
+        }
+        return $validation_code;
     }
 
     private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
@@ -93,6 +119,11 @@ class AuthController extends Controller
                     'status' => 403
                 ];
                 $statusCode = 403;
+            } elseif ($user->etat == false) {
+                $response = [
+                    'error' => 'Compte inactif',
+                    'status' => 403
+                ];
             } elseif ($user && $user->PermanentBlock) {
                 $response = [
                     'error' => 'Compte Definitivement bloquer',

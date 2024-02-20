@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('TemporaryBlock')->default(false);
             $table->boolean('PermanentBlock')->default(false);
             $table->string('password');
+            $table->boolean('etat')->default(false);
             $table->timestamps();
         });
     }

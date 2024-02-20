@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('Descriptions');
             $table->unsignedBigInteger('NbrPlaces');
             $table->boolean('disponible')->default(true);
+            $table->enum('type', ['luxe', 'moyen']);
             $table->foreignId('utilisateur_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
