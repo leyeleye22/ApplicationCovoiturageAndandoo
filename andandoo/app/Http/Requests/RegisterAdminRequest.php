@@ -24,7 +24,7 @@ class RegisterAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|regex:/^.+@.+\..+$/i|max:255|unique:users',
+            'email' => 'required|email|regex:/^[^.@]+(\.[^.@]+)*@[^.@]+\.[^@]+$/|max:255|unique:users',
             'password' => 'required|string|min:8',
         ];
     }
@@ -42,13 +42,14 @@ class RegisterAdminRequest extends FormRequest
     {
         return [
             'email.required' => 'Le champ email est obligatoire.',
+            'email.email' => 'L\'email doit être une adresse email valide.',
             'email.regex' => 'L\'email doit être une adresse email valide.',
             'email.max' => 'L\'email ne peut pas dépasser 255 caractères.',
             'email.unique' => 'Cet email est déjà utilisé.',
             'password.required' => 'Le champ mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
-
         ];
     }
+    
 }

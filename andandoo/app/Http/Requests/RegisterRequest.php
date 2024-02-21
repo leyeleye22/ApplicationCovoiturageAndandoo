@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
         return [
             'Nom' => 'required|string|min:2|max:255',
             'Prenom' => 'required|string|min:3|max:255',
-            // 'Email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
+            'Email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',

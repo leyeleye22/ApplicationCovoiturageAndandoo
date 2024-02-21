@@ -24,10 +24,11 @@ class AvertissementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:utilisateurs,email',
-            'contenue' => 'required|string|min:2',
+            'email' => 'required|email|regex:/^[^.@]+(\.[^.@]+)*@[^.@]+\.[^@]+$/|exists:utilisateurs,email',
+            'contenue' => 'required|string|regex:/^[a-zA-Z\s]+$/',
         ];
     }
+
     public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -41,12 +42,13 @@ class AvertissementRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'l\'identifiant est requis',
-            'email.email' => 'l\'email n\'est pas valide',
-            'email.exists' => 'l\'email n\'existe pas',
-            'contenue.required' => 'Impossible d\'envoyer un message vide',
-            'contenue.string' => 'le contenue doit être une chaine de caractere',
-            'contenue.min' => 'c\est trop petit comme contenu'
+            'email.required' => 'L\'adresse e-mail est requise.',
+            'email.email' => 'L\'adresse e-mail n\'est pas valide.',
+            'email.regex' => 'L\'adresse e-mail n\'est pas dans un format valide.',
+            'email.exists' => 'L\'adresse e-mail n\'existe pas.',
+            'contenue.required' => 'Le contenu du message est requis.',
+            'contenue.string' => 'Le contenu du message doit être une chaîne de caractères.',
+            'contenue.regex' => 'Le contenu du message ne doit contenir que des lettres alphabétiques et des espaces.',
         ];
     }
 }

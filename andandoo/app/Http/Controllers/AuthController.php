@@ -247,21 +247,7 @@ class AuthController extends Controller
             return response()->json(["Error" => "Invalid authorization Token"]);
         }
     }
-    public function Torefresh()
-    {
-        try {
-            return response()->json([
-                'status' => 'refresh',
-                'user' => Auth::guard('apiut')->user(),
-                'Authorization' => [
-                    'token' => Auth::guard('apiut'),
-                    'type' => 'bearer'
-                ]
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json(["Error" => "Invalid authorization Token"]);
-        }
-    }
+  
     /**
      * Get the token array structure.
      *
