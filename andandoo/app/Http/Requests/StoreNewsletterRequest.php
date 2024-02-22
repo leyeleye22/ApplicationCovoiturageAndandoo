@@ -24,7 +24,7 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|regex:/^.+@.+\..+$/i|unique:newsletters,email'
+            'email' => 'required|regex:/^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b$/|unique:newsletters,email'
         ];
     }
     public function failedValidation(validator $validator)

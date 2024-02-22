@@ -25,7 +25,7 @@ class RegisterAdminRequest extends FormRequest
     {
         return [
             'email' => 'required|email|regex:/^[^.@]+(\.[^.@]+)*@[^.@]+\.[^@]+$/|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
         ];
     }
     public function failedValidation(validator $validator)
@@ -49,7 +49,7 @@ class RegisterAdminRequest extends FormRequest
             'password.required' => 'Le champ mot de passe est obligatoire.',
             'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
+            'password.regex' => 'Le mot de passe ne respecte pas le format requis. Il doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractère spécial et avoir une longueur d\'au moins 8 caractères.'
         ];
     }
-    
 }

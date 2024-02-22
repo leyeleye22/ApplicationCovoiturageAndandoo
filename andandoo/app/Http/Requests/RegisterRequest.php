@@ -26,13 +26,13 @@ class RegisterRequest extends FormRequest
 
 
         return [
-            'Nom' => 'required|string|min:2|max:255',
-            'Prenom' => 'required|string|min:3|max:255',
-            'Email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
+            'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',
+            'Prenom' => 'required|string|min:3|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{3,}$/',
+            'Email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|exists:utilisateurs',
             'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
         ];
     }
 
@@ -50,30 +50,37 @@ class RegisterRequest extends FormRequest
     {
         return [
             'Nom.required' => 'Le champ nom est obligatoire.',
-            'Nom.string' => 'Le nom doit être une chaîne de caractères.',
-            'Nom.max' => 'Le nom ne peut pas dépasser 255 caractères.',
-            'Nom.min' => 'Le nom doit être au minimum  2 caractères.',
+            'Nom.string' => 'Le champ nom doit être une chaîne de caractères.',
+            'Nom.min' => 'Le champ nom doit comporter au moins 2 caractères.',
+            'Nom.max' => 'Le champ nom ne peut pas dépasser 255 caractères.',
+            'Nom.regex' => 'Le champ nom ne doit contenir que des lettres, espaces, apostrophes et tirets.',
+
             'Prenom.required' => 'Le champ prénom est obligatoire.',
-            'Prenom.string' => 'Le prénom doit être une chaîne de caractères.',
-            'Prenom.max' => 'Le prénom ne peut pas dépasser 255 caractères.',
-            'Prenom.min' => 'Le prénom ne peut pas etre inferieur a 3 caractères.',
+            'Prenom.string' => 'Le champ prénom doit être une chaîne de caractères.',
+            'Prenom.min' => 'Le champ prénom doit comporter au moins 3 caractères.',
+            'Prenom.max' => 'Le champ prénom ne peut pas dépasser 255 caractères.',
+            'Prenom.regex' => 'Le champ prénom ne doit contenir que des lettres, espaces, apostrophes et tirets.',
+
             'Email.required' => 'Le champ email est obligatoire.',
-            'Email.regex' => 'L\'email doit être une adresse email valide.',
-            'Email.unique' => 'Cet email est déjà utilisé.',
+            'Email.string' => 'Le champ email doit être une chaîne de caractères.',
+            'Email.regex' => 'L\'email n\'est pas au bon format.',
+            'Email.exists' => 'Cet email n\'existe pas dans notre base de données.',
+
             'Telephone.required' => 'Le champ téléphone est obligatoire.',
-            'Telephone.string' => 'Le téléphone doit être une chaîne de caractères.',
-            'Telephone.min' => 'Le téléphone doit comporter au moins 10 caractères.',
-            'Telephone.regex' => 'Le téléphone doit commencer 70/77/78/76 suivis de 7 caractere',
-            'Telephone.max' => 'Le téléphone ne peut pas dépasser 15 caractères.',
+            'Telephone.string' => 'Le champ téléphone doit être une chaîne de caractères.',
+            'Telephone.regex' => 'Le champ téléphone doit être un numéro de téléphone valide en commençant par l\'un des préfixes 77, 78, 70 ou 75 suivi de 7 chiffres.',
+
             'role.required' => 'Le champ rôle est obligatoire.',
-            'role.in' => 'Le rôle doit être soit client, soit chauffeur.',
-            'zone_id.required' => 'Le champ zone_id est obligatoire.',
-            'zone_id.integer' => 'Le zone_id doit être un entier.',
-            'zone_id.exists' => 'Cette zone n\'existe pas.',
+            'role.in' => 'Le champ rôle doit être soit "client" soit "chauffeur".',
+
+            'zone_id.required' => 'Le champ zone est obligatoire.',
+            'zone_id.integer' => 'Le champ zone doit être un entier.',
+            'zone_id.exists' => 'La zone sélectionnée n\'existe pas.',
+
             'password.required' => 'Le champ mot de passe est obligatoire.',
-            'password.string' => 'Le mot de passe doit être une chaîne de caractères.',
+            'password.string' => 'Le champ mot de passe doit être une chaîne de caractères.',
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
-            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
+            'password.regex' => 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractère spécial et avoir une longueur d\'au moins 8 caractères.'
         ];
     }
 }
