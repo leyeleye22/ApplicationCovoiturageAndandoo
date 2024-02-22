@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => 'required|email|regex:/^[^.@]+(\.[^.@]+)*@[^.@]+\.[^@]+$/|exists:utilisateurs,email',
-            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+            'password' => 'required|min:8'
         ];
     }
     public function failedValidation(validator $validator)
@@ -45,8 +45,7 @@ class LoginRequest extends FormRequest
             'email.regex' => 'L\'email est invalide.',
             'email.exists' => 'L\'email n\'existe pas.',
             'password.required' => 'Le mot de passe est obligatoire.',
-            'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
-            'password.regex' => 'Le mot de passe ne respecte pas le format requis. Il doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre, un caractère spécial et avoir une longueur d\'au moins 8 caractères.'
+            'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.'
         ];
     }
 }
