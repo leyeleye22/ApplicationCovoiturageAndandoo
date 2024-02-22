@@ -31,8 +31,7 @@ class AuthenticationTest extends TestCase
         $this->blockTemporarilyUser($admin, $chauffeur);
         $this->unlockUser($admin, $chauffeur);
         $this->blockDefinitelyUser($admin, $client);
-        // $this->logoutAdmin($admin);
-        // $this->logoutUser($client);
+
     }
 
     protected function createAdmin()

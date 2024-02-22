@@ -56,6 +56,7 @@ class UtilisateurController extends Controller
                     'LieuArrivee' => $trajet->LieuArrivee,
                     'HeureD' => $trajet->HeureD,
                     'DateDepart' => $trajet->DateDepart,
+                    'etatReservations' => $reservation->Accepted
                 ];
             }
             if ($reservations) {
