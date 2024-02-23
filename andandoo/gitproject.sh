@@ -11,5 +11,5 @@ cd "C:\\Users\\simplon\\Downloads\\ApplicationCovoiturageAndandoo\\andandoo"
 git add .
 
 git commit -m "$1"
-git push origin develop
+git push origin develop --force
 exit 0
