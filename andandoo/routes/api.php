@@ -38,7 +38,7 @@ Route::post('/login', [AuthController::class, 'loginuser']);
 Route::post('/registeredadmin', [AuthController::class, 'RegisterAdmin']);
 Route::post('/loginadmin', [AuthController::class, 'login']);
 Route::post('/refreshToken', [AuthController::class, 'refresh']);
-Route::post('/logoutadmin', [AuthController::class, 'logout'])->middleware('check.token.expiration');
+Route::post('/logoutadmin', [AuthController::class, 'logout']);
 //Zones
 Route::post('/createzone', [ZonesController::class, 'create']);
 Route::post('/updatezone/{zones}', [ZonesController::class, 'update']);
@@ -104,7 +104,7 @@ Route::get('/listMessage', [MessageController::class, 'show']);
 Route::post('/envoyer', [MessageController::class, 'send']);
 Route::post('/repondre/Message', [MessageController::class, 'response']);
 Route::post('/avertissement', [MessageController::class, 'avertissement']);
-Route::post('/logout/user', [UtilisateurController::class, 'logout'])->middleware('check.token.user.expiration');
+Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 Route::middleware('auth:apiut')->group(function () {
     Route::post('/Update/Profile/{utilisateur}', [UtilisateurController::class, 'updateProfile']);
     Route::post('/refreshToken', [UtilisateurController::class, 'Torefresh']);
