@@ -69,6 +69,7 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
     Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
     Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
+    Route::delete('/supprimener/voiture', [VoitureController::class, 'deleteVoiture']);
     //Reservation
     Route::get('/ListReservations', [UtilisateurController::class, 'index']);
     Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
@@ -84,6 +85,10 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::get('/nombreutilisateur', [UtilisateurController::class, 'nbruser']);
+Route::post('/whatsapp/{user}/{codeValidation}', [AuthController::class, 'sendwhatsappcode'])
+    ->name('whatsapp')
+    ->where(['user' => '[0-9]+', 'codeValidation' => '[0-9]+']);
+
 Route::middleware('auth:api')->group(function () {
     Route::get('/lister/newsletter', [NewsletterController::class, 'index']);
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);

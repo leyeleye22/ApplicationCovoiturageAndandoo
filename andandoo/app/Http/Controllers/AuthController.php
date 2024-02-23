@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use Exception;
 use App\Models\User;
 use App\Models\Utilisateur;
 use App\Http\Requests\LoginRequest;
@@ -20,7 +21,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login']]);
+        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login', 'sendwhatsappcode']]);
     }
 
     public function register(RegisterRequest $request)
@@ -32,61 +33,93 @@ class AuthController extends Controller
             'statusCode' => 422,
         ];
 
-        // try {
-        $validatedData = $request->validated();
-        if (
-            $request->role == "chauffeur" &&
-            (!$request->hasFile('ImageProfile') ||
-                !$request->hasFile('Licence') ||
-                !$request->hasFile('PermisConduire') ||
-                !$request->hasFile('CarteGrise'))
-        ) {
-            return response()->json($response, $response['statusCode']);
+        try {
+            $validatedData = $request->validated();
+            if (
+                $request->role == "chauffeur" &&
+                (!$request->hasFile('ImageProfile') ||
+                    !$request->hasFile('Licence') ||
+                    !$request->hasFile('PermisConduire') ||
+                    !$request->hasFile('CarteGrise'))
+            ) {
+                return response()->json($response, $response['statusCode']);
+            }
+
+
+            $utilisateur = new Utilisateur();
+            $utilisateur->fill($validatedData);
+            $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
+            $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
+            $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
+            $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
+            $utilisateur->password = Hash::make($utilisateur->password);
+            $utilisateur->Email = 'Emml@em.com';
+
+            if ($utilisateur->save()) {
+                Cache::forget('utilisateur');
+                Cache::forget('chauffeurs');
+                Cache::forget('clients');
+                $response['message'] = 'Utilisateur inscrit avec succès';
+                $response['user'] = $utilisateur;
+                $response['statusCode'] = Response::HTTP_OK;
+                $codeValidation = $this->generateValidationCode();
+                return redirect()->route('whatsapp', ['user' => $utilisateur->id, 'codeValidation' => $codeValidation]);
+            }
+        } catch (ValidationException $e) {
+            $response['error'] = $e->validator->errors();
+            $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        } catch (QueryException $e) {
+            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur de base de données.';
+        } catch (\Exception $e) {
+            $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur système.';
         }
-
-
-        $utilisateur = new Utilisateur();
-        $utilisateur->fill($validatedData);
-        $this->saveImage($request, 'ImageProfile', 'images/profils', $utilisateur, 'ImageProfile');
-        $this->saveImage($request, 'Licence', 'images/licence', $utilisateur, 'Licence');
-        $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
-        $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
-        $utilisateur->password = Hash::make($utilisateur->password);
-        $utilisateur->Email = 'Em@em.com';
-
-        if ($utilisateur->save()) {
-            Cache::forget('utilisateur');
-            Cache::forget('chauffeurs');
-            Cache::forget('clients');
-            $response['message'] = 'Utilisateur inscrit avec succès';
-            $response['user'] = $utilisateur;
-            $response['statusCode'] = Response::HTTP_CREATED;
-            $codeValidation = $this->generateValidationCode();
-            $this->sendWhatsappCodeValidation($utilisateur, $codeValidation);
-        }
-        // } catch (ValidationException $e) {
-        //     $response['error'] = $e->validator->errors();
-        //     $response['statusCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        // } catch (QueryException $e) {
-        //     $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur de base de données.';
-        // } catch (\Exception $e) {
-        //     $response['error'] = 'Erreur d\'inscription de l\'utilisateur. Erreur système.';
-        // }
 
         return response()->json($response, $response['statusCode']);
     }
-    private function sendWhatsappCodeValidation(Utilisateur $user, $codeValidation)
+    public function sendwhatsappcode(Utilisateur $user, $codeValidation)
     {
         try {
-            $numeroWhatsApp = '781132618';
-            $numeroTelephoneUser = $user->Telephone;
-            $message = "Votre code de validation est : $codeValidation";
-            $urlWhatsApp = "https://api.whatsapp.com/send?phone=$numeroTelephoneUser&text=" . urlencode($message);
-            return redirect()->to($urlWhatsApp);
-        } catch (\Exception $e) {
+            $numeroWhatsApp = $user->Telephone;
+            $message = $codeValidation;
+            $params = array(
+                'token' => 'd3jivu8d0q84v6x5',
+                'to' => $numeroWhatsApp,
+                'body' => $message
+            );
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.ultramsg.com/instance79098/messages/chat",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+                return redirect()->route('whatsapp')->withErrors(['error' => "Erreur lors de l'envoi du message WhatsApp."]);
+            } else {
+                return redirect()->to("https://api.whatsapp.com/send?phone=$numeroWhatsApp&text=" . urlencode($message));
+            }
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
     private function generateValidationCode($length = 6)
     {
         $characters = '0123456789';
@@ -247,7 +280,7 @@ class AuthController extends Controller
             return response()->json(["Error" => "Invalid authorization Token"]);
         }
     }
-  
+
     /**
      * Get the token array structure.
      *

@@ -28,8 +28,8 @@ class RegisterRequest extends FormRequest
         return [
             'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',
             'Prenom' => 'required|string|min:3|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{3,}$/',
-            'Email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|exists:utilisateurs',
-            'Telephone' => ['required', 'string', 'regex:/^(77|78|70|75)[0-9]{7}$/'],
+            'Email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:utilisateurs',
+            'Telephone' => ['required', 'string'],
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',
             'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
@@ -64,7 +64,7 @@ class RegisterRequest extends FormRequest
             'Email.required' => 'Le champ email est obligatoire.',
             'Email.string' => 'Le champ email doit être une chaîne de caractères.',
             'Email.regex' => 'L\'email n\'est pas au bon format.',
-            'Email.exists' => 'Cet email n\'existe pas dans notre base de données.',
+            'Email.unique' => 'Cet email existe  dans notre base de données.',
 
             'Telephone.required' => 'Le champ téléphone est obligatoire.',
             'Telephone.string' => 'Le champ téléphone doit être une chaîne de caractères.',
