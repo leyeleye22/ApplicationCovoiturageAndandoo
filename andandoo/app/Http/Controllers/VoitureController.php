@@ -170,7 +170,7 @@ class VoitureController extends Controller
             foreach ($voitures as $voiture) {
                 $data[] = [
                     'id' => $voiture->id,
-                    'description' => $voiture->Description,
+                    'description' => $voiture->Descriptions,
                     'ImageVoiture' => $voiture->ImageVoitures,
                     'nombrePlace' => $voiture->NbrPlaces,
                     'estdisponible' => $voiture->disponible,
@@ -196,7 +196,7 @@ class VoitureController extends Controller
             foreach ($voitures as $voiture) {
                 $data[] = [
                     'id' => $voiture->id,
-                    'description' => $voiture->Description,
+                    'description' => $voiture->Descriptions,
                     'ImageVoiture' => $voiture->ImageVoitures,
                     'nombrePlace' => $voiture->NbrPlaces,
                     'estdisponible' => $voiture->disponible,
