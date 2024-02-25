@@ -26,7 +26,7 @@ class RegisterRequest extends FormRequest
 
 
         return [
-            // 'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',
+            // 'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',,
             'Nom' => 'required|string|min:2|max:255',
             // 'Prenom' => 'required|string|min:3|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{3,}$/',
             'Prenom' => 'required|string|min:3|max:255',
