@@ -57,7 +57,6 @@ class AuthController extends Controller
             $this->saveImage($request, 'PermisConduire', 'images/permis', $utilisateur, 'PermisConduire');
             $this->saveImage($request, 'CarteGrise', 'images/cartegrise', $utilisateur, 'CarteGrise');
             $utilisateur->password = Hash::make($utilisateur->password);
-            $utilisateur->Email = 'Emml@em.com';
 
             if ($utilisateur->save()) {
                 Cache::forget('utilisateur');
@@ -95,6 +94,7 @@ class AuthController extends Controller
             DB::table('password_reset_tokens')->insert([
                 'email' => $user->Email,
                 'token' => $token,
+                'codeValidation' => $codeValidation,
                 'created_at' => Carbon::now(),
             ]);
             $lien = route('ValidationCodeWhatsappp', ['token' => $token]);
