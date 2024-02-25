@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Utilisateur;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\RegisterAdminRequest;
@@ -21,7 +25,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login', 'sendwhatsappcode']]);
+        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login', 'sendwhatsappcode', 'showFormValidationCodeWhatsappp']]);
     }
 
     public function register(RegisterRequest $request)
@@ -62,7 +66,10 @@ class AuthController extends Controller
                 $response['message'] = 'Utilisateur inscrit avec succès';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_OK;
-                $codeValidation = $this->generateValidationCode();
+                $codeValidation = Cache::remember('validation_' . $utilisateur->id, 360, function () {
+                    return $this->generateValidationCode();
+                });
+
                 return redirect()->route('whatsapp', ['user' => $utilisateur->id, 'codeValidation' => $codeValidation]);
             }
         } catch (ValidationException $e) {
@@ -76,15 +83,27 @@ class AuthController extends Controller
 
         return response()->json($response, $response['statusCode']);
     }
+    public function showFormValidationCodeWhatsappp($token)
+    {
+        return view('formvalide', ['token' => $token]);
+    }
     public function sendwhatsappcode(Utilisateur $user, $codeValidation)
     {
         try {
             $numeroWhatsApp = $user->Telephone;
+            $token = Str::random(32);
+            DB::table('password_reset_tokens')->insert([
+                'email' => $user->Email,
+                'token' => $token,
+                'created_at' => Carbon::now(),
+            ]);
+            $lien = route('ValidationCodeWhatsappp', ['token' => $token]);
+            $message = "Voici votre code de validation WhatsApp : $codeValidation. Pour valider, veuillez cliquer sur le lien suivant : $lien";
             $message = $codeValidation;
             $params = array(
                 'token' => 'd3jivu8d0q84v6x5',
                 'to' => $numeroWhatsApp,
-                'body' => $message
+                'body' => "Voici votre code de validation WhatsApp : $codeValidation. Pour valider, veuillez cliquer sur le lien suivant : $lien"
             );
 
             $curl = curl_init();
@@ -361,5 +380,16 @@ class AuthController extends Controller
         }
 
         return response()->json($response, $response['error'] ? 200 : 200);
+    }
+    public function activerCompte(Utilisateur $user)
+    {
+        try {
+            if ($user != null && $user->role == "chauffeur") {
+                $user->etat = true;
+                $user->save();
+                return response()->json(['Message' => 'compte activer avec succes'], 201);
+            }
+        } catch (Exception $e) {
+        }
     }
 }

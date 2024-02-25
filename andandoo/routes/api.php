@@ -28,8 +28,11 @@ Route::post('forget-password', [ForgetPasswordController::class, 'submitForgetPa
     ->name('forget.password.post');
 Route::get('reset-password/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])
     ->name('reset.password.get');
+Route::get('ValidationCodeWhatsappp/{token}', [AuthController::class, 'showFormValidationCodeWhatsappp'])
+    ->name('ValidationCodeWhatsappp');
 Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
     ->name('reset.password.post');
+Route::post('/activerChauffeur/{user}', [AuthController::class, 'activerCompte']);
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
 Route::post('/Debloquer/{user}', [AuthController::class, 'unblockUser']);
