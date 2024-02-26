@@ -66,7 +66,8 @@
             <input id="input4" type="text" maxlength="1">
             <input id="input5" type="text" maxlength="1">
             <input id="input5" type="text" maxlength="1">
-        </div> <button class="action">verifier</button>
+        </div>
+        <input type="hidden" name="token" value="{{ $token }}"><button class="action">verifier</button>
     </form>
 </body>
 

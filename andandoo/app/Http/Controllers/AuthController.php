@@ -387,6 +387,9 @@ class AuthController extends Controller
             if ($user != null && $user->role == "chauffeur") {
                 $user->etat = true;
                 $user->save();
+                Cache::forget('utilisateur');
+                Cache::forget('chauffeurs');
+                Cache::forget('clients');
                 return response()->json(['Message' => 'compte activer avec succes'], 201);
             }
         } catch (Exception $e) {
