@@ -65,11 +65,10 @@ class AuthController extends Controller
                 $response['message'] = 'Utilisateur inscrit avec succès';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_OK;
-                $codeValidation = Cache::remember('validation_' . $utilisateur->id, 360, function () {
-                    return $this->generateValidationCode();
-                });
-
-                return redirect()->route('whatsapp', ['user' => $utilisateur->id, 'codeValidation' => $codeValidation]);
+                if ($utilisateur->role == "client") {
+                    $codeValidation = $this->generateValidationCode();
+                    return redirect()->route('whatsapp', ['user' => $utilisateur->id, 'codeValidation' => $codeValidation]);
+                }
             }
         } catch (ValidationException $e) {
             $response['error'] = $e->validator->errors();
