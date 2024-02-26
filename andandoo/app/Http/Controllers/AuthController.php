@@ -162,7 +162,7 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->only(['email', 'password']);
-            $user = User::where('email', $credentials['email'])->first();
+            $user = Utilisateur::where('Email', $credentials['email'])->first();
 
             if ($user && $user->TemporaryBlock) {
                 $response = [
@@ -245,6 +245,7 @@ class AuthController extends Controller
 
     public function login()
     {
+        //login
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
