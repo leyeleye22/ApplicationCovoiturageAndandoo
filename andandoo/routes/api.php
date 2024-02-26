@@ -88,7 +88,7 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::get('/nombreutilisateur', [UtilisateurController::class, 'nbruser']);
-Route::post('/whatsapp/{user}/{codeValidation}', [AuthController::class, 'sendwhatsappcode'])
+Route::get('/whatsapp/{user}/{codeValidation}', [AuthController::class, 'sendwhatsappcode'])
     ->name('whatsapp')
     ->where(['user' => '[0-9]+', 'codeValidation' => '[0-9]+']);
 
