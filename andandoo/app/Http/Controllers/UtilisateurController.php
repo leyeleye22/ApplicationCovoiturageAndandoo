@@ -132,9 +132,10 @@ class UtilisateurController extends Controller
                     'Image' => $chauffeur['ImageProfile'],
                     'Licence' => $chauffeur['Licence'],
                     'PermisConduire' => $chauffeur['PermisConduire'],
-                    'CarteGrise'=> $chauffeur['CarteGrise'],
+                    'CarteGrise' => $chauffeur['CarteGrise'],
                     'role' => $chauffeur['role'],
                     'Zone' => $nom,
+                    'etat' => $chauffeur['etat'],
                     'BlockerTemporairement' => $chauffeur['TemporaryBlock'],
                     'BlockerDefinitivement' => $chauffeur['PermanentBlock']
                 ];
