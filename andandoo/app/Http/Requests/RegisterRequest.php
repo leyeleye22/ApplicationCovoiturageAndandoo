@@ -26,12 +26,9 @@ class RegisterRequest extends FormRequest
 
 
         return [
-            // 'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',,
-            'Nom' => 'required|string|min:2|max:255',
-            // 'Prenom' => 'required|string|min:3|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{3,}$/',
-            'Prenom' => 'required|string|min:3|max:255',
-            // 'Email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:utilisateurs',
-            'Email' => 'required|string|unique:utilisateurs',
+            'Nom' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{2,}$/',,
+            'Prenom' => 'required|string|min:3|max:255|regex:/^[a-zA-ZÀ-ÿ\s\'-]{3,}$/',
+            'Email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:utilisateurs',
             'Telephone' => ['required', 'string'],
             'role' => 'required|in:client,chauffeur',
             'zone_id' => 'required|integer|exists:zones,id',
