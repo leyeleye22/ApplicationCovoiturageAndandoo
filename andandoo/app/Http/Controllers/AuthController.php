@@ -91,14 +91,16 @@ class AuthController extends Controller
         try {
             $numeroWhatsApp = $user->Telephone;
             $token = Str::random(32);
+            $expiry = Carbon::now()->addMinutes(5);
             DB::table('password_reset_tokens')->insert([
                 'email' => $user->Email,
                 'token' => $token,
+                'expires_at' => $expiry,
                 'codeValidation' => $codeValidation,
                 'created_at' => Carbon::now(),
             ]);
             $lien = route('ValidationCodeWhatsappp', ['token' => $token]);
-            $message = "Voici votre code de validation WhatsApp : $codeValidation. Pour valider, veuillez cliquer sur le lien suivant : $lien";
+            $message = "Voici votre code de validation WhatsApp : $codeValidation.Elle s\'expire dans 5minutes Pour valider, veuillez cliquer sur le lien suivant : $lien";
             $message = $codeValidation;
             $params = array(
                 'token' => 'd3jivu8d0q84v6x5',
@@ -160,7 +162,16 @@ class AuthController extends Controller
         if (!$codeexists) {
             return response()->json(['error' => 'Ressouces introuvables'], 404);
         }
+        if (now()->gt($codeexists->expires_at)) {
+            DB::table('password_reset_tokens')
+                ->where('token', $request->token)
+                ->delete();
+            return response()->json(['error' => 'Ce lien a expiree!'], 422);
+        }
         $user = DB::table('password_reset_tokens')->where(['token' => $request->token])->first();
+        if ($codeexists->codeValidation == $request->codeValidation) {
+            return back()->with(['message' => 'Code incorrect!!! Veuillez resaisir le code svp']);
+        }
         Utilisateur::where('Email', $user->email)
             ->update(['etat' => true]);
         DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
