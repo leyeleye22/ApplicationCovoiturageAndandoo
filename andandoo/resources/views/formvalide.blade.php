@@ -1,4 +1,3 @@
-</html>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,16 +83,17 @@
 
     <div class="center">
         <p class="header">Entrer votre code de validation</p>
-        <form action="/" method="POST">
+        <form action="http://127.0.0.1:8000/api/validation.code" method="POST">
+            @csrf
             <div class="keys">
-                <input type="text" class="input" maxlength="1">
-                <input type="text" class="input" maxlength="1">
-                <input type="text" class="input" maxlength="1">
-                <input type="text" class="input" maxlength="1">
-                <input type="text" class="input" maxlength="1">
-                <input type="text" class="input" maxlength="1">
-                <input type="hidden" name="token" value="{{ $token }}">
+                <input type="text" class="input" name="val1" maxlength="1">
+                <input type="text" class="input" name="val2" maxlength="1">
+                <input type="text" class="input" name="val3" maxlength="1">
+                <input type="text" class="input" name="val4" maxlength="1">
+                <input type="text" class="input" name="val5" maxlength="1">
+                <input type="text" class="input" name="val6" maxlength="1">
             </div>
+            <input type="hidden" name="token" value="{{ $token }}">
             <div class="buttonContainer">
                 <input type="submit" class="buttonEnvoyer"> </button>
             </div>

@@ -30,6 +30,8 @@ Route::get('reset-password/{token}', [ForgetPasswordController::class, 'showRese
     ->name('reset.password.get');
 Route::get('ValidationCodeWhatsappp/{token}', [AuthController::class, 'showFormValidationCodeWhatsappp'])
     ->name('ValidationCodeWhatsappp');
+Route::post('validation.code', [Authcontroller::class, 'submitValidationForm'])
+    ->name('code.validation');
 Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
     ->name('reset.password.post');
 Route::post('/activerChauffeur/{user}', [AuthController::class, 'activerCompte']);

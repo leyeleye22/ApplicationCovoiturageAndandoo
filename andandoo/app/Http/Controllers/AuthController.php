@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Utilisateur;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login', 'sendwhatsappcode', 'showFormValidationCodeWhatsappp']]);
+        $this->middleware('auth:api', ['except' => ['register', 'loginuser', 'RegisterAdmin', 'login', 'sendwhatsappcode', 'showFormValidationCodeWhatsappp', 'submitValidationForm']]);
     }
 
     public function register(RegisterRequest $request)
@@ -148,7 +149,24 @@ class AuthController extends Controller
         }
         return $validation_code;
     }
+    public function submitValidationForm(Request $request)
+    {
+        $codeexists = DB::table('password_reset_tokens')
+            ->where([
+                'token' => $request->token,
+            ])
+            ->first();
 
+        if (!$codeexists) {
+            return response()->json(['error' => 'Ressouces introuvables'], 404);
+        }
+        $user = DB::table('password_reset_tokens')->where(['token' => $request->token])->first();
+        Utilisateur::where('Email', $user->email)
+            ->update(['etat' => true]);
+        DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
+
+        return response()->json(['message' => 'Votre compte a ete active']);
+    }
     private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
     {
         if ($request->file($fileKey)) {
