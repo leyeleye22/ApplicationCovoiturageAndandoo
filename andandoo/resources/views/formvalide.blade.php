@@ -86,12 +86,12 @@
         <form action="http://127.0.0.1:8000/api/validation.code" method="POST">
             @csrf
             <div class="keys">
-                <input type="text" class="input" name="val1" maxlength="1">
-                <input type="text" class="input" name="val2" maxlength="1">
-                <input type="text" class="input" name="val3" maxlength="1">
-                <input type="text" class="input" name="val4" maxlength="1">
-                <input type="text" class="input" name="val5" maxlength="1">
-                <input type="text" class="input" name="val6" maxlength="1">
+                <input type="text" class="input"  id="inputNumberValid" name="val1" maxlength="1">
+                <input type="text" class="input" id="inputNumberValid" name="val2" maxlength="1">
+                <input type="text" class="input" id="inputNumberValid" name="val3" maxlength="1">
+                <input type="text" class="input" id="inputNumberValid" name="val4" maxlength="1">
+                <input type="text" class="input" id="inputNumberValid" name="val5" maxlength="1">
+                <input type="text" class="input" id="inputNumberValid" name="val6" maxlength="1">
             </div>
             <input type="hidden" name="token" value="{{ $token }}">
             @if (session('message'))

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Database\QueryException;
+use App\Http\Requests\LoginAdminRequest;
 use App\Http\Requests\RegisterAdminRequest;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -270,18 +271,21 @@ class AuthController extends Controller
         }
     }
 
-    public function login()
+    public function login(LoginAdminRequest $request)
     {
-        //login
-        $credentials = request(['email', 'password']);
-
+        $credentials = $request->only('email', 'password');
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Mot de passe ou email incorrect'], 403);
         }
-
         $user = auth()->user();
-        $response = $this->respondWithToken($token, $user);
-        return response()->json($response);
+        // $response = $this->respondWithToken($token, $user);
+        return response()->json(['data' => [
+            'access_token' => $token,
+            'utilisateur' => $user,
+            'statusCode' => 200,
+            'token_type' => 'bearer',
+            'expires_in' => 3600
+        ]]);
     }
 
     /**
