@@ -94,6 +94,12 @@
                 <input type="text" class="input" name="val6" maxlength="1">
             </div>
             <input type="hidden" name="token" value="{{ $token }}">
+            @if (session('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
+            @endif
+
             <div class="buttonContainer">
                 <input type="submit" class="buttonEnvoyer"> </button>
             </div>

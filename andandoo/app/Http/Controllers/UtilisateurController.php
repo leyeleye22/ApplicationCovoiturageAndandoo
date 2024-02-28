@@ -219,21 +219,21 @@ class UtilisateurController extends Controller
         }
     }
 
-    public function Torefresh()
-    {
-        try {
-            return response()->json([
-                'status' => 'refresh',
-                'user' => Auth::guard('apiut')->user(),
-                'Authorization' => [
-                    'token' => Auth::guard('apiut'),
-                    'type' => 'bearer'
-                ]
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json(["Error" => "Invalid authorization Token"]);
-        }
-    }
+    // public function Torefresh()
+    // {
+    //     try {
+    //         return response()->json([
+    //             'status' => 'refresh',
+    //             'user' => Auth::guard('apiut')->user(),
+    //             'Authorization' => [
+    //                 'token' => Auth::guard('apiut')->refresh(),
+    //                 'type' => 'bearer'
+    //             ]
+    //         ]);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(["Error" => "Invalid authorization Token"]);
+    //     }
+    // }
     /**
      * Update the specified resource in storage.
      */

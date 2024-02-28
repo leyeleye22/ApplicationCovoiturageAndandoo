@@ -66,10 +66,6 @@ class AuthController extends Controller
                 $response['message'] = 'Utilisateur inscrit avec succès';
                 $response['user'] = $utilisateur;
                 $response['statusCode'] = Response::HTTP_OK;
-                if ($utilisateur->role == "client") {
-                    $codeValidation = $this->generateValidationCode();
-                    return redirect()->route('whatsapp', ['user' => $utilisateur->id, 'codeValidation' => $codeValidation]);
-                }
             }
         } catch (ValidationException $e) {
             $response['error'] = $e->validator->errors();
@@ -86,10 +82,23 @@ class AuthController extends Controller
     {
         return view('formvalide', ['token' => $token]);
     }
-    public function sendwhatsappcode(Utilisateur $user, $codeValidation)
+
+
+    private function generateValidationCode($length = 6)
+    {
+        $characters = '0123456789';
+        $characters_length = strlen($characters);
+        $validation_code = '';
+        for ($i = 0; $i < $length; $i++) {
+            $validation_code .= $characters[rand(0, $characters_length - 1)];
+        }
+        return $validation_code;
+    }
+    public function sendwhatsappcode(Utilisateur $user)
     {
         try {
             $numeroWhatsApp = $user->Telephone;
+            $codeValidation = $this->generateValidationCode();
             $token = Str::random(32);
             $expiry = Carbon::now()->addMinutes(5);
             DB::table('password_reset_tokens')->insert([
@@ -100,14 +109,12 @@ class AuthController extends Controller
                 'created_at' => Carbon::now(),
             ]);
             $lien = route('ValidationCodeWhatsappp', ['token' => $token]);
-            $message = "Voici votre code de validation WhatsApp : $codeValidation.Elle s\'expire dans 5minutes Pour valider, veuillez cliquer sur le lien suivant : $lien";
-            $message = $codeValidation;
+            $message = "";
             $params = array(
                 'token' => 'd3jivu8d0q84v6x5',
                 'to' => $numeroWhatsApp,
                 'body' => "Voici votre code de validation WhatsApp : $codeValidation. Pour valider, veuillez cliquer sur le lien suivant : $lien"
             );
-
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => "https://api.ultramsg.com/instance79098/messages/chat",
@@ -129,6 +136,7 @@ class AuthController extends Controller
             $err = curl_error($curl);
 
             curl_close($curl);
+            curl_close($curl);
 
             if ($err) {
                 return redirect()->route('whatsapp')->withErrors(['error' => "Erreur lors de l'envoi du message WhatsApp."]);
@@ -140,17 +148,6 @@ class AuthController extends Controller
         }
     }
 
-
-    private function generateValidationCode($length = 6)
-    {
-        $characters = '0123456789';
-        $characters_length = strlen($characters);
-        $validation_code = '';
-        for ($i = 0; $i < $length; $i++) {
-            $validation_code .= $characters[rand(0, $characters_length - 1)];
-        }
-        return $validation_code;
-    }
     public function submitValidationForm(Request $request)
     {
         $codeexists = DB::table('password_reset_tokens')
@@ -170,13 +167,14 @@ class AuthController extends Controller
         }
         $user = DB::table('password_reset_tokens')->where(['token' => $request->token])->first();
         if ($codeexists->codeValidation == $request->codeValidation) {
+            Utilisateur::where('Email', $user->email)
+                ->update(['etat' => true]);
+            DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
+
+            return response()->json(['message' => 'Votre compte a ete active']);
+        } else {
             return back()->with(['message' => 'Code incorrect!!! Veuillez resaisir le code svp']);
         }
-        Utilisateur::where('Email', $user->email)
-            ->update(['etat' => true]);
-        DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
-
-        return response()->json(['message' => 'Votre compte a ete active']);
     }
     private function saveImage($request, $fileKey, $path, $utilisateur, $fieldName)
     {
@@ -320,7 +318,7 @@ class AuthController extends Controller
                 'status' => 'refresh',
                 'user' => Auth::user(),
                 'Authorization' => [
-                    'token' => Auth::token(),
+                    'token' => Auth::refresh(),
                     'type' => 'bearer'
                 ]
             ]);
