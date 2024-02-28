@@ -35,6 +35,7 @@ Route::post('validation.code', [Authcontroller::class, 'submitValidationForm'])
 Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
     ->name('reset.password.post');
 Route::post('/activerChauffeur/{user}', [AuthController::class, 'activerCompte']);
+Route::post('/admin', [AuthController::class, 'me']);
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
 Route::post('/Debloquer/{user}', [AuthController::class, 'unblockUser']);
@@ -113,4 +114,5 @@ Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 Route::middleware('auth:apiut')->group(function () {
     Route::post('/Update/Profile/{utilisateur}', [UtilisateurController::class, 'updateProfile']);
     Route::post('/refreshToken', [UtilisateurController::class, 'Torefresh']);
+    Route::post('/utilisateur', [UtilisateurController::class, 'User']);
 });

@@ -383,4 +383,8 @@ class UtilisateurController extends Controller
             $utilisateur->$fieldName = $filename;
         }
     }
+    public function User()
+    {
+        return response()->json(Auth::guard('apiut')->user());
+    }
 }
