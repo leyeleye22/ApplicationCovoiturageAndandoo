@@ -235,7 +235,7 @@ class AuthController extends Controller
                     'data' => [
                         'access_token' => $token,
                         'utilisateur' => $utilisateur,
-                        'notification' => $data[0],
+                        'notification' => $data,
                         'statusCode' => 200,
                         'token_type' => 'bearer',
                         'expires_in' => 3600

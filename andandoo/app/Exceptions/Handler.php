@@ -159,37 +159,37 @@ class Handler extends ExceptionHandler
     //         Log::error("Le serveur n'est pas disponible: " . $e->getMessage());
     //     });
     // }
-    public function render($request, Throwable $exception)
-    {
-        $response = ['error' => $exception->getMessage()];
-        if ($exception instanceof HttpException) {
-            return response()->json(
-                app()->environment('local') ? $response : ['error' => "Httpexception"],
-                $exception->getStatusCode()
-            );
-        } elseif (
-            $exception instanceof QueryException ||
-            $exception instanceof PDOException
-        ) {
-            return response()->json(
-                app()->environment('local') ?
-                    $response : ["error" => "Query exception"],
-                500
-            );
-        } elseif ($exception instanceof BadMethodCallException) {
-            return response()->json(app()->environment('local') ?
-                $response : ["error" => "Bad method call"], 405);
-        } elseif ($exception instanceof TransportException) {
-            return response()->json(app()->environment('local') ?
-                $response : ["error" => "Transport Exception"], 500);
-        } elseif ($exception instanceof ModelNotFoundException) {
-            return response()->json(app()->environment('local') ?
-                $response : ["error" => "Model Not Found"], 404);
-        } elseif (
-            $exception instanceof AuthorizationException
-        ) {
-            return response()->json($response, 403);
-        }
-        return parent::render($request, $exception);
-    }
+    // public function render($request, Throwable $exception)
+    // {
+    //     $response = ['error' => $exception->getMessage()];
+    //     if ($exception instanceof HttpException) {
+    //         return response()->json(
+    //             app()->environment('local') ? $response : ['error' => "Httpexception"],
+    //             $exception->getStatusCode()
+    //         );
+    //     } elseif (
+    //         $exception instanceof QueryException ||
+    //         $exception instanceof PDOException
+    //     ) {
+    //         return response()->json(
+    //             app()->environment('local') ?
+    //                 $response : ["error" => "Query exception"],
+    //             500
+    //         );
+    //     } elseif ($exception instanceof BadMethodCallException) {
+    //         return response()->json(app()->environment('local') ?
+    //             $response : ["error" => "Bad method call"], 405);
+    //     } elseif ($exception instanceof TransportException) {
+    //         return response()->json(app()->environment('local') ?
+    //             $response : ["error" => "Transport Exception"], 500);
+    //     } elseif ($exception instanceof ModelNotFoundException) {
+    //         return response()->json(app()->environment('local') ?
+    //             $response : ["error" => "Model Not Found"], 404);
+    //     } elseif (
+    //         $exception instanceof AuthorizationException
+    //     ) {
+    //         return response()->json($response, 403);
+    //     }
+    //     return parent::render($request, $exception);
+    // }
 }
