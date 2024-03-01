@@ -156,6 +156,11 @@ class AuthController extends Controller
                 'token' => $request->token,
             ])
             ->first();
+        $values = '';
+
+        for ($i = 1; $i <= 6; $i++) {
+            $values .= $request->input("val$i");
+        }
 
         if (!$codeexists) {
             return response()->json(['error' => 'Ressouces introuvables'], 404);
@@ -167,7 +172,8 @@ class AuthController extends Controller
             return response()->json(['error' => 'Ce lien a expiree!'], 422);
         }
         $user = DB::table('password_reset_tokens')->where(['token' => $request->token])->first();
-        if ($codeexists->codeValidation == $request->codeValidation) {
+
+        if ($codeexists->codeValidation == $values) {
             Utilisateur::where('Email', $user->email)
                 ->update(['etat' => true]);
             DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
@@ -225,8 +231,16 @@ class AuthController extends Controller
                         'chauffeur' => $notification->data['Chauffeur'],
                     ];
                 }
-                $response = $this->respondWithTokens($token, $utilisateur, $data[0]);
-                $statusCode = 200;
+                return response()->json([
+                    'data' => [
+                        'access_token' => $token,
+                        'utilisateur' => $utilisateur,
+                        'notification' => $data[0],
+                        'statusCode' => 200,
+                        'token_type' => 'bearer',
+                        'expires_in' => 3600
+                    ]
+                ]);
             }
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
