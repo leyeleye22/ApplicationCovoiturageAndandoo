@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Trajet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpFoundation\Response;
 
 class UpdateTrajet

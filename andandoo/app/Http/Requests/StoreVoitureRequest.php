@@ -27,6 +27,7 @@ class StoreVoitureRequest extends FormRequest
             'ImageVoitures' => 'required|image|max:2048',
             'Descriptions' => 'required|string|max:255',
             'NbrPlaces' => 'required|integer|min:4|max:6',
+            'type' => 'required|in:luxe,moyen'
         ];
     }
     public function failedValidation(validator $validator)
@@ -51,8 +52,9 @@ class StoreVoitureRequest extends FormRequest
             'NbrPlaces.required' => 'Veuillez choisir une nombre de place',
             'NbrPlaces.min' => 'Il faut minimum 4 places',
             'NbrPlaces.max' => 'Il faut minimum 7 places',
-            'NbrPlaces.integer' => 'Le nombre de places doit être un chiffre'
-
+            'NbrPlaces.integer' => 'Le nombre de places doit être un chiffre',
+            'type.in' => 'Le champ type de voiture doit être soit "luxe" soit "moyen".',
+            'type.required' => 'Le champ type de voiture est requis'
         ];
     }
 }

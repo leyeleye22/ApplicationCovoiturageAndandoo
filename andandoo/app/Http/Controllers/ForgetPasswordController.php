@@ -98,7 +98,7 @@ class ForgetPasswordController extends Controller
             return response()->json(['error' => 'Le token de réinitialisation de mot de passe a expiré!'], 422);
         }
 
-        DB::table('users')
+        DB::table('utilisateurs')
             ->where('email', $tokenData->email)
             ->update(['password' => Hash::make($request->password)]);
 

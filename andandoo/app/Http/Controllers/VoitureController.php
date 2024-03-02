@@ -33,6 +33,7 @@ class VoitureController extends Controller
                     'ImageVoitures' => $vehicule['ImageVoitures'],
                     'Descriptions' => $vehicule['Descriptions'],
                     'NbrPlaces' => $vehicule['NbrPlaces'],
+                    'type' => $vehicule['type'],
                 ];
                 return response()->json([
                     'success' => true,
