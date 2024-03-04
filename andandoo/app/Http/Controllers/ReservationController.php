@@ -74,6 +74,7 @@ class ReservationController extends Controller
                     'SatusCode' => 403
                 ]);
             }
+         
             $validatedData = $request->validated();
             $trajet = Trajet::with('voiture')->findOrFail($validatedData["trajet_id"]);
             if ($trajet->DateDepart > Carbon::now()) {
@@ -105,6 +106,9 @@ class ReservationController extends Controller
                 $reservation = new Reservation($validatedData);
                 $reservation->trajet()->associate($trajet);
                 $reservation->utilisateur()->associate($request->user());
+                if ($request->NombrePlaces == null) {
+                    $reservation->NombrePlaces = 1;
+                }
 
                 if ($reservation->save()) {
                     Artisan::call('optimize:clear');

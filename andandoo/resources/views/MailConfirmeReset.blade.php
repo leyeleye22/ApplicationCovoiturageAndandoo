@@ -48,10 +48,9 @@
             <hr>
             <p>utiliser ce lien pour réinialiser</p>
             <h4><a href="{{ route('reset.password.get', $token) }}">lien de rénialisation </a></h4>
-            <h6>Ce code est valide pendant 3 heures.</h6>
+            <h6>Ce code est valide pendant 1 heure.</h6>
         </div>
     </div>
 </body>
 
 </html>
-

@@ -197,10 +197,10 @@ class UtilisateurController extends Controller
                     'SatusCode' => 403
                 ]);
             }
-            if ($reservation->voiture_id == Auth::guard('apiut')->user()->voiture->id) {
+            if ($reservation->trajet->voiture->id == Auth::guard('apiut')->user()->voiture->id) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Reservation ont ete  modifier avec succes.',
+                    'message' => 'Reservation recuperer avec succes.',
                     'date' => $reservation
                 ]);
             } else {

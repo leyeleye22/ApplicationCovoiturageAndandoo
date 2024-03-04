@@ -35,7 +35,7 @@ class ForgetPasswordController extends Controller
         ]);
 
         $token = Str::random(64);
-        $expiry = Carbon::now()->addMinutes(5);
+        $expiry = Carbon::now()->addMinutes(60);
         DB::table('password_reset_tokens')->insert([
             'email' => $request->email,
             'token' => $token,
