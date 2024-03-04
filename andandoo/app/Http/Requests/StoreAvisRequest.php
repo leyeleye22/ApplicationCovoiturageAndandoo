@@ -24,7 +24,7 @@ class StoreAvisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Contenue' => 'string|max:255',
+            'Contenue' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\'-]*$/',
             'Notation' => 'required|integer|min:1|max:5',
         ];
     }
@@ -41,12 +41,14 @@ class StoreAvisRequest extends FormRequest
     public function messages()
     {
         return [
-            'Contenue.string' => 'Le champ de contenu doit être une chaîne de caractères.',
-            'Contenue.max' => 'Le champ de contenu ne doit pas dépasser :max caractères.',
-            'Notation.required' => 'Le champ de notation (étoiles) est obligatoire.',
-            'Notation.integer' => 'Le champ de notation doit être un nombre entier.',
-            'Notation.min' => 'La notation doit être d\'au moins :min étoile(s).',
-            'Notation.max' => 'La notation ne peut pas dépasser :max étoiles.',
+            'Contenue.required' => 'Le champ contenu est obligatoire.',
+            'Contenue.string' => 'Le champ contenu doit être une chaîne de caractères.',
+            'Contenue.max' => 'Le contenu ne peut pas dépasser 255 caractères.',
+            'Contenue.regex' => 'Le champ contenu n\'est pas au bon format. Il ne doit contenir que des lettres, des chiffres, des espaces, des apostrophes et des tirets.',
+            'Notation.required' => 'Le champ notation est obligatoire.',
+            'Notation.integer' => 'Le champ notation doit être un nombre entier.',
+            'Notation.min' => 'La notation doit être d\'au moins 1.',
+            'Notation.max' => 'La notation ne peut pas dépasser 5.'
         ];
     }
 }

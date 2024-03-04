@@ -23,6 +23,56 @@
         "multipart/form-data"
     ],
     "paths": {
+        "/api/whatsapp/{user}": {
+            "get": {
+                "summary": "Activer Compte",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Scratch Pad"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/envoyer/newsletter": {
             "post": {
                 "summary": "envoyer newsletter",
@@ -74,7 +124,24 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ]
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": ""
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/lister/newsletter": {
@@ -523,6 +590,9 @@
                                     },
                                     "NbrPlaces": {
                                         "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
                                     }
                                 }
                             },
@@ -532,7 +602,8 @@
                                     "format": "binary"
                                 },
                                 "Descriptions": "jhs",
-                                "NbrPlaces": "5"
+                                "NbrPlaces": "5",
+                                "type": "moyen"
                             }
                         }
                     }
@@ -606,6 +677,9 @@
                                     },
                                     "NbrPlaces": {
                                         "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
                                     }
                                 }
                             },
@@ -615,7 +689,8 @@
                                     "format": "binary"
                                 },
                                 "Descriptions": "JOlie bagnole",
-                                "NbrPlaces": "6"
+                                "NbrPlaces": "6",
+                                "type": "luxe"
                             }
                         }
                     }
@@ -673,7 +748,28 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ]
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "contenue": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "",
+                                "contenue": ""
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/listMessage": {
@@ -1620,7 +1716,7 @@
                 }
             }
         },
-        "/api/DetailsReservation{reservation}": {
+        "/api/DetailsReservation/{reservation}": {
             "get": {
                 "summary": "Details Reservation",
                 "description": "",
@@ -2188,7 +2284,7 @@
                 }
             }
         },
-        "/api/documentation": {
+        "/api/listzone": {
             "get": {
                 "summary": "Lister Zone",
                 "description": "",
@@ -2554,7 +2650,7 @@
         },
         "/api/login": {
             "post": {
-                "summary": "Login Chauffeur",
+                "summary": "Login Chauffeur/client",
                 "description": "",
                 "responses": {
                     "201": {
@@ -2620,7 +2716,7 @@
                             },
                             "example": {
                                 "email": "ndia@ngor.com",
-                                "password": "gor@12356"
+                                "password": "Ngor@123"
                             }
                         }
                     }
@@ -2629,7 +2725,7 @@
         },
         "/api/register": {
             "post": {
-                "summary": "Register Chauffeur",
+                "summary": "Register Chauffeur/client",
                 "description": "",
                 "responses": {
                     "201": {
@@ -2717,6 +2813,10 @@
                                     },
                                     "zone_id": {
                                         "type": "string"
+                                    },
+                                    "CarteGrise": {
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 }
                             },
@@ -2724,7 +2824,7 @@
                                 "Nom": "Ndiaye",
                                 "Prenom": "Ngor",
                                 "Email": "ndia@ngor.com",
-                                "Telephone": "781567256",
+                                "Telephone": "781236411",
                                 "ImageProfile": {
                                     "type": "string",
                                     "format": "binary"
@@ -2738,8 +2838,12 @@
                                     "format": "binary"
                                 },
                                 "role": "chauffeur",
-                                "password": "ngor@123",
-                                "zone_id": "1"
+                                "password": "Ngor@123",
+                                "zone_id": "1",
+                                "CarteGrise": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
                             }
                         }
                     }
@@ -2814,7 +2918,7 @@
                             },
                             "example": {
                                 "email": "admin@andandoo.com",
-                                "password": "andandoo12"
+                                "password": "Andandoo@12"
                             }
                         }
                     }
@@ -2889,7 +2993,7 @@
                             },
                             "example": {
                                 "email": "admin@andandoo.com",
-                                "password": "andandoo12"
+                                "password": "Andandoo@12"
                             }
                         }
                     }

@@ -28,8 +28,14 @@ Route::post('forget-password', [ForgetPasswordController::class, 'submitForgetPa
     ->name('forget.password.post');
 Route::get('reset-password/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])
     ->name('reset.password.get');
+Route::get('ValidationCodeWhatsappp/{token}', [AuthController::class, 'showFormValidationCodeWhatsappp'])
+    ->name('ValidationCodeWhatsappp');
+Route::post('validation.code', [Authcontroller::class, 'submitValidationForm'])
+    ->name('code.validation');
 Route::post('reset-password', [ForgetPasswordController::class, 'submitResetPasswordForm'])
     ->name('reset.password.post');
+Route::post('/activerChauffeur/{user}', [AuthController::class, 'activerCompte']);
+Route::post('/admin', [AuthController::class, 'me']);
 Route::post('/BlockerTemporairement/{user}', [AuthController::class, 'blockTemporarilyUser']);
 Route::post('/BlockerDefinitivement/{user}', [AuthController::class, 'blockPermanentlyUser']);
 Route::post('/Debloquer/{user}', [AuthController::class, 'unblockUser']);
@@ -37,7 +43,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'loginuser']);
 Route::post('/registeredadmin', [AuthController::class, 'RegisterAdmin']);
 Route::post('/loginadmin', [AuthController::class, 'login']);
-Route::post('/logoutadmin', [AuthController::class, 'logout'])->middleware('check.token.expiration');
+Route::post('/refreshToken', [AuthController::class, 'refresh']);
+Route::post('/logoutadmin', [AuthController::class, 'logout']);
 //Zones
 Route::post('/createzone', [ZonesController::class, 'create']);
 Route::post('/updatezone/{zones}', [ZonesController::class, 'update']);
@@ -68,13 +75,14 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
     Route::get('/SeeMoreVoiture', [VoitureController::class, 'index']);
     Route::post('/AjouterVoiture', [VoitureController::class, 'store']);
     Route::post('/ModifierVoiture/{voiture}', [VoitureController::class, 'update']);
+    Route::delete('/supprimener/voiture', [VoitureController::class, 'deleteVoiture']);
     //Reservation
     Route::get('/ListReservations', [UtilisateurController::class, 'index']);
     Route::get('/DetailsReservation/{reservation}', [UtilisateurController::class, 'show']);
     Route::post(
         '/AccepterReservation/{reservation}',
         [UtilisateurController::class, 'update']
-    ); //verbe put marche pas
+    ); //verbe put marche pasne
     Route::delete('/AnnulerReservation/{reservation}', [UtilisateurController::class, 'destroy']);
     //Avis
 
@@ -83,6 +91,10 @@ Route::middleware('auth:apiut', 'role:chauffeur')->group(function () {
 Route::post('/DetailsTrajet/{trajet}', [TrajetController::class, 'show']);
 Route::post('/envoyer/newsletter', [NewsletterController::class, 'create']);
 Route::get('/nombreutilisateur', [UtilisateurController::class, 'nbruser']);
+Route::get('/whatsapp/{user}', [AuthController::class, 'sendwhatsappcode'])
+    ->name('whatsapp')
+    ->where(['user' => '[0-9]+']);
+
 Route::middleware('auth:api')->group(function () {
     Route::get('/lister/newsletter', [NewsletterController::class, 'index']);
     Route::get('/listerChauffeur', [UtilisateurController::class, 'showChauffeur']);
@@ -98,9 +110,11 @@ Route::get('/listMessage', [MessageController::class, 'show']);
 Route::post('/envoyer', [MessageController::class, 'send']);
 Route::post('/repondre/Message', [MessageController::class, 'response']);
 Route::post('/avertissement', [MessageController::class, 'avertissement']);
-Route::post('/logout/user', [UtilisateurController::class, 'logout'])->middleware('check.token.user.expiration');
+Route::post('/logout/user', [UtilisateurController::class, 'logout']);
 Route::middleware('auth:apiut')->group(function () {
     Route::post('/Update/Profile/{utilisateur}', [UtilisateurController::class, 'updateProfile']);
+    Route::post('/refreshToken', [UtilisateurController::class, 'Torefresh']);
+    Route::post('/utilisateur', [UtilisateurController::class, 'User']);
 });
 
 

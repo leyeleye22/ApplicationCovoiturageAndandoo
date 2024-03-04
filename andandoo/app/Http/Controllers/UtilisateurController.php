@@ -56,6 +56,7 @@ class UtilisateurController extends Controller
                     'LieuArrivee' => $trajet->LieuArrivee,
                     'HeureD' => $trajet->HeureD,
                     'DateDepart' => $trajet->DateDepart,
+                    'etatReservations' => $reservation->Accepted
                 ];
             }
             if ($reservations) {
@@ -131,8 +132,10 @@ class UtilisateurController extends Controller
                     'Image' => $chauffeur['ImageProfile'],
                     'Licence' => $chauffeur['Licence'],
                     'PermisConduire' => $chauffeur['PermisConduire'],
+                    'CarteGrise' => $chauffeur['CarteGrise'],
                     'role' => $chauffeur['role'],
                     'Zone' => $nom,
+                    'etat' => $chauffeur['etat'],
                     'BlockerTemporairement' => $chauffeur['TemporaryBlock'],
                     'BlockerDefinitivement' => $chauffeur['PermanentBlock']
                 ];
@@ -151,7 +154,7 @@ class UtilisateurController extends Controller
 
     public function showClient()
     {
-        $clients = Cache::rememberForever('chauffeurs', function () {
+        $clients = Cache::rememberForever('clients', function () {
             return  Utilisateur::where('role', 'client')->get();
         });
         try {
@@ -194,10 +197,10 @@ class UtilisateurController extends Controller
                     'SatusCode' => 403
                 ]);
             }
-            if ($reservation->voiture_id == Auth::guard('apiut')->user()->voiture->id) {
+            if ($reservation->trajet->voiture->id == Auth::guard('apiut')->user()->voiture->id) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Reservation ont ete  modifier avec succes.',
+                    'message' => 'Reservation recuperer avec succes.',
                     'date' => $reservation
                 ]);
             } else {
@@ -216,7 +219,21 @@ class UtilisateurController extends Controller
         }
     }
 
-
+    // public function Torefresh()
+    // {
+    //     try {
+    //         return response()->json([
+    //             'status' => 'refresh',
+    //             'user' => Auth::guard('apiut')->user(),
+    //             'Authorization' => [
+    //                 'token' => Auth::guard('apiut')->refresh(),
+    //                 'type' => 'bearer'
+    //             ]
+    //         ]);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(["Error" => "Invalid authorization Token"]);
+    //     }
+    // }
     /**
      * Update the specified resource in storage.
      */
@@ -365,5 +382,9 @@ class UtilisateurController extends Controller
             $file->move(public_path($path), $filename);
             $utilisateur->$fieldName = $filename;
         }
+    }
+    public function User()
+    {
+        return response()->json(Auth::guard('apiut')->user());
     }
 }

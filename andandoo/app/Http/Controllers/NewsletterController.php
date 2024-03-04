@@ -10,6 +10,10 @@ use App\Http\Requests\UpdateNewsletterRequest;
 
 class NewsletterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['create']]);
+    }
     /**
      * Display a listing of the resource.
      */

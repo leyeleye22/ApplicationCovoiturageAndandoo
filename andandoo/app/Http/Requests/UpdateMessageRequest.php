@@ -24,7 +24,7 @@ class UpdateMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:messages,email',
+            'email' => 'required|regex:/^.+@.+\..+$/i|exists:messages,email',
             'contenue' => 'required|string|min:2',
         ];
     }
@@ -42,7 +42,7 @@ class UpdateMessageRequest extends FormRequest
     {
         return [
             'email.required' => 'l\'identifiant est requis',
-            'email.email' => 'l\'email n\'est pas valide',
+            'email.regex' => 'l\'email n\'est pas valide',
             'email.exists' => 'l\'email n\'existe pas',
             'contenue.required' => 'Impossible d\'envoyer un message vide',
             'contenue.string' => 'le contenue doit être une chaine de caractere',

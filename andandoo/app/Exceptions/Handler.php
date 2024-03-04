@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
@@ -40,7 +41,7 @@ class Handler extends ExceptionHandler
             Log::error("Une exception de base de données s'est produite: " . $e->getMessage());
             return response()->json([
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
-            ], $e->getStatusCode() ?: 400);
+            ], 500);
         });
         $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
             return response()->json([
@@ -54,7 +55,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Veuillez vous connecter svp!!!.',
                 'details' => 'Soit Vous n\'etes pas connecter soit vous n\'avez les droit d\'acces necessaire',
                 'url' => 'Cette route ' . ' ' . $request->url() . ' ' . 'vous est interdite',
-            ], $e->getStatusCode() ?: 400);
+            ], 400);
         });
         $this->reportable(function (\Illuminate\Auth\AuthenticationException $e) {
             Log::error("Une erreur d'authentification s'est produite: " . $e->getMessage());
@@ -73,7 +74,7 @@ class Handler extends ExceptionHandler
                 'message' => 'Erreur de base de données lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], $e->getStatusCode() ?: 400);
+            ], 500);
         });
 
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
@@ -81,7 +82,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur d\'authentification lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], $e->getStatusCode() ?: 400);
+            ], 403);
         });
 
         $this->renderable(function (\Illuminate\Validation\ValidationException $e, $request) {
@@ -89,7 +90,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur de validation lors du rendu.',
                 'details' => $e->errors(),
                 'url' => $request->url()
-            ], $e->getStatusCode() ?: 400);
+            ], 422);
         });
 
         $this->renderable(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
@@ -97,7 +98,7 @@ class Handler extends ExceptionHandler
                 'error' => 'Erreur de modèle non trouvée lors du rendu.',
                 'details' => $e->getMessage(),
                 'url' => $request->url()
-            ], $e->getStatusCode() ?: 400);
+            ],  500);
         });
         $this->renderable(function (NotFoundHttpException $e, $request) {
             $message = $e->getMessage();
@@ -120,7 +121,7 @@ class Handler extends ExceptionHandler
             Log::error("Une exception de base de données s'est produite: " . $e->getMessage());
             return response()->json([
                 'error' => 'Une erreur de base de données s\'est produite. Veuillez réessayer plus tard.'
-            ], $e->getStatusCode() ?: 400);
+            ], 500);
         });
 
         $this->reportable(function (\Illuminate\Auth\AuthenticationException $e) {
@@ -173,12 +174,12 @@ class Handler extends ExceptionHandler
         ) {
             return response()->json(
                 app()->environment('local') ?
-                    $response : ["error" => "Query exception"],
+                    $response : ["error" => "Erreur base de donnees"],
                 500
             );
         } elseif ($exception instanceof BadMethodCallException) {
             return response()->json(app()->environment('local') ?
-                $response : ["error" => "Bad method call"], 405);
+                $response : ["error" => "Mauvaise verbe utiliser sur cette route"], 405);
         } elseif ($exception instanceof TransportException) {
             return response()->json(app()->environment('local') ?
                 $response : ["error" => "Transport Exception"], 500);

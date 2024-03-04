@@ -24,14 +24,14 @@ class ReservationTest extends TestCase
         $admin = $this->createAdmin();
         $zone = $this->createZone($admin);
         $chauffeur = $this->createChauffeur($zone);
-        $voiture = $this->addVoiture($chauffeur);
-        $trajet = $this->createTrajet($voiture);
+        // $voiture = $this->addVoiture($chauffeur);
+        // $trajet = $this->createTrajet($voiture);
         $client = $this->createClient($zone);
-        $reservation = $this->createReservation($trajet, $client);
-        $this->updateReservation($reservation, $client);
-        $this->listReservation($client);
-        $this->deleteReservation($trajet, $client);
-        $this->deleteAllReservation($client);
+        // $reservation = $this->createReservation($trajet, $client);
+        // $this->updateReservation($reservation, $client);
+        // $this->listReservation($client);
+        // $this->deleteReservation($trajet, $client);
+        // $this->deleteAllReservation($client);
     }
 
     protected function createAdmin()

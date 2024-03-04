@@ -11,5 +11,4 @@ cd "C:\\Users\\simplon\\Downloads\\ApplicationCovoiturageAndandoo\\andandoo"
 git add .
 
 git commit -m "$1"
-
 exit 0

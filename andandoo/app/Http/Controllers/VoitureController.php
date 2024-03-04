@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Trajet;
 use App\Models\Voiture;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -32,6 +33,7 @@ class VoitureController extends Controller
                     'ImageVoitures' => $vehicule['ImageVoitures'],
                     'Descriptions' => $vehicule['Descriptions'],
                     'NbrPlaces' => $vehicule['NbrPlaces'],
+                    'type' => $vehicule['type'],
                 ];
                 return response()->json([
                     'success' => true,
@@ -164,13 +166,21 @@ class VoitureController extends Controller
     public function showVoitureD()
     {
         try {
-            $voiture = Voiture::where('disponible', true)->get();
-            if ($voiture) {
-                return response()->json([
-                    'message' => 'success',
-                    'StatusCode' => 200,
-                    'Data' => $voiture
-                ]);
+            $voitures = Voiture::where('disponible', true)->get();
+            $data = [];
+            foreach ($voitures as $voiture) {
+                $data[] = [
+                    'id' => $voiture->id,
+                    'description' => $voiture->Descriptions,
+                    'ImageVoiture' => $voiture->ImageVoitures,
+                    'nombrePlace' => $voiture->NbrPlaces,
+                    'estdisponible' => $voiture->disponible,
+                    'nomchauffeur' => $voiture->utilisateur->Nom,
+                    'prenomchauffeur' => $voiture->utilisateur->Prenom
+                ];
+            }
+            if ($voitures) {
+                return response()->json($data);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -182,13 +192,21 @@ class VoitureController extends Controller
     public function showVoitureInd()
     {
         try {
-            $voiture = Voiture::where('disponible', false)->get();
-            if ($voiture) {
-                return response()->json([
-                    'message' => 'success',
-                    'StatusCode' => 200,
-                    'Data' => $voiture
-                ]);
+            $voitures = Voiture::where('disponible', false)->get();
+            $data = [];
+            foreach ($voitures as $voiture) {
+                $data[] = [
+                    'id' => $voiture->id,
+                    'description' => $voiture->Descriptions,
+                    'ImageVoiture' => $voiture->ImageVoitures,
+                    'nombrePlace' => $voiture->NbrPlaces,
+                    'estdisponible' => $voiture->disponible,
+                    'nomchauffeur' => $voiture->utilisateur->Nom,
+                    'prenomchauffeur' => $voiture->utilisateur->Prenom
+                ];
+            }
+            if ($voitures) {
+                return response()->json($data);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -214,5 +232,45 @@ class VoitureController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+    }
+    public function deleteVoiture()
+    {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => null,
+            'statusCode' => 500,
+        ];
+
+        try {
+            if (Auth::guard('apiut')->user()->role == "client") {
+                return response()->json([
+                    'message' => "Vous n\'etes pas authoriser",
+                    'SatusCode' => 403
+                ]);
+            }
+            $voiture = Voiture::where('utilisateur_id', Auth::guard('apiut')->user()->id)->first();
+            if ($voiture) {
+                $trajet = Trajet::where('voiture_id', $voiture->id)
+                    ->where('Status', 'enCours')
+                    ->get();
+                if ($trajet->all() == null) {
+                    $voiture->delete();
+                    $response['message'] = 'Suppression reussi';
+                    $response['statusCode'] = 201;
+                } else {
+                    $response['message'] = 'Impossible de supprimer cette voiture vous avez des trajet deja en cours    ';
+                    $response['statusCode'] = 403;
+                }
+            }
+        } catch (\Exception $e) {
+            $response['message'] = 'Une erreur s\'est produite lors de la suppression de votre voiture.';
+            $response['error'] = $e->getMessage();
+        }
+        if (empty($response['statusCode'])) {
+            $response['statusCode'] = 500;
+        }
+
+        return response()->json($response, $response['statusCode']);
     }
 }

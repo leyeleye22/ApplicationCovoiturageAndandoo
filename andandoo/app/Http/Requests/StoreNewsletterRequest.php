@@ -24,7 +24,7 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:newsletters,email'
+            'email' => 'required|regex:/^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b$/|unique:newsletters,email'
         ];
     }
     public function failedValidation(validator $validator)
@@ -41,7 +41,7 @@ class StoreNewsletterRequest extends FormRequest
     {
         return [
             'email.required' => 'Le champ email est requis.',
-            'email.email' => 'L\'email n\'est pas valide',
+            'email.regex' => 'L\'email n\'est pas valide',
             'email.unique' => 'Vous etes deja enregistrer merci de votre soutien',
         ];
     }

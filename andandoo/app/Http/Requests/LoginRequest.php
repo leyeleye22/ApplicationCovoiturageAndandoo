@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|regex:/^.+@.+\..+$/i|exists:utilisateurs',
+            'email' => 'required|regex:/^[^.@]+(\.[^.@]+)*@[^.@]+\.[^@]+$/|exists:utilisateurs,email',
             'password' => 'required|min:8'
         ];
     }
@@ -42,10 +42,10 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'Le champ email est obligatoire.',
-            'email.regex' => 'L\'email est invalid.',
-            'email.exists' => 'L\'email existe pas.',
-            'password.required' => 'Le mot de passe est obliagatoire.',
-            'password.min' => 'Le mot de passe doit être superieur ou egal à 8.'
+            'email.regex' => 'L\'email est invalide.',
+            'email.exists' => 'L\'email n\'existe pas.',
+            'password.required' => 'Le mot de passe est obligatoire.',
+            'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.'
         ];
     }
 }

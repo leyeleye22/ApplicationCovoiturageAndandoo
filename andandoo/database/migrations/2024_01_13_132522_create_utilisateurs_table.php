@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('Nom');
             $table->string('Prenom');
-            $table->string('Email');
+            $table->string('Email')->unique();
             $table->string('Telephone');
             $table->string('ImageProfile')->nullable();
             $table->string('PermisConduire')->nullable();
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('TemporaryBlock')->default(false);
             $table->boolean('PermanentBlock')->default(false);
             $table->string('password');
+            $table->boolean('etat')->default(false);
             $table->timestamps();
         });
     }
